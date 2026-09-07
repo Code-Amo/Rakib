@@ -1,0 +1,87 @@
+body {
+    background: radial-gradient(circle at 50% 50%, #1e1b4b 0%, #09090b 70%);
+}
+.login-card-r {
+    background-color: #0e061bab;
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+.title-r {
+    align-self: center;
+    font-size: 5vh;
+    font-family: Rajdha;
+    font-weight: bolder;
+    color: aliceblue;
+}
+.login-form-r {
+    display: flex;
+    flex-direction: column;
+    padding: 45px;
+    gap: 15px;
+    width: 50vh;
+    background-color: #26262668;
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(16px);
+    box-shadow: 0 25px 50px -12px rbga(0, 0, 0, 0.7);
+    padding: 32;
+}
+.form-group-r {
+    padding: 10px;
+    color: rgb(93, 93, 93);
+    border: 2px solid grey;
+    border-radius: 20px;
+}
+.form-group-r:hover {
+    filter: brightness(1.2);
+    transform: scale(1.1);
+    cursor: pointer;
+    background-color: #3837374d;
+}
+input:focus {
+    outline: none;
+}
+.btn-submit-r {
+    margin-top: 10px;
+    padding: 12px;
+    gap: 50px;
+    background: var(--dark-violet);
+    color: aliceblue;
+    font-weight: bold;
+    font-family: sans-serif;
+    border: none;
+    cursor: pointer;
+    border-radius: 20px;
+    transition: all 0.3 ease;
+}
+.btn-switch-r {
+    margin-top: 10px;
+    padding: 12px;
+    gap: 15px;
+    color: aliceblue;
+    font-weight: bold;
+    font-family: sans-serif;
+    cursor: default;
+    border-radius: 20px;
+}
+.btn-submit-r:hover {
+    filter: brightness(1.2);
+    transform: scale(1.1);
+    cursor: pointer;
+    box-shadow: 0 0 15px rgba(195, 0, 255, 0.4);
+    background-color: #f304c7ad;
+}
+.btn-switch-r:hover {
+    filter: blur(1.2);
+    transform: scale(1.1);
+    cursor: pointer;
+    background: rgba(67, 67, 67, 0.116);
+}
+.input-r {
+    box-sizing: border-box;
+    width: 100%;
+}
