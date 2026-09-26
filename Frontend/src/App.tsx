@@ -10,7 +10,7 @@ import Register from "./pages/Register/Register";
 import Secret_garden from "./pages/Secret_garden/secret_garden";
 import Settings from "./pages/Settings/settings";
 import Stats from "./pages/stats/stats";
-import TitleBar from "./Titlebar";
+import Success from "./pages/Success/success";
 
 export default function App() {
     const [page, setPage] = useState<
@@ -26,11 +26,11 @@ export default function App() {
         | "settings"
         | "calendar"
         | "stats"
+        | "success"
     >("home");
 
     return (
         <div className="min-h-screen relative">
-            <TitleBar />
             <main>
                 {page === "login" && <Login onNavigate={setPage} />}
                 {page === "register" && <Register onNavigate={setPage} />}
@@ -43,6 +43,7 @@ export default function App() {
                 {page === "calendar" && <Calendar onNavigate={setPage} />}
                 {page === "settings" && <Settings onNavigate={setPage} />}
                 {page === "stats" && <Stats onNavigate={setPage} />}
+                {page === "success" && <Success onNavigate={setPage} />}
             </main>
         </div>
     );

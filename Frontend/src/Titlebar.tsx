@@ -6,7 +6,7 @@ const TitleBar = () => {
     return (
         <div
             data-tauri-drag-region
-            className="w-full h-9 shrink-0 bg-[#0e061bab] text-slate-300 flex items-center justify-between px-3 z-[9999] select-none "
+            className="w-full h-9 shrink-0 bg-[#0e061bab] text-slate-300 flex items-center justify-between px-3 z-[9999] select-none position-fixed"
         >
             <span className="text-[11px] font-semibold tracking-wider text-slate-400 uppercase pl-1">PROJECT Z</span>
 

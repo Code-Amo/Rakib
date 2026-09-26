@@ -85,3 +85,16 @@ input:focus {
     box-sizing: border-box;
     width: 100%;
 }
+.form-error-r {
+    margin: 0;
+    color: #fca5a5;
+    font-size: 0.9rem;
+    text-align: center;
+    font-family: sans-serif;
+}
+.btn-submit-r:disabled {
+    opacity: 0.6;
+    cursor: wait;
+    transform: none;
+    filter: none;
+}
