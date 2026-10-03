@@ -17,11 +17,13 @@ body {
     font-weight: bolder;
     color: aliceblue;
 }
-.subtitle-verfication {
+.subtitle-verification {
     align-self: center;
-    font-size: 1.5vh;
-    font-weight: bold;
-    color: violet;
+    font-size: 0.9rem;
+    margin-top: 8px;
+    line-height: 1.4;
+    text-align: center;
+    color: #ffffff;
 }
 .login-form-verfication {
     display: flex;
@@ -37,10 +39,9 @@ body {
     padding: 32;
 }
 .form-group-verfication {
-    padding: 10px;
     color: rgb(93, 93, 93);
     border: 2px solid grey;
-    border-radius: 20px;
+    border-radius: 10px;
 }
 .form-group-verfication:hover {
     filter: brightness(1.2);
@@ -50,6 +51,8 @@ body {
 }
 input:focus {
     outline: none;
+    border: 2px solid #f304c7ad;
+    box-shadow: 0 0 14px rgba(195, 0, 255, 0.4);
 }
 .btn-submit-verfication {
     margin-top: 10px;
@@ -90,4 +93,67 @@ input:focus {
 .input-verification {
     box-sizing: border-box;
     width: 100%;
+    border-radius: 10px;
+    padding: 12px 16px;
+}
+.otp-container {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    margin: 15px 0;
+}
+
+.input-otp {
+    width: 45px;
+    height: 55px;
+    background: transparent;
+    color: #ffffff;
+    border: 2px solid grey;
+    border-radius: 10px;
+    font-size: 24px;
+    font-family: sans-serif;
+    text-align: center;
+    outline: none;
+    box-sizing: border-box;
+    transition: all 0.2s ease;
+}
+
+.input-otp:focus {
+    border-color: #f304c7ad;
+    transform: scale(1.05);
+}
+.input-otp:nth-child(3) {
+    margin-right: 15px;
+}
+
+.email-highlight {
+    color: #f304c7ad;
+    font-weight: 600;
+    text-decoration: underline;
+}
+
+.resend-box {
+    font-size: 13px;
+    color: #cccccc;
+    text-align: center;
+    margin-top: 5px;
+    margin-bottom: 15px;
+}
+
+.btn-resend {
+    background: transparent;
+    border: none;
+    color: #30cfd0;
+    font-size: 13px;
+    font-weight: bold;
+    cursor: pointer;
+    padding: 0;
+    margin-left: 4px;
+    text-decoration: underline;
+    transition: all 0.2s ease;
+}
+
+.btn-resend:hover {
+    opacity: 0.8;
+    color: #ffffff;
 }

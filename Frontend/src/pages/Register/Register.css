@@ -12,7 +12,7 @@ body {
 }
 .title-r {
     align-self: center;
-    font-size: 5vh;
+    font-size: 50px;
     font-family: Rajdha;
     font-weight: bolder;
     color: aliceblue;
@@ -28,13 +28,11 @@ body {
     border: 1px solid rgba(255, 255, 255, 0.08);
     backdrop-filter: blur(16px);
     box-shadow: 0 25px 50px -12px rbga(0, 0, 0, 0.7);
-    padding: 32;
 }
 .form-group-r {
-    padding: 10px;
     color: rgb(93, 93, 93);
     border: 2px solid grey;
-    border-radius: 20px;
+    border-radius: 12px;
 }
 .form-group-r:hover {
     filter: brightness(1.2);
@@ -42,8 +40,17 @@ body {
     cursor: pointer;
     background-color: #3837374d;
 }
+.form-row-r {
+    display: flex;
+    gap: 15px;
+}
+.form-row-r .form-group-r {
+    flex: 1;
+}
 input:focus {
     outline: none;
+    border: 2px solid #f304c7ad;
+    box-shadow: 0 0 14px rgba(195, 0, 255, 0.4);
 }
 .btn-submit-r {
     margin-top: 10px;
@@ -84,6 +91,8 @@ input:focus {
 .input-r {
     box-sizing: border-box;
     width: 100%;
+    border-radius: 8px;
+    padding: 12px 16px;
 }
 .form-error-r {
     margin: 0;
@@ -97,4 +106,55 @@ input:focus {
     cursor: wait;
     transform: none;
     filter: none;
+}
+.cyberpunk-checkbox {
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border: 2px solid #f304c7ad;
+    border-radius: 5px;
+    background-color: transparent;
+    display: inline-block;
+    position: relative;
+    margin-right: 10px;
+    cursor: pointer;
+    margin: 12px;
+}
+
+.cyberpunk-checkbox:before {
+    content: "";
+    background-color: #f304c7ad;
+    display: block;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    width: 10px;
+    height: 10px;
+    border-radius: 3px;
+    transition: all 0.3s ease-in-out;
+}
+
+.cyberpunk-checkbox:checked:before {
+    transform: translate(-50%, -50%) scale(1);
+}
+
+.cyberpunk-checkbox-label {
+    font-size: 13px;
+    line-height: 1.4;
+    color: #fff;
+    cursor: pointer;
+    user-select: none;
+    display: flex;
+    align-items: center;
+}
+.cyberpunk-link {
+    color: #ff37daad;
+    text-decoration: underline;
+    transition: color 0.2s ease;
+}
+
+.cyberpunk-link:hover {
+    color: #00d2d3;
+    text-decoration: none;
 }

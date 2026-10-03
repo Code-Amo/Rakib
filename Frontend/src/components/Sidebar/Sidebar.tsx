@@ -1,14 +1,7 @@
-import { CalendarDays, ChartNoAxesCombined, CircleUserRound, Cog, House, Leaf, Trophy } from "lucide-react";
+import { Calendar, ChartNoAxesCombined, Cog, HeartHandshake, House, Leaf, Timer } from "lucide-react";
 import "./Sidebar.css";
 
-export type SidebarPage =
-    | "home"
-    | "profile"
-    | "calendar"
-    | "secret_garden"
-    | "stats"
-    | "settings"
-    | "success";
+export type SidebarPage = "home" | "rivals" | "calendar" | "secret_garden" | "stats" | "settings" | "success";
 
 interface Props {
     currentPage: SidebarPage;
@@ -26,15 +19,9 @@ export default function Sidebar({ currentPage, onNavigate }: Props) {
                 <ul className="sidebar-menu">
                     <button
                         type="button"
-                        className={buttonClass("profil-button", "profile", currentPage)}
-                        onClick={() => onNavigate("profile")}
-                    >
-                        <CircleUserRound />
-                    </button>
-                    <button
-                        type="button"
                         className={buttonClass("sidebar-button0", "home", currentPage)}
                         onClick={() => onNavigate("home")}
+                        data-tooltip="Accueil"
                     >
                         <House />
                     </button>
@@ -42,20 +29,23 @@ export default function Sidebar({ currentPage, onNavigate }: Props) {
                         type="button"
                         className={buttonClass("sidebar-button", "calendar", currentPage)}
                         onClick={() => onNavigate("calendar")}
+                        data-tooltip="Agenda"
                     >
-                        <CalendarDays />
+                        <Calendar />
                     </button>
                     <button
                         type="button"
-                        className={buttonClass("sidebar-button2", "secret_garden", currentPage)}
-                        onClick={() => onNavigate("secret_garden")}
+                        className={buttonClass("profil-button", "rivals", currentPage)}
+                        onClick={() => onNavigate("rivals")}
+                        data-tooltip="Compagnons"
                     >
-                        <Leaf />
+                        <HeartHandshake />
                     </button>
                     <button
                         type="button"
                         className={buttonClass("sidebar-button3", "stats", currentPage)}
                         onClick={() => onNavigate("stats")}
+                        data-tooltip="Statistiques"
                     >
                         <ChartNoAxesCombined />
                     </button>
@@ -63,8 +53,17 @@ export default function Sidebar({ currentPage, onNavigate }: Props) {
                         type="button"
                         className={buttonClass("sidebar-button-succes", "success", currentPage)}
                         onClick={() => onNavigate("success")}
+                        data-tooltip="Focus"
                     >
-                        <Trophy />
+                        <Timer />
+                    </button>
+                    <button
+                        type="button"
+                        className={buttonClass("sidebar-button2", "secret_garden", currentPage)}
+                        onClick={() => onNavigate("secret_garden")}
+                        data-tooltip="Jardin secret"
+                    >
+                        <Leaf />
                     </button>
                 </ul>
             </aside>
@@ -73,6 +72,7 @@ export default function Sidebar({ currentPage, onNavigate }: Props) {
                     type="button"
                     className={buttonClass("sidebar-button-settings", "settings", currentPage)}
                     onClick={() => onNavigate("settings")}
+                    data-tooltip=" Paramètres"
                 >
                     <Cog />
                 </button>

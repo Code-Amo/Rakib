@@ -5,12 +5,12 @@ interface Props {
     onNavigate: (page: SidebarPage) => void;
 }
 
-export default function Calendar({ onNavigate }: Props) {
+export default function Profile({ onNavigate }: Props) {
     return (
         <div className="app-container">
             <Sidebar currentPage="calendar" onNavigate={onNavigate} />
             <main className="page-content">
-                <h1 className="Title">Calendrier</h1>
+                <h1 className="Title">Profil</h1>
             </main>
         </div>
     );

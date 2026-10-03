@@ -31,10 +31,9 @@ body {
     padding: 32;
 }
 .form-group-new_mdp {
-    padding: 10px;
     color: rgb(93, 93, 93);
     border: 2px solid grey;
-    border-radius: 20px;
+    border-radius: 10px;
 }
 .form-group-new_mdp:hover {
     filter: brightness(1.2);
@@ -44,6 +43,8 @@ body {
 }
 input:focus {
     outline: none;
+    border: 2px solid #f304c7ad;
+    box-shadow: 0 0 14px rgba(195, 0, 255, 0.4);
 }
 .btn-submit-new_mdp {
     margin-top: 10px;
@@ -84,4 +85,41 @@ input:focus {
 .input-new_mdp {
     box-sizing: border-box;
     width: 100%;
+    padding: 12px 16px;
+    border-radius: 10px;
+}
+/* Conteneur Flex pour aligner les 6 cases */
+.otp-container {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    margin: 15px 0;
+}
+
+/* Style de chaque case individuelle */
+.input-otp {
+    width: 45px;
+    height: 55px;
+    background: transparent;
+    color: #ffffff;
+    border: 2px solid grey; /* Reprend le style de vos champs classiques */
+    border-radius: 10px; /* Reprend votre border-radius actuel */
+    font-size: 24px;
+    font-family: sans-serif;
+    text-align: center; /* Centre le chiffre au milieu de la case */
+    outline: none;
+    box-sizing: border-box;
+    transition: all 0.2s ease;
+}
+
+.input-otp:focus {
+    border-color: #ffffff; /* Ou utilisez var(--dark-violet) selon votre goût */
+    transform: scale(1.05);
+}
+.subtitle-new_mdp {
+    color: #cccccc;
+    font-size: 14px;
+    text-align: center;
+    margin-bottom: 20px;
+    line-height: 1.4;
 }

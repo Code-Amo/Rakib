@@ -1,5 +1,4 @@
 import { useState } from "react";
-import logo from "../../assets/rihla-light.png";
 import "./Login.css";
 
 const API_URL = "http://127.0.0.1:8000";
@@ -88,7 +87,6 @@ export default function Login({ onNavigate }: Props) {
 
     return (
         <div className="login-card">
-            <img src={logo} className="logo-login" alt="logo" />
             <form className="login-form" onSubmit={handleSubmit} noValidate>
                 <h1 className="title">Connexion</h1>
                 <div className="form-group">
@@ -114,7 +112,7 @@ export default function Login({ onNavigate }: Props) {
                 </div>
                 {error && <p className="form-error-r">{error}</p>}
                 <button type="submit" className="btn-submit" disabled={loading}>
-                    {loading ? "Connexion..." : "On attendais ton retour."}
+                    {loading ? "Connexion..." : "Se connecter"}
                 </button>
                 {onNavigate && (
                     <button type="button" className="btn-switch" onClick={() => onNavigate("register")}>

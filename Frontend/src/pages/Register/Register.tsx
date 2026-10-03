@@ -100,27 +100,29 @@ export default function Register({ onNavigate }: Props) {
         <div className="login-card-r">
             <form className="login-form-r" onSubmit={handleSubmit} noValidate>
                 <h1 className="title-r">S'inscrire</h1>
-                <div className="form-group-r">
-                    <input
-                        className="input-r"
-                        type="text"
-                        name="name"
-                        autoComplete="name"
-                        placeholder="Nom"
-                        value={form.name}
-                        onChange={event => updateField("name")(event.target.value)}
-                    />
-                </div>
-                <div className="form-group-r">
-                    <input
-                        className="input-r"
-                        type="text"
-                        name="username"
-                        autoComplete="username"
-                        placeholder="Pseudo"
-                        value={form.username}
-                        onChange={event => updateField("username")(event.target.value)}
-                    />
+                <div className="form-row-r">
+                    <div className="form-group-r">
+                        <input
+                            className="input-r"
+                            type="text"
+                            name="name"
+                            autoComplete="name"
+                            placeholder="Nom"
+                            value={form.name}
+                            onChange={event => updateField("name")(event.target.value)}
+                        />
+                    </div>
+                    <div className="form-group-r">
+                        <input
+                            className="input-r"
+                            type="text"
+                            name="username"
+                            autoComplete="username"
+                            placeholder="Pseudo"
+                            value={form.username}
+                            onChange={event => updateField("username")(event.target.value)}
+                        />
+                    </div>
                 </div>
                 <div className="form-group-r">
                     <input
@@ -155,6 +157,25 @@ export default function Register({ onNavigate }: Props) {
                         onChange={event => updateField("confirmPassword")(event.target.value)}
                     />
                 </div>
+                <label className="cyberpunk-checkbox-label">
+                    <input type="checkbox" className="cyberpunk-checkbox" />
+                    <span>
+                        Vous acceptez les{" "}
+                        <a href="/cgu.pdf" target="_blank" rel="noopener noreferrer" className="cyberpunk-link">
+                            CGU
+                        </a>{" "}
+                        et notre{" "}
+                        <a
+                            href="/politique-de-confidentialite.pdf"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="cyberpunk-link"
+                        >
+                            politique de confidentialité
+                        </a>
+                        .
+                    </span>
+                </label>
                 {error && <p className="form-error-r">{error}</p>}
                 <button type="submit" className="btn-submit-r" disabled={loading}>
                     {loading ? "Création du compte..." : "Débuter l'aventure"}
