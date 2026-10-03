@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Navigate, Route, BrowserRouter as Router, Routes, useNavigate } from "react-router-dom";
 import Calendar from "./pages/Calendar/calendar";
 import Forget from "./pages/forget_mdp/forget";
 import New_mdp from "./pages/forget_mdp/new_mdp";
@@ -11,48 +12,53 @@ import Secret_garden from "./pages/Secret_garden/secret_garden";
 import Settings from "./pages/Settings/settings";
 import Stats from "./pages/stats/stats";
 import Success from "./pages/Success/success";
-import TitleBar from "./Titlebar";
+
+function PageWrapper({
+    Component,
+    email,
+    setEmail,
+}: {
+    Component: React.ComponentType<any>;
+    email?: string;
+    setEmail?: (e: string) => void;
+}) {
+    const navigate = useNavigate();
+
+    const handleNavigate = (nextPage: string, newEmail?: string) => {
+        if (newEmail && setEmail) setEmail(newEmail);
+        navigate("/" + nextPage);
+    };
+
+    return <Component onNavigate={handleNavigate} email={email} />;
+}
+
 export default function App() {
-    const [page, setPage] = useState<
-        | "login"
-        | "register"
-        | "forget"
-        | "new_mdp"
-        | "verification"
-        | "home"
-        | "account"
-        | "rivals"
-        | "secret_garden"
-        | "settings"
-        | "calendar"
-        | "stats"
-        | "success"
-    >("home");
     const [userEmail, setUserEmail] = useState("");
+
     return (
-        <div className="min-h-screen relative">
-            <TitleBar />
-            <main>
-                {page === "login" && <Login onNavigate={setPage} />}
-                {page === "register" && <Register onNavigate={setPage} />}
-                {page === "forget" && (
-                    <Forget
-                        onNavigate={(nextPage, email) => {
-                            if (email) setUserEmail(email);
-                            setPage(nextPage);
-                        }}
-                    />
-                )}
-                {page === "new_mdp" && <New_mdp onNavigate={setPage} />}
-                {page === "verification" && <Verification email={userEmail} onNavigate={setPage} />}
-                {page === "home" && <Home onNavigate={setPage} />}
-                {page === "rivals" && <Rivals onNavigate={setPage} />}
-                {page === "secret_garden" && <Secret_garden onNavigate={setPage} />}
-                {page === "calendar" && <Calendar onNavigate={setPage} />}
-                {page === "settings" && <Settings onNavigate={setPage} />}
-                {page === "stats" && <Stats onNavigate={setPage} />}
-                {page === "success" && <Success onNavigate={setPage} />}
-            </main>
-        </div>
+        <Router>
+            <div className="min-h-screen relative">
+                <main>
+                    <Routes>
+                        <Route path="/" element={<Navigate to="/home" replace />} />
+                        <Route path="/login" element={<PageWrapper Component={Login} />} />
+                        <Route path="/register" element={<PageWrapper Component={Register} />} />
+                        <Route path="/forget" element={<PageWrapper Component={Forget} setEmail={setUserEmail} />} />
+                        <Route path="/new-mdp" element={<PageWrapper Component={New_mdp} />} />
+                        <Route
+                            path="/verification"
+                            element={<PageWrapper Component={Verification} email={userEmail} />}
+                        />
+                        <Route path="/home" element={<PageWrapper Component={Home} />} />
+                        <Route path="/calendar" element={<PageWrapper Component={Calendar} />} />
+                        <Route path="/stats" element={<PageWrapper Component={Stats} />} />
+                        <Route path="/rivals" element={<PageWrapper Component={Rivals} />} />
+                        <Route path="/secret-garden" element={<PageWrapper Component={Secret_garden} />} />
+                        <Route path="/settings" element={<PageWrapper Component={Settings} />} />
+                        <Route path="/success" element={<PageWrapper Component={Success} />} />
+                    </Routes>
+                </main>
+            </div>
+        </Router>
     );
 }
