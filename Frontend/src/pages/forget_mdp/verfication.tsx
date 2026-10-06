@@ -2,10 +2,11 @@ import { useState } from "react";
 import "./verification.css";
 interface Props {
     email?: string;
-    onNavigate: (page: "login" | "register" | "forget" | "new_mdp") => void;
+    onNavigate: (page: "login" | "register" | "forget" | "new_mdp" | "home") => void;
 }
 export default function Login({ email, onNavigate }: Props) {
     const [otp, setOtp] = useState(new Array(6).fill(""));
+    const [error, setError] = useState<string | null>(null);
 
     const handleOtpChange = (element: HTMLInputElement, index: number) => {
         if (isNaN(Number(element.value))) return false;
@@ -20,7 +21,7 @@ export default function Login({ email, onNavigate }: Props) {
     };
     const handleResendCode = async () => {
         try {
-            const response = await fetch("http://127.0.0.1:5000/api/send-otp", {
+            const response = await fetch("http://127.0.0.1:8000/auth/verify", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ email }),
@@ -33,13 +34,34 @@ export default function Login({ email, onNavigate }: Props) {
             console.error("Erreur renvoi :", error);
         }
     };
+    const handleVerifyCode = async (e: React.SubmitEvent) => {
+        e.preventDefault();
+        setError(null);
+        const code = otp.join("");
+        console.log(email, code);
+        try {
+            const response = await fetch("http://127.0.0.1:8000/auth/verify", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email, code }),
+            });
+            if (response.ok) {
+                onNavigate("home");
+            } else {
+                setError("Code invalide ou expiré.");
+            }
+        } catch (error) {
+            setError("Erreur de connexion au serveur.");
+        }
+    };
     return (
         <div className="login-card-verfication">
-            <form className="login-form-verfication">
+            <form className="login-form-verfication" onSubmit={handleVerifyCode}>
                 <h1 className="title-verfication">Récupération</h1>
                 <p className="subtitle-verification">
                     Code envoyé à <span className="email-highlight">{email || "votre e-mail"}</span>
                 </p>
+                {error && <p className="error-message">{error}</p>}
                 <div className="otp-container">
                     {otp.map((data, index) => (
                         <input
@@ -60,11 +82,9 @@ export default function Login({ email, onNavigate }: Props) {
                         Renvoyer le code
                     </button>
                 </div>
-                {onNavigate && (
-                    <button type="button" className="btn-submit-verfication" onClick={() => onNavigate("new_mdp")}>
-                        Confirmer
-                    </button>
-                )}
+                <button type="submit" className="btn-submit-verfication">
+                    Confirmer
+                </button>
                 {onNavigate && (
                     <button type="button" className="btn-switch-verfication" onClick={() => onNavigate("forget")}>
                         Retour

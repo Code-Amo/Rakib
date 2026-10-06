@@ -157,3 +157,10 @@ input:focus {
     opacity: 0.8;
     color: #ffffff;
 }
+.error-message {
+    color: #ff4d4f;
+    font-size: 0.85rem;
+    margin: 10px 0;
+    text-align: center;
+    font-weight: 500;
+}

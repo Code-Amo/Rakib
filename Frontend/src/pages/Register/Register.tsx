@@ -4,7 +4,7 @@ import "./Register.css";
 const API_URL = "http://127.0.0.1:8000";
 
 interface Props {
-    onNavigate: (page: "login" | "register" | "forget" | "verification") => void;
+    onNavigate: (page: "login" | "register" | "forget" | "verification", newEmail?: string) => void;
 }
 
 interface RegisterForm {
@@ -50,7 +50,7 @@ export default function Register({ onNavigate }: Props) {
         }
     };
 
-    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    const handleSubmit = async (event: React.SubmitEvent<HTMLFormElement>) => {
         event.preventDefault();
 
         const name = form.name.trim();
@@ -88,7 +88,7 @@ export default function Register({ onNavigate }: Props) {
                 return;
             }
 
-            onNavigate("verification");
+            onNavigate("verification", email);
         } catch {
             setError("Le serveur est injoignable.");
         } finally {

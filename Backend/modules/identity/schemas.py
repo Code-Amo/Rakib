@@ -8,6 +8,9 @@ class UserBase(BaseModel):
 # password
 class UserCreate(UserBase):
     password: str
+class UserLogin(UserBase):
+    email: EmailStr
+    password : str
 
 # Schema reponse
 class UserResponse(UserBase):
@@ -16,3 +19,6 @@ class UserResponse(UserBase):
     level: int
 
     model_config = ConfigDict(from_attributes=True)
+class VerifyCode(BaseModel):
+    email: EmailStr
+    code: str

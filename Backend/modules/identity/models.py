@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String
+from sqlalchemy import Column, Integer, String, Boolean
 from core.database import Base
 
 class User(Base):
@@ -8,5 +8,7 @@ class User(Base):
     email = Column(String, unique=True, index=True, nullable=False)
     username = Column(String, unique=True, index=True, nullable=False)
     hashed_password = Column(String, nullable=False)
+    verification_code = Column(String, nullable=True)
+    is_verified = Column(Boolean, default=False)
     xp = Column(Integer, default=0)
     level = Column(Integer, default=1)

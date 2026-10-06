@@ -40,14 +40,17 @@ export default function App() {
             <div className="min-h-screen relative">
                 <main>
                     <Routes>
-                        <Route path="/" element={<Navigate to="/home" replace />} />
+                        <Route path="/" element={<Navigate to="/register" replace />} />
                         <Route path="/login" element={<PageWrapper Component={Login} />} />
-                        <Route path="/register" element={<PageWrapper Component={Register} />} />
+                        <Route
+                            path="/register"
+                            element={<PageWrapper Component={Register} setEmail={setUserEmail} />}
+                        />
                         <Route path="/forget" element={<PageWrapper Component={Forget} setEmail={setUserEmail} />} />
                         <Route path="/new-mdp" element={<PageWrapper Component={New_mdp} />} />
                         <Route
                             path="/verification"
-                            element={<PageWrapper Component={Verification} email={userEmail} />}
+                            element={<PageWrapper Component={Verification} email={userEmail} setEmail={setUserEmail} />}
                         />
                         <Route path="/home" element={<PageWrapper Component={Home} />} />
                         <Route path="/calendar" element={<PageWrapper Component={Calendar} />} />
