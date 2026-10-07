@@ -30,13 +30,13 @@ body {
     box-shadow: 0 25px 50px -12px rbga(0, 0, 0, 0.7);
 }
 .form-group-r {
+    position: relative;
     color: rgb(93, 93, 93);
     border: 2px solid grey;
     border-radius: 12px;
 }
 .form-group-r:hover {
     filter: brightness(1.2);
-    transform: scale(1.1);
     cursor: pointer;
     background-color: #3837374d;
 }
@@ -157,4 +157,23 @@ input:focus {
 .cyberpunk-link:hover {
     color: #00d2d3;
     text-decoration: none;
+}
+.btn-toggle-password {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #9ca3af;
+    padding: 0;
+    z-index: 2;
+}
+
+.btn-toggle-password:hover {
+    color: #ffffff;
 }

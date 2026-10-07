@@ -2,6 +2,8 @@ from passlib.context import CryptContext
 from sqlalchemy.orm import Session
 from modules.identity import models, schemas
 import smtplib
+from datetime import datetime, timezone
+from . import models, schemas
 from email.message import EmailMessage
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -20,6 +22,8 @@ def create_user(db: Session, user: schemas.UserCreate, code:str = None):
         hashed_password=hashed_pwd,
         verification_code=code,
         is_verified=False,
+        cgu_accepted_at=datetime.now(timezone.utc),
+        cgu_version="1.0",
     )
     db.add(db_user)
     db.commit()

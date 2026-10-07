@@ -8,6 +8,7 @@ class UserBase(BaseModel):
 # password
 class UserCreate(UserBase):
     password: str
+    accepted_cgu: bool
 class UserLogin(UserBase):
     email: EmailStr
     password : str
@@ -22,3 +23,6 @@ class UserResponse(UserBase):
 class VerifyCode(BaseModel):
     email: EmailStr
     code: str
+class UserLogin(BaseModel):
+    email: EmailStr
+    password: str

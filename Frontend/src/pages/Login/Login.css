@@ -1,5 +1,5 @@
 body {
-    background: radial-gradient(circle at 50% 50%, #1e1b4b 0%, #09090b 70%);
+    background: #141414;
 }
 .login-card {
     background-color: #0e061bab;
@@ -34,13 +34,13 @@ body {
     box-shadow: 0 25px 50px -12px rbga(0, 0, 0, 0.7);
 }
 .form-group {
+    position: relative;
     color: rgb(93, 93, 93);
     border: 2px solid grey;
     border-radius: 10px;
 }
 .form-group:hover {
     filter: brightness(1.2);
-    transform: scale(1.1);
     cursor: pointer;
     background-color: #3837374d;
 }

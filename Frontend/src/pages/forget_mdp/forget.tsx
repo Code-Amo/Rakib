@@ -59,11 +59,9 @@ export default function Login({ onNavigate }: Props) {
                     Envoyer le code
                 </button>
 
-                {onNavigate && (
-                    <button type="button" className="btn-switch-f" onClick={() => onNavigate("login")}>
-                        Retour
-                    </button>
-                )}
+                <button type="button" className="btn-switch-f" onClick={() => window.history.back()}>
+                    Retour
+                </button>
             </form>
         </div>
     );

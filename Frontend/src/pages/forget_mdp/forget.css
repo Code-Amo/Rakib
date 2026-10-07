@@ -43,7 +43,6 @@ body {
 }
 .form-group-f:hover {
     filter: brightness(1.2);
-    transform: scale(1.1);
     cursor: pointer;
     background-color: #3837374d;
 }

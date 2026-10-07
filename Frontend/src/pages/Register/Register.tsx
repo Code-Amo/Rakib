@@ -1,3 +1,4 @@
+import { Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
 import "./Register.css";
 
@@ -42,6 +43,8 @@ export default function Register({ onNavigate }: Props) {
     });
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
+    const [acceptedCgu, setAcceptedCgu] = useState(false);
+    const [showPassword, setShoPassword] = useState(false);
 
     const updateField = (field: keyof RegisterForm) => (value: string) => {
         setForm(current => ({ ...current, [field]: value }));
@@ -66,7 +69,10 @@ export default function Register({ onNavigate }: Props) {
             setError("Les mots de passe ne correspondent pas.");
             return;
         }
-
+        if (!acceptedCgu) {
+            setError("Vous devez accepter les CGU et la politique de confidentialité.");
+            return;
+        }
         setLoading(true);
         setError("");
 
@@ -78,6 +84,7 @@ export default function Register({ onNavigate }: Props) {
                     username,
                     email,
                     password: form.password,
+                    accepted_cgu: acceptedCgu,
                 }),
             });
 
@@ -138,18 +145,21 @@ export default function Register({ onNavigate }: Props) {
                 <div className="form-group-r">
                     <input
                         className="input-r"
-                        type="password"
+                        type={showPassword ? "text" : "password"}
                         name="password"
                         autoComplete="new-password"
                         placeholder="Mot de passe"
                         value={form.password}
                         onChange={event => updateField("password")(event.target.value)}
                     />
+                    <button type="button" className="btn-toggle-password" onClick={() => setShoPassword(!showPassword)}>
+                        {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                    </button>
                 </div>
                 <div className="form-group-r">
                     <input
                         className="input-r"
-                        type="password"
+                        type={showPassword ? "text" : "password"}
                         name="confirmPassword"
                         autoComplete="new-password"
                         placeholder="Confirmer votre mot de passe"
@@ -158,7 +168,12 @@ export default function Register({ onNavigate }: Props) {
                     />
                 </div>
                 <label className="cyberpunk-checkbox-label">
-                    <input type="checkbox" className="cyberpunk-checkbox" />
+                    <input
+                        type="checkbox"
+                        className="cyberpunk-checkbox"
+                        checked={acceptedCgu}
+                        onChange={e => setAcceptedCgu(e.target.checked)}
+                    />
                     <span>
                         Vous acceptez les{" "}
                         <a href="/cgu.pdf" target="_blank" rel="noopener noreferrer" className="cyberpunk-link">

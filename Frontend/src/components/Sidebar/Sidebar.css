@@ -1,6 +1,6 @@
 .sidebar {
     width: 75px;
-    transform: translateY(50%);
+    top: 25%;
     margin-left: 20px;
     position: fixed;
     background: rgba(81, 81, 81, 0.12);

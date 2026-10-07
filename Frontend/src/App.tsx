@@ -56,7 +56,7 @@ export default function App() {
                         <Route path="/calendar" element={<PageWrapper Component={Calendar} />} />
                         <Route path="/stats" element={<PageWrapper Component={Stats} />} />
                         <Route path="/rivals" element={<PageWrapper Component={Rivals} />} />
-                        <Route path="/secret-garden" element={<PageWrapper Component={Secret_garden} />} />
+                        <Route path="/secret_garden" element={<PageWrapper Component={Secret_garden} />} />
                         <Route path="/settings" element={<PageWrapper Component={Settings} />} />
                         <Route path="/success" element={<PageWrapper Component={Success} />} />
                     </Routes>

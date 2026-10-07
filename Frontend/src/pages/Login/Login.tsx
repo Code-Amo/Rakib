@@ -1,7 +1,8 @@
+import { Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
 import "./Login.css";
 
-const API_URL = "http://127.0.0.1:8000";
+const API_URL = "http://localhost:8000";
 
 interface Props {
     onNavigate: (page: "login" | "register" | "forget" | "verification" | "home") => void;
@@ -36,6 +37,7 @@ export default function Login({ onNavigate }: Props) {
     });
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
+    const [showPassword, setShoPassword] = useState(false);
 
     const updateField = (field: keyof RegisterForm) => (value: string) => {
         setForm(current => ({ ...current, [field]: value }));
@@ -44,7 +46,7 @@ export default function Login({ onNavigate }: Props) {
         }
     };
 
-    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    const handleSubmit = async (event: React.SubmitEvent<HTMLFormElement>) => {
         event.preventDefault();
 
         const email = form.email.trim();
@@ -56,11 +58,11 @@ export default function Login({ onNavigate }: Props) {
 
         setLoading(true);
         setError("");
-
         try {
             const response = await fetch(`${API_URL}/auth/login`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
+                credentials: "include",
                 body: JSON.stringify({
                     email,
                     password: form.password,
@@ -68,6 +70,7 @@ export default function Login({ onNavigate }: Props) {
             });
 
             const payload: any = await response.json().catch(() => null);
+            console.log({ payload });
 
             if (!response.ok) {
                 setError(apiErrorMessage(payload, "Impossible de vous connecter."));
@@ -103,12 +106,15 @@ export default function Login({ onNavigate }: Props) {
                 <div className="form-group">
                     <input
                         className="input"
-                        type="password"
+                        type={showPassword ? "text" : "password"}
                         placeholder="Mot de passe"
                         autoComplete="password"
                         value={form.password}
                         onChange={event => updateField("password")(event.target.value)}
                     />
+                    <button type="button" className="btn-toggle-password" onClick={() => setShoPassword(!showPassword)}>
+                        {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                    </button>
                 </div>
                 {error && <p className="form-error-r">{error}</p>}
                 <button type="submit" className="btn-submit" disabled={loading}>

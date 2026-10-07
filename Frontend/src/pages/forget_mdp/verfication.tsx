@@ -4,7 +4,7 @@ interface Props {
     email?: string;
     onNavigate: (page: "login" | "register" | "forget" | "new_mdp" | "home") => void;
 }
-export default function Login({ email, onNavigate }: Props) {
+export default function Verification({ email, onNavigate }: Props) {
     const [otp, setOtp] = useState(new Array(6).fill(""));
     const [error, setError] = useState<string | null>(null);
 
@@ -85,11 +85,9 @@ export default function Login({ email, onNavigate }: Props) {
                 <button type="submit" className="btn-submit-verfication">
                     Confirmer
                 </button>
-                {onNavigate && (
-                    <button type="button" className="btn-switch-verfication" onClick={() => onNavigate("forget")}>
-                        Retour
-                    </button>
-                )}
+                <button type="button" className="btn-switch-verfication" onClick={() => window.history.back()}>
+                    Retour
+                </button>
             </form>
         </div>
     );
