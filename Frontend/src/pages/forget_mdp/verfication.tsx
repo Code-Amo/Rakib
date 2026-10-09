@@ -23,7 +23,7 @@ export default function Verification({ email, onNavigate, flow }: Props) {
     };
     const handleResendCode = async () => {
         try {
-            const response = await fetch("http://127.0.0.1:8000/auth/verify", {
+            const response = await fetch("http://127.0.0.1:8000/auth/verify-reset", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ email }),
@@ -40,9 +40,10 @@ export default function Verification({ email, onNavigate, flow }: Props) {
         e.preventDefault();
         setError(null);
         const code = otp.join("");
-        console.log(email, code);
+        const endpoint =
+            flow == "forget" ? "http://127.0.0.1:8000/auth/verify-reset" : "http://127.0.1:8000/auth/verify-register";
         try {
-            const response = await fetch("http://127.0.0.1:8000/auth/verify", {
+            const response = await fetch(endpoint, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ email, code }),

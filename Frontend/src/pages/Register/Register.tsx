@@ -65,7 +65,10 @@ export default function Register({ onNavigate }: Props) {
             setError("Tous les champs sont requis.");
             return;
         }
-
+        if (form.password.length < 8) {
+            setError("Le mot de passe doit contenir au moins 8 caractères.");
+            return;
+        }
         if (form.password !== form.confirmPassword) {
             setError("Les mots de passe ne correspondent pas.");
             return;

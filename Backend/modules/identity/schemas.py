@@ -28,3 +28,6 @@ class UserLogin(BaseModel):
     password: str 
 class ForgotPasswordRequest(BaseModel):
     email : EmailStr
+class ResetPassword(BaseModel):
+    email: EmailStr
+    new_password: str

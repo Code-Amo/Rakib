@@ -49,7 +49,7 @@ def login_user(credentials: schemas.UserLogin, response: Response, db: Session =
         httponly=True,        # Empêche la lecture via JS (XSS)
         samesite="lax",       # Protège contre les attaques CSRF
         secure=False,         # Mettre à True en production avec HTTPS
-        max_age=7 * 24 * 3600 
+        max_age=30 * 24 * 3600 
     )
 
     return {
@@ -59,7 +59,7 @@ def login_user(credentials: schemas.UserLogin, response: Response, db: Session =
         "user_id": user.id,
         "username": user.username
     }
-@router.post("/verify")
+@router.post("/verify-reset")
 def verify_code(payload: schemas.VerifyCode, db: Session = Depends(get_db)):
     user = db.query(models.User).filter(models.User.email == payload.email).first()
     if not user:
@@ -74,8 +74,44 @@ def verify_code(payload: schemas.VerifyCode, db: Session = Depends(get_db)):
         user.verification_expire_at = datetime.now(timezone.utc) + timedelta(minutes=3)
         user.verification_code = None  
         db.commit()
-        return {"message": "Compte vérifié avec succès !"}
+        reset_token = create_access_token(data={"sub": str(user.id), "scope": "reset_password"})
+        return {"message": "Compte vérifié avec succès !",
+                "reset_token": reset_token
+        }
+    raise HTTPException(status_code=400, detail="Code de vérification incorrect.")
+@router.post("/verify-register")
+def verify_register(payload: schemas.VerifyCode, response:Response, db: Session = Depends(get_db)):
+    user = db.query(models.User).filter(models.User.email == payload.email).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="Utilisateur introuvable.")
+    if user.verification_expire_at and datetime.now(timezone.utc) > user.verification_expire_at:
+        raise HTTPException(status_code=400, detail="Le code de vérification a expiré")
+    print(payload.email)
+    print(f"{repr(user.verification_code)}")
+    print(f"{repr(payload.code)}")
+    if str(user.verification_code).strip() == str(payload.code).strip():
+        user.is_verified = True
+        user.verification_expire_at = datetime.now(timezone.utc) + timedelta(minutes=3)
+        user.verification_code = None  
+        access_token = create_access_token(data={"sub": str(user.id)})
+        refresh_token = create_refresh_token(data={"sub": str(user.id)})
+        db.commit()
+        response.set_cookie(
+            key="refresh_token",
+            value=refresh_token,
+            httponly=True,        # Empêche la lecture via JS (XSS)
+            samesite="lax",       # Protège contre les attaques CSRF
+            secure=False,         # Mettre à True en production avec HTTPS
+            max_age=30 * 24 * 3600 
+        )
 
+        return {
+            "message": "Connexion réussie",
+            "access_token": access_token,
+            "token_type": "bearer",
+            "user_id": user.id,
+            "username": user.username
+        }
     raise HTTPException(status_code=400, detail="Code de vérification incorrect.")
 @router.post("/forget")
 def forget(payload: schemas.ForgotPasswordRequest, db: Session = Depends(get_db)):
@@ -89,3 +125,11 @@ def forget(payload: schemas.ForgotPasswordRequest, db: Session = Depends(get_db)
     print(payload.email)
     print(f"{repr(user.verification_code)}")
     return {"message": "Compte trouvé !"}
+@router.post("/password-reset")
+def reset_password(payload: schemas.ResetPassword, db: Session=Depends(get_db)):
+    user = db.query(models.User).filter(models.User.email == payload.email).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="Aucun compte trouvé")
+    user.hashed_password = services.hash_password(payload.new_password)
+    db.commit()
+    return {"message": "Mot de passe réinitialié avec succès :"}

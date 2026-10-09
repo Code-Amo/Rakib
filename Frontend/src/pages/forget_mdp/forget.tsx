@@ -10,7 +10,7 @@ interface Props {
     ) => void;
 }
 
-export default function Login({ onNavigate }: Props) {
+export default function Forget({ onNavigate }: Props) {
     const [email, setEmail] = useState("");
     const [errorMessage, setErrorMessage] = useState("");
     const handleSubmit = async (e: React.SubmitEvent) => {
