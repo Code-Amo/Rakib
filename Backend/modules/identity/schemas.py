@@ -25,4 +25,6 @@ class VerifyCode(BaseModel):
     code: str
 class UserLogin(BaseModel):
     email: EmailStr
-    password: str
+    password: str 
+class ForgotPasswordRequest(BaseModel):
+    email : EmailStr

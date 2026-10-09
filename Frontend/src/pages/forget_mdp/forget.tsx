@@ -1,8 +1,13 @@
+import type { AuthFlow } from "@/App";
 import { useState } from "react";
 import "./forget.css";
 
 interface Props {
-    onNavigate: (page: "login" | "register" | "forget" | "new_mdp" | "verification", email?: string) => void;
+    onNavigate: (
+        page: "login" | "register" | "forget" | "new_mdp" | "verification",
+        email?: string,
+        flow?: AuthFlow,
+    ) => void;
 }
 
 export default function Login({ onNavigate }: Props) {
@@ -19,14 +24,14 @@ export default function Login({ onNavigate }: Props) {
         setErrorMessage("");
 
         try {
-            const response = await fetch("http://127.0.0.1:5000/api/send-otp", {
+            const response = await fetch("http://127.0.0.1:8000/auth/forget", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ email }),
             });
 
             if (response.ok) {
-                onNavigate("verification", email);
+                onNavigate("verification", email, "forget");
             } else {
                 setErrorMessage("L'adresse e-mail n'a pas pu être traitée.");
             }

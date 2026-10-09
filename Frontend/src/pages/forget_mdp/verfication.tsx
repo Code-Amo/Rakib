@@ -1,10 +1,12 @@
+import type { AuthFlow } from "@/App";
 import { useState } from "react";
 import "./verification.css";
 interface Props {
     email?: string;
-    onNavigate: (page: "login" | "register" | "forget" | "new_mdp" | "home") => void;
+    flow?: AuthFlow;
+    onNavigate: (page: "login" | "register" | "forget" | "new_mdp" | "home", email?: string, flow?: AuthFlow) => void;
 }
-export default function Verification({ email, onNavigate }: Props) {
+export default function Verification({ email, onNavigate, flow }: Props) {
     const [otp, setOtp] = useState(new Array(6).fill(""));
     const [error, setError] = useState<string | null>(null);
 
@@ -46,7 +48,11 @@ export default function Verification({ email, onNavigate }: Props) {
                 body: JSON.stringify({ email, code }),
             });
             if (response.ok) {
-                onNavigate("home");
+                if (flow == "forget") {
+                    onNavigate("new_mdp", email);
+                } else {
+                    onNavigate("home");
+                }
             } else {
                 setError("Code invalide ou expiré.");
             }

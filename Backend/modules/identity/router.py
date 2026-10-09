@@ -4,6 +4,7 @@ from . import schemas, services, models
 from core.database import get_db  
 import random
 from core.security import create_access_token, create_refresh_token
+from datetime import datetime, timezone, timedelta
 
 router = APIRouter()
 
@@ -63,13 +64,28 @@ def verify_code(payload: schemas.VerifyCode, db: Session = Depends(get_db)):
     user = db.query(models.User).filter(models.User.email == payload.email).first()
     if not user:
         raise HTTPException(status_code=404, detail="Utilisateur introuvable.")
+    if user.verification_expire_at and datetime.now(timezone.utc) > user.verification_expire_at:
+        raise HTTPException(status_code=400, detail="Le code de vérification a expiré")
     print(payload.email)
     print(f"{repr(user.verification_code)}")
     print(f"{repr(payload.code)}")
     if str(user.verification_code).strip() == str(payload.code).strip():
         user.is_verified = True
+        user.verification_expire_at = datetime.now(timezone.utc) + timedelta(minutes=3)
         user.verification_code = None  
         db.commit()
         return {"message": "Compte vérifié avec succès !"}
 
     raise HTTPException(status_code=400, detail="Code de vérification incorrect.")
+@router.post("/forget")
+def forget(payload: schemas.ForgotPasswordRequest, db: Session = Depends(get_db)):
+    user = db.query(models.User).filter(models.User.email == payload.email).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="Aucun compte n'est inscris avec cet e-mail.")
+    code = random.randint(100000,900000)
+    user.verification_code = code
+    user.verification_expire_at = datetime.now(timezone.utc) + timedelta(minutes=3)
+    db.commit()
+    print(payload.email)
+    print(f"{repr(user.verification_code)}")
+    return {"message": "Compte trouvé !"}

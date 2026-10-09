@@ -12,28 +12,34 @@ import Secret_garden from "./pages/Secret_garden/secret_garden";
 import Settings from "./pages/Settings/settings";
 import Stats from "./pages/stats/stats";
 import Success from "./pages/Success/success";
-
+export type AuthFlow = "register" | "forget" | null;
 function PageWrapper({
     Component,
     email,
     setEmail,
+    flow,
+    setFlow,
 }: {
     Component: React.ComponentType<any>;
     email?: string;
     setEmail?: (e: string) => void;
+    flow?: AuthFlow;
+    setFlow?: (f: AuthFlow) => void;
 }) {
     const navigate = useNavigate();
 
-    const handleNavigate = (nextPage: string, newEmail?: string) => {
+    const handleNavigate = (nextPage: string, newEmail?: string, newFlow?: AuthFlow) => {
         if (newEmail && setEmail) setEmail(newEmail);
+        if (newFlow !== undefined && setFlow) setFlow(newFlow);
         navigate("/" + nextPage);
     };
 
-    return <Component onNavigate={handleNavigate} email={email} />;
+    return <Component onNavigate={handleNavigate} email={email} flow={flow} />;
 }
 
 export default function App() {
     const [userEmail, setUserEmail] = useState("");
+    const [authFlow, setAuthFlow] = useState<AuthFlow>(null);
 
     return (
         <Router>
@@ -44,13 +50,23 @@ export default function App() {
                         <Route path="/login" element={<PageWrapper Component={Login} />} />
                         <Route
                             path="/register"
-                            element={<PageWrapper Component={Register} setEmail={setUserEmail} />}
+                            element={<PageWrapper Component={Register} setEmail={setUserEmail} setFlow={setAuthFlow} />}
                         />
-                        <Route path="/forget" element={<PageWrapper Component={Forget} setEmail={setUserEmail} />} />
+                        <Route
+                            path="/forget"
+                            element={<PageWrapper Component={Forget} setEmail={setUserEmail} setFlow={setAuthFlow} />}
+                        />
                         <Route path="/new-mdp" element={<PageWrapper Component={New_mdp} />} />
                         <Route
                             path="/verification"
-                            element={<PageWrapper Component={Verification} email={userEmail} setEmail={setUserEmail} />}
+                            element={
+                                <PageWrapper
+                                    Component={Verification}
+                                    email={userEmail}
+                                    setEmail={setUserEmail}
+                                    flow={authFlow}
+                                />
+                            }
                         />
                         <Route path="/home" element={<PageWrapper Component={Home} />} />
                         <Route path="/calendar" element={<PageWrapper Component={Calendar} />} />

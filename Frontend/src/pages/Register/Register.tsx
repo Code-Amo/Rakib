@@ -1,3 +1,4 @@
+import type { AuthFlow } from "@/App";
 import { Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
 import "./Register.css";
@@ -5,7 +6,7 @@ import "./Register.css";
 const API_URL = "http://127.0.0.1:8000";
 
 interface Props {
-    onNavigate: (page: "login" | "register" | "forget" | "verification", newEmail?: string) => void;
+    onNavigate: (page: "login" | "register" | "forget" | "verification", newEmail?: string, flow?: AuthFlow) => void;
 }
 
 interface RegisterForm {
@@ -95,7 +96,7 @@ export default function Register({ onNavigate }: Props) {
                 return;
             }
 
-            onNavigate("verification", email);
+            onNavigate("verification", email, "forget");
         } catch {
             setError("Le serveur est injoignable.");
         } finally {

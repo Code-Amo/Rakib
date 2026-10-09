@@ -9,6 +9,7 @@ class User(Base):
     username = Column(String, unique=True, index=True, nullable=False)
     hashed_password = Column(String, nullable=False)
     verification_code = Column(String, nullable=True)
+    verification_expire_at = Column(DateTime, nullable=True)
     is_verified = Column(Boolean, default=False)
 # cgu et politique de confidentialité
     cgu_accepted_at = Column(DateTime, nullable=True)
