@@ -1,3 +1,4 @@
+import Header from "../../components/Sidebar/header";
 import Sidebar, { type SidebarPage } from "../../components/Sidebar/Sidebar";
 import "./stats.css";
 
@@ -9,9 +10,8 @@ export default function Stats({ onNavigate }: Props) {
     return (
         <div className="app-container">
             <Sidebar currentPage="stats" onNavigate={onNavigate} />
-            <main className="page-content">
-                <h1 className="Title">Statistiques</h1>
-            </main>
+            <main className="page-content"></main>
+            <Header />
         </div>
     );
 }

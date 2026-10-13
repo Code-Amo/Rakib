@@ -1,4 +1,5 @@
 import Sidebar, { type SidebarPage } from "../../components/Sidebar/Sidebar";
+import Header from "../../components/Sidebar/header";
 import "./rivals.css";
 
 interface Props {
@@ -9,9 +10,8 @@ export default function Profile({ onNavigate }: Props) {
     return (
         <div className="app-container">
             <Sidebar currentPage="rivals" onNavigate={onNavigate} />
-            <main className="page-content">
-                <h1 className="Title">Profil</h1>
-            </main>
+            <main className="page-content"></main>
+            <Header />
         </div>
     );
 }

@@ -7,12 +7,16 @@
 html,
 body,
 #root {
-    margin-top: 10px;
-    padding: 0;
     width: 100%;
-    min-height: 100%;
-    overflow-x: hidden;
-    background: #141414;
+    height: 100%;
+    margin: O;
+    padding: O;
+    overflow: hidden;
+    background-color: #141414;
+    font-family:
+        system-ui,
+        -apple-system,
+        sans-serif;
 }
 
 @theme inline {

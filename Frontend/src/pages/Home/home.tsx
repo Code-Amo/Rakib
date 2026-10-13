@@ -10,8 +10,8 @@ export default function Profile({ onNavigate }: Props) {
     return (
         <div className="app-container">
             <Sidebar currentPage="home" onNavigate={onNavigate} />
-            <Header />
             <main className="page-content"></main>
+            <Header />
         </div>
     );
 }

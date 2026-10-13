@@ -1,3 +1,4 @@
+import Header from "../../components/Sidebar/header";
 import Sidebar, { type SidebarPage } from "../../components/Sidebar/Sidebar";
 import "./secret_garden.css";
 
@@ -9,9 +10,8 @@ export default function Secret_garden({ onNavigate }: Props) {
     return (
         <div className="app-container">
             <Sidebar currentPage="secret_garden" onNavigate={onNavigate} />
-            <main className="page-content">
-                <h1 className="Title">Secret Garden</h1>
-            </main>
+            <main className="page-content"> /</main>
+            <Header />
         </div>
     );
 }

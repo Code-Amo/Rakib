@@ -1,37 +1,26 @@
-import { UserRoundPlus } from "lucide-react";
-import { useState } from "react";
-import Add from "./add";
+import pic from "@/assets/ichigo.jpg";
+import { SquarePen, UserRoundPlus } from "lucide-react";
 import "./header.css";
-export default function Header() {
-    const [isOpen, setIsOpen] = useState(false);
+export default function Panel() {
     return (
-        <header className="main-header-container">
-            <aside className="header">
-                <ul className="header-menu">
-                    <h1 className="hello">Accueil</h1>
-                </ul>
-            </aside>
-
-            <div className="right-header">
-                <ul className="header-menu-right">
-                    <button
-                        className="add-friends"
-                        data-tooltip="Ajouter des compagnons"
-                        onClick={() => setIsOpen(true)}
-                    >
-                        <UserRoundPlus />
+        <div className="panel-container">
+            <button className="add-friends">
+                <UserRoundPlus />
+            </button>
+            <button className="modify-button">
+                <SquarePen />
+            </button>
+            <div className="profile-container">
+                <div className="profile-wrapper">
+                    <button className="profile-image">
+                        <img src={pic} alt="Photo de profil" className="profil-pic" />
                     </button>
-                </ul>
-
-                {isOpen && <Add onClose={() => setIsOpen(false)} />}
-
-                <button className="avatar-btn" aria-label="Ouvrir le menu utilisateur">
-                    <div className="avatar-container">
-                        <img src="url_de_la_photo_ou_avatar_defaut.jpg" alt="Photo de profil" className="avatar-img" />
-                    </div>
-                    <span className="status-dot"></span>
-                </button>
+                    <span className="online"></span>
+                </div>
+                <h1 className="username">Keisei</h1>
+                <p className="name">Momo</p>
             </div>
-        </header>
+            <button className="trophy">Trophées</button>
+        </div>
     );
 }
