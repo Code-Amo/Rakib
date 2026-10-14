@@ -1,4 +1,4 @@
-import { Calendar, ChartNoAxesCombined, Cog, HeartHandshake, House, Leaf, Timer } from "lucide-react";
+import { Calendar, ChartNoAxesCombined, Cog, HeartHandshake, House, Leaf } from "lucide-react";
 import "./Sidebar.css";
 
 export type SidebarPage = "home" | "rivals" | "calendar" | "secret_garden" | "stats" | "settings" | "success";
@@ -53,14 +53,6 @@ export default function Sidebar({ currentPage, onNavigate }: Props) {
                         data-tooltip="Statistiques"
                     >
                         <ChartNoAxesCombined />
-                    </button>
-                    <button
-                        type="button"
-                        className={buttonClass("sidebar-button-succes", "success", currentPage)}
-                        onClick={() => onNavigate("success")}
-                        data-tooltip="Focus"
-                    >
-                        <Timer />
                     </button>
                     <button
                         type="button"
