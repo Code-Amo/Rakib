@@ -1,10 +1,13 @@
 import pic from "@/assets/ichigo.jpg";
 import { SquarePen, UserRoundPlus } from "lucide-react";
+import { useState } from "react";
+import Add from "../Add/add";
 import "./header.css";
 export default function Panel() {
+    const [isAddOpen, setIsAddOpen] = useState(false);
     return (
         <div className="panel-container">
-            <button className="add-friends">
+            <button className="add-friends" onClick={() => setIsAddOpen(!isAddOpen)}>
                 <UserRoundPlus />
             </button>
             <button className="modify-button">
@@ -21,6 +24,7 @@ export default function Panel() {
                 <p className="name">Momo</p>
             </div>
             <button className="trophy">Trophées</button>
+            {isAddOpen && <Add onClose={() => setIsAddOpen(false)} />}
         </div>
     );
 }

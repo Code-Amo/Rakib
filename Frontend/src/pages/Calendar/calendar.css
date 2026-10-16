@@ -1,5 +1,478 @@
-.Title {
+.app-container-calendar {
     display: flex;
-    align-content: center;
+    min-height: 100vh;
+    box-sizing: border-box;
+    background-color: #141414;
+    color: #ffffff;
+    font-family:
+        "Inter",
+        system-ui,
+        -apple-system,
+        sans-serif;
+}
+
+.page-content-calendar {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 24px;
+    padding-right: 0;
+    gap: 24px;
+    overflow-y: auto;
+    margin-left: 90px;
+    margin-right: 6px;
+}
+
+.calendar-body {
+    display: flex;
+    gap: 24px;
+    flex: 1;
+}
+
+.form-section {
+    flex: 0 0 40%;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.grid-section {
+    flex: 0 0 60%;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+}
+
+.glass-card {
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 20px;
+    padding: 20px;
+    transition:
+        border-color 0.2s ease,
+        transform 0.2s ease;
+}
+
+.section-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #ffffff;
+    margin-bottom: 16px;
+}
+
+.objective-form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.select-group {
+    display: flex;
+    gap: 12px;
+}
+
+.input-field,
+.select-field {
+    width: 100%;
+    padding: 12px 10px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 12px;
+    color: #ffffff;
+    font-size: 0.95rem;
+    font-family: inherit;
+    outline: none;
+    transition: all 0.2s ease;
+}
+
+.select-field {
+    cursor: pointer;
+    background-color: #212121;
+    border-radius: 12px;
+}
+
+.input-field::placeholder {
+    color: #a0aec0;
+}
+
+.input-field:focus,
+.select-field:focus {
+    border-color: #7b2fbe;
+    box-shadow: 0 0 12px rgba(123, 47, 190, 0.35);
+}
+
+.btn-primary {
+    background-color: #39135a;
+    border-color: #7b2fbe;
+    color: #ffffff;
+    border: none;
+    border-radius: 12px;
+    padding: 12px 20px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition:
+        transform 0.15s ease,
+        filter 0.15s ease;
+}
+
+.btn-primary:hover {
+    filter: brightness(1.15);
+    transform: scale(1.03);
+}
+
+.btn-primary:active {
+    transform: scale(0.97);
+}
+
+.close-btn {
+    background: transparent;
+    border: none;
+    color: #a0aec0;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
     justify-content: center;
+    cursor: pointer;
+    transition:
+        background-color 0.2s ease,
+        color 0.2s ease;
+}
+
+.close-btn:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+}
+
+.objectives-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.objective-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 18px;
+    border-radius: 14px;
+}
+
+.objective-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.objective-title {
+    color: #ffffff;
+    font-size: 0.95rem;
+}
+
+.tags-container {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    font-size: 0.8rem;
+    color: #a0aec0;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 28px;
+}
+
+.empty-msg {
+    color: #a0aec0;
+    font-size: 0.9rem;
+}
+
+.calendar-grid-header {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.day-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px;
+    border-radius: 12px;
+    color: #a0aec0;
+    font-size: 0.85rem;
+}
+
+.day-name {
+    font-weight: 500;
+}
+
+.day-date {
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: #ffffff;
+    margin-top: 4px;
+}
+
+.today-header .day-date {
+    color: #7b2fbe;
+}
+
+.calendar-grid-body {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 8px;
+    flex: 1;
+    min-height: 350px;
+}
+
+.day-cell {
+    background: rgba(255, 255, 255, 0.015);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 14px;
+    transition: background 0.2s ease;
+}
+
+.day-cell.today {
+    border: 1px solid #7b2fbe;
+    box-shadow: inset 0 0 10px rgba(123, 47, 190, 0.2);
+    background: rgba(123, 47, 190, 0.03);
+}
+@media (max-width: 900px) {
+    .calendar-body {
+        flex-direction: column;
+    }
+    .form-section,
+    .grid-section {
+        flex: 1 1 100%;
+    }
+}
+.days-picker {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.days-label {
+    font-size: 0.85rem;
+    color: #a0aec0;
+}
+
+.days-buttons {
+    display: flex;
+    gap: 6px;
+}
+
+.day-btn {
+    flex: 1;
+    padding: 6px 0;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    color: #a0aec0;
+    font-size: 0.75rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.day-btn.active {
+    background: #42146a;
+    border-color: #7b2fbe;
+    color: #ffffff;
+    font-weight: 600;
+}
+
+.grid-objective-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 1px solid;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    transition: transform 0.15s ease;
+}
+
+.grid-objective-item:hover {
+    transform: translateY(-2px);
+}
+
+.objective-dot {
+    width: 6px;
+    min-height: 100px;
+    flex-shrink: 0;
+}
+
+.grid-obj-title {
+    font-size: 0.75rem;
+    color: #ffffff;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-weight: 500;
+}
+.calendar-wrapper {
+    display: flex;
+    gap: 24px;
+    flex: 1;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.calendar-body {
+    display: flex;
+    gap: 12px;
+    flex: 1;
+    min-width: 0;
+}
+.form-section {
+    flex: 0, 0, 10%;
+}
+.grid-section {
+    max-width: 58.5%;
+}
+.save-template-btn {
+    width: 100%;
+    margin-top: 12px;
+    padding: 10px 14px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 12px;
+    color: #e2e8f0;
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.save-template-btn:hover {
+    background-color: #39135a;
+    border-color: #7b2fbe;
+    color: #ffffff;
+    box-shadow: 0 0 12px rgba(123, 47, 190, 0.4);
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(12px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes popIn {
+    0% {
+        opacity: 0;
+        transform: scale(0.92);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.form-section,
+.grid-section {
+    animation: fadeInUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.grid-section {
+    animation-delay: 0.1s;
+}
+
+.objective-card {
+    animation: popIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease,
+        border-color 0.2s ease;
+}
+
+.objective-card:hover {
+    transform: translateX(4px);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+}
+
+.grid-objective-item {
+    animation: popIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    transition:
+        transform 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+        box-shadow 0.2s ease,
+        filter 0.2s ease;
+}
+
+.grid-objective-item:hover {
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+    filter: brightness(1.15);
+}
+
+.day-btn {
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.day-btn:hover {
+    transform: translateY(-1px);
+}
+
+.day-btn:active {
+    transform: translateY(0) scale(0.96);
+}
+
+.btn-primary,
+.save-template-btn {
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.btn-primary:hover,
+.save-template-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(123, 47, 190, 0.35);
+}
+
+.btn-primary:active,
+.save-template-btn:active {
+    transform: translateY(0) scale(0.98);
+}
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.feedback-banner {
+    padding: 10px 14px;
+    border-radius: 10px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    margin-bottom: 16px;
+    animation: slideDown 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+.feedback-banner.success {
+    background: rgba(56, 161, 105, 0.15);
+    border: 1px solid rgba(56, 161, 105, 0.4);
+    color: #68d391;
+}
+
+.feedback-banner.error {
+    background: rgba(197, 0, 0, 0.15);
+    border: 1px solid rgba(197, 0, 0, 0.4);
+    color: #feb2b2;
 }

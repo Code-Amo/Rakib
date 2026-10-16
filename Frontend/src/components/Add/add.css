@@ -6,7 +6,7 @@ body {
     position: fixed;
     top: 0;
     left: 0;
-    background-color: #0e061bab;
+    background-color: #050505ab;
     width: 100%;
     min-height: 100vh;
     display: flex;
@@ -30,7 +30,7 @@ body {
 .title-a {
     align-self: center;
     font-size: 5vh;
-    font-family: Rajdha;
+    font-family: "Inter" sans-serif;
     font-weight: bolder;
     color: aliceblue;
 }
@@ -132,4 +132,25 @@ body {
     transform: scale(1.1);
     cursor: pointer;
     background: rgba(67, 67, 67, 0.116);
+}
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(12px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes popIn {
+    0% {
+        opacity: 0;
+        transform: scale(0.92);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
 }
