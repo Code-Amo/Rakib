@@ -39,8 +39,9 @@
 .grid-section {
     flex: 0 0 60%;
     display: flex;
+    max-height: calc(100vh - 50px) !important;
+    overflow: hidden;
     flex-direction: column;
-    padding: 20px;
 }
 
 .glass-card {
@@ -150,10 +151,21 @@
 
 .objectives-list {
     display: flex;
+    max-height: 280px;
+    overflow-y: auto;
     flex-direction: column;
-    gap: 12px;
+    gap: 10px;
 }
-
+.objectives-list::-webkit-scrollbar {
+    width: 6px;
+}
+.objectives-list::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 3px;
+}
+.objectives-list::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.4);
+}
 .objective-card {
     display: flex;
     justify-content: space-between;
@@ -192,14 +204,22 @@
 }
 
 .calendar-grid-header {
-    display: grid;
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+    min-width: 0;
+    width: 100%;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
     grid-template-columns: repeat(7, 1fr);
     gap: 8px;
+    width: 100%;
     margin-bottom: 12px;
 }
 
 .day-header {
     display: flex;
+    min-width: 0;
+    flex: 1;
     flex-direction: column;
     align-items: center;
     padding: 10px;
@@ -339,7 +359,7 @@
 }
 .save-template-btn {
     width: 100%;
-    margin-top: 12px;
+    margin-top: 40px;
     padding: 10px 14px;
     background: rgba(255, 255, 255, 0.08);
     border: 1px solid rgba(255, 255, 255, 0.12);
@@ -349,6 +369,7 @@
     font-weight: 500;
     cursor: pointer;
     transition: all 0.2s ease;
+    flex-shrink: 0;
 }
 
 .save-template-btn:hover {
@@ -387,6 +408,10 @@
 
 .grid-section {
     animation-delay: 0.1s;
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh-120px);
+    overflow: hidden;
 }
 
 .objective-card {
@@ -475,4 +500,172 @@
     background: rgba(197, 0, 0, 0.15);
     border: 1px solid rgba(197, 0, 0, 0.4);
     color: #feb2b2;
+}
+.duration-input-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.duration-label {
+    font-size: 0.85rem;
+    color: #a0aec0;
+}
+
+.calendar-grid-body-time {
+    display: flex;
+    flex: 1;
+    position: relative;
+    height: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.time-sidebar {
+    width: 50px;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    flex-shrink: 0;
+    border-right: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.time-slot {
+    height: auto;
+    flex: 1;
+    box-sizing: border-box;
+    border-bottom: 1px dashed rgba(255, 255, 255, 0.05);
+    font-size: 0.68rem;
+    padding-left: 4px;
+    display: flex;
+    align-items: center;
+    color: #718096;
+    padding-top: 4px;
+    padding-left: 6px;
+}
+
+.day-cells-container {
+    display: flex;
+    flex: 1;
+    min-width: 0;
+    height: 100%;
+    position: relative;
+}
+
+.day-cell-time {
+    flex: 1;
+    height: 100%;
+    min-width: 0;
+    position: relative;
+    border-right: 1px solid rgba(255, 255, 255, 0.05);
+    padding: 0 2px;
+}
+
+.day-cell-time:last-child {
+    border-right: none;
+}
+
+.grid-objective-item-timed {
+    position: relative;
+    width: 90%;
+    margin: 2px auto;
+    border-radius: 8px;
+    border: 1px solid;
+    padding: 6px 8px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    gap: 2px;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    overflow: hidden;
+    transition:
+        transform 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+        box-shadow 0.2s ease;
+}
+
+.grid-objective-item-timed:hover {
+    transform: scale(1.02);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+    z-index: 10;
+}
+
+.grid-obj-header {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.grid-obj-duration {
+    font-size: 0.7rem;
+    opacity: 0.8;
+    color: #e2e8f0;
+}
+.day-cells-container {
+    display: flex;
+    flex: 1;
+    width: calc(100%-50px);
+}
+.day-cell-time {
+    flex: 1;
+    min-width: 0;
+    position: relative;
+    border-right: 1px solid rgba(255, 255, 255, 0.005);
+}
+.time-interval-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 16px !important;
+}
+
+.time-inputs-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.time-input {
+    width: 90px !important;
+    text-align: center;
+    padding: 6px 8px !important;
+}
+
+.time-separator {
+    color: #a0aec0;
+    font-size: 0.85rem;
+}
+
+.day-cell-time {
+    position: relative !important;
+}
+
+.grid-objective-item-timed {
+    position: absolute !important;
+    left: 2px;
+    right: 2px;
+    border-radius: 6px;
+    border: 1px solid;
+    padding: 4px 6px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 2px;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    overflow: hidden;
+    z-index: 2;
+    transition:
+        transform 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+        box-shadow 0.2s ease;
+}
+
+.grid-objective-item-timed:hover {
+    transform: scale(1.02);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+    z-index: 10;
 }

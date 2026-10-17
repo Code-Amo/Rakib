@@ -10,7 +10,7 @@ export default function Secret_garden({ onNavigate }: Props) {
     return (
         <div className="app-container">
             <Sidebar currentPage="secret_garden" onNavigate={onNavigate} />
-            <main className="page-content"> /</main>
+            <main className="page-content">/</main>
             <Header />
         </div>
     );

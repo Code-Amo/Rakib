@@ -26,6 +26,7 @@ body {
     border: 1px solid rgba(255, 255, 255, 0.08);
     backdrop-filter: blur(16px);
     box-shadow: 0 25px 50px -12px rbga(0, 0, 0, 0.7);
+    animation: popIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .title-a {
     align-self: center;
@@ -133,17 +134,6 @@ body {
     cursor: pointer;
     background: rgba(67, 67, 67, 0.116);
 }
-@keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translateY(12px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
 @keyframes popIn {
     0% {
         opacity: 0;
