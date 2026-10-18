@@ -7,7 +7,7 @@ def get_dashboard_data(db: Session, current_user):
         user={
             "username": current_user.username if hasattr(current_user, 'username') else "Keisei",
             "name": current_user.name if hasattr(current_user, 'name') else "Momo",
-            "avatar_url": None,
+            "avatar_url": current_user.avatar_url,
             "is_online": True
         },
         level={

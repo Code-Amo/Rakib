@@ -1,13 +1,7 @@
-import Panel from "@/components/Sidebar/header";
 import { supabase } from "@/supabaseClient";
 import { BookOpen, Brain, Clock, Dumbbell, Heart, Palette } from "lucide-react";
 import { useEffect, useMemo, useState, type SyntheticEvent } from "react";
-import Sidebar, { type SidebarPage } from "../../components/Sidebar/Sidebar";
 import "./calendar.css";
-
-interface Props {
-    onNavigate: (page: SidebarPage) => void;
-}
 
 interface Objective {
     id?: number;
@@ -57,7 +51,7 @@ const getAuthHeaders = async (): Promise<HeadersInit> => {
     };
 };
 
-export default function Calendar({ onNavigate }: Props) {
+export default function Calendar() {
     const [title, setTitle] = useState("");
     const [category, setCategory] = useState("Sport");
     const [startTime, setStartTime] = useState("12:00");
@@ -447,8 +441,6 @@ export default function Calendar({ onNavigate }: Props) {
                     </section>
                 </div>
             </main>
-            <Panel />
-            <Sidebar currentPage="calendar" onNavigate={onNavigate} />
         </div>
     );
 }

@@ -12,7 +12,11 @@ import Secret_garden from "./pages/Secret_garden/secret_garden";
 import Settings from "./pages/Settings/settings";
 import Stats from "./pages/stats/stats";
 import Success from "./pages/Success/success";
+
+import Layout from "./components/Layout/Layout";
+
 export type AuthFlow = "register" | "forget" | null;
+
 function PageWrapper({
     Component,
     email,
@@ -68,13 +72,16 @@ export default function App() {
                                 />
                             }
                         />
-                        <Route path="/home" element={<PageWrapper Component={Home} />} />
-                        <Route path="/calendar" element={<PageWrapper Component={Calendar} />} />
-                        <Route path="/stats" element={<PageWrapper Component={Stats} />} />
-                        <Route path="/rivals" element={<PageWrapper Component={Rivals} />} />
-                        <Route path="/secret_garden" element={<PageWrapper Component={Secret_garden} />} />
-                        <Route path="/settings" element={<PageWrapper Component={Settings} />} />
-                        <Route path="/success" element={<PageWrapper Component={Success} />} />
+
+                        <Route element={<Layout />}>
+                            <Route path="/home" element={<PageWrapper Component={Home} />} />
+                            <Route path="/calendar" element={<PageWrapper Component={Calendar} />} />
+                            <Route path="/stats" element={<PageWrapper Component={Stats} />} />
+                            <Route path="/rivals" element={<PageWrapper Component={Rivals} />} />
+                            <Route path="/secret_garden" element={<PageWrapper Component={Secret_garden} />} />
+                            <Route path="/settings" element={<PageWrapper Component={Settings} />} />
+                            <Route path="/success" element={<PageWrapper Component={Success} />} />
+                        </Route>
                     </Routes>
                 </main>
             </div>

@@ -108,6 +108,8 @@
 
 .profile-image:hover {
     transform: scale(1.03);
+    filter: brightness(0.8);
+    filter: blur(1.2);
 }
 
 .profil-pic {

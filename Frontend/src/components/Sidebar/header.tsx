@@ -22,6 +22,7 @@ interface Task {
 
 interface DashboardData {
     user: {
+        id?: string;
         username: string;
         name: string;
         avatar_url?: string;
@@ -98,8 +99,9 @@ export default function Panel() {
 
             setIsUploading(true);
 
-            const fileExt = file.name.split(".").pop();
-            const fileName = `avatar-${Date.now()}.${fileExt}`;
+            const fileExt = file.name.split(".").pop() || "jpg";
+            const userId = data?.user?.id || "user";
+            const fileName = `${userId}-${Date.now()}.${fileExt}`;
 
             const { error: uploadError } = await supabase.storage.from("avatars").upload(fileName, file);
             if (uploadError) throw uploadError;
@@ -118,11 +120,14 @@ export default function Panel() {
 
             if (!response.ok) throw new Error("Erreur lors de la mise à jour de l'avatar sur le serveur");
 
-            setData(prev => {
-                if (!prev) return prev;
+            setData(prevData => {
+                if (!prevData) return prevData;
                 return {
-                    ...prev,
-                    user: { ...prev.user, avatar_url: publicUrl },
+                    ...prevData,
+                    user: {
+                        ...prevData.user,
+                        avatar_url: publicUrl,
+                    },
                 };
             });
         } catch (error) {
