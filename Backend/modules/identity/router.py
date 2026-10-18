@@ -3,8 +3,10 @@ from sqlalchemy.orm import Session
 from . import schemas, services, models
 from core.database import get_db  
 import random
-from core.security import create_access_token, create_refresh_token
+from core.security import create_access_token, create_refresh_token ,get_current_user
 from datetime import datetime, timezone, timedelta
+from modules.identity.models import User
+from .schemas import AvatarUpdate 
 
 router = APIRouter()
 
@@ -50,6 +52,14 @@ def login_user(credentials: schemas.UserLogin, response: Response, db: Session =
         samesite="lax",       # Protège contre les attaques CSRF
         secure=False,         # Mettre à True en production avec HTTPS
         max_age=30 * 24 * 3600 
+    )
+    response.set_cookie(
+        key="access_token",
+        value=access_token,
+        httponly=True,        # Empêche la lecture via JS (XSS)
+        samesite="lax",       # Protège contre les attaques CSRF
+        secure=False,         # Mettre à True en production avec HTTPS
+        max_age=15*60 
     )
 
     return {
@@ -104,7 +114,14 @@ def verify_register(payload: schemas.VerifyCode, response:Response, db: Session 
             secure=False,         # Mettre à True en production avec HTTPS
             max_age=30 * 24 * 3600 
         )
-
+        response.set_cookie(
+        key="access_token",
+        value=access_token,
+        httponly=True,        # Empêche la lecture via JS (XSS)
+        samesite="lax",       # Protège contre les attaques CSRF
+        secure=False,         # Mettre à True en production avec HTTPS
+        max_age=15*60 
+    )
         return {
             "message": "Connexion réussie",
             "access_token": access_token,
@@ -133,3 +150,19 @@ def reset_password(payload: schemas.ResetPassword, db: Session=Depends(get_db)):
     user.hashed_password = services.hash_password(payload.new_password)
     db.commit()
     return {"message": "Mot de passe réinitialié avec succès :"}
+
+@router.put("/me/avatar", status_code=status.HTTP_200_OK)
+def update_user_avatar(
+    data: AvatarUpdate,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    current_user.avatar_url = data.avatar_url
+    
+    db.commit()
+    db.refresh(current_user)
+    
+    return {
+        "message": "Photo de profil mise à jour avec succès",
+        "avatar_url": current_user.avatar_url
+    }

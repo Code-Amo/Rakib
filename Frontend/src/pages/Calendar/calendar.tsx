@@ -1,6 +1,7 @@
 import Panel from "@/components/Sidebar/header";
+import { supabase } from "@/supabaseClient";
 import { BookOpen, Brain, Clock, Dumbbell, Heart, Palette } from "lucide-react";
-import { useEffect, useState, type SyntheticEvent } from "react";
+import { useEffect, useMemo, useState, type SyntheticEvent } from "react";
 import Sidebar, { type SidebarPage } from "../../components/Sidebar/Sidebar";
 import "./calendar.css";
 
@@ -45,6 +46,17 @@ const timeToMinutes = (timeStr: string): number => {
     return (hours || 0) * 60 + (minutes || 0);
 };
 
+const getAuthHeaders = async (): Promise<HeadersInit> => {
+    const { data: sessionData, error } = await supabase.auth.getSession();
+    if (error || !sessionData.session) {
+        throw new Error("Utilisateur non authentifié.");
+    }
+    return {
+        Authorization: `Bearer ${sessionData.session.access_token}`,
+        "Content-Type": "application/json",
+    };
+};
+
 export default function Calendar({ onNavigate }: Props) {
     const [title, setTitle] = useState("");
     const [category, setCategory] = useState("Sport");
@@ -68,21 +80,27 @@ export default function Calendar({ onNavigate }: Props) {
         }
     };
 
-    const fetchObjectives = async () => {
+    const fetchObjectives = async (signal?: AbortSignal) => {
         try {
-            const res = await fetch(API_BASE_URL);
+            const headers = await getAuthHeaders();
+            const res = await fetch(API_BASE_URL, { headers, signal });
             if (res.ok) {
                 const data = await res.json();
                 setObjectives(data);
+            } else {
+                throw new Error(`Erreur HTTP (${res.status})`);
             }
-        } catch (err) {
-            console.error("Erreur lors de la récupération des objectifs FastAPI:", err);
-            showNotification("Impossible de charger les objectifs depuis le serveur.", "error");
+        } catch (err: any) {
+            if (err.name !== "AbortError") {
+                console.error("Erreur lors de la récupération des objectifs FastAPI:", err);
+                showNotification("Impossible de charger les objectifs depuis le serveur.", "error");
+            }
         }
     };
 
     useEffect(() => {
-        fetchObjectives();
+        const controller = new AbortController();
+        fetchObjectives(controller.signal);
 
         const today = new Date();
         const dayIdx = today.getDay();
@@ -97,6 +115,8 @@ export default function Calendar({ onNavigate }: Props) {
             days.push({ name: WEEK_DAYS_NAMES[i], date: d, dayIndex: i });
         }
         setWeekDays(days);
+
+        return () => controller.abort();
     }, []);
 
     const getFrequencyLabel = (days: number[]) => {
@@ -130,49 +150,54 @@ export default function Calendar({ onNavigate }: Props) {
         };
 
         try {
+            const headers = await getAuthHeaders();
             const res = await fetch(API_BASE_URL, {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
+                headers,
                 body: JSON.stringify(newObj),
             });
+
             if (res.ok) {
                 const createdObj = await res.json();
                 setObjectives(prev => [...prev, createdObj]);
                 showNotification("Objectif créé avec succès !", "success");
+
+                setTitle("");
+                setStartTime("12:00");
+                setEndTime("14:00");
+                setSelectedDays([]);
             } else {
-                setObjectives(prev => [...prev, { ...newObj, id: Date.now() }]);
-                showNotification("Objectif ajouté (mode local).", "success");
+                showNotification("Erreur lors de la création de l'objectif sur le serveur.", "error");
             }
         } catch (err) {
-            console.error("Erreur serveur FastAPI, fallback local:", err);
-            setObjectives(prev => [...prev, { ...newObj, id: Date.now() }]);
-            showNotification("Erreur de connexion au serveur .", "error");
+            console.error("Erreur serveur FastAPI:", err);
+            showNotification("Erreur de connexion au serveur.", "error");
         }
-
-        setTitle("");
-        setStartTime("12:00");
-        setEndTime("14:00");
-        setSelectedDays([]);
     };
 
     const handleDelete = async (id?: number) => {
         if (!id) return;
         try {
-            const res = await fetch(`${API_BASE_URL}/${id}`, { method: "DELETE" });
+            const headers = await getAuthHeaders();
+            const res = await fetch(`${API_BASE_URL}/${id}`, {
+                method: "DELETE",
+                headers,
+            });
             if (!res.ok) throw new Error();
+            setObjectives(prev => prev.filter(o => o.id !== id));
             showNotification("Objectif supprimé.", "success");
         } catch (err) {
             console.error("Erreur lors de la suppression :", err);
             showNotification("Erreur de suppression sur le serveur.", "error");
         }
-        setObjectives(prev => prev.filter(o => o.id !== id));
     };
 
     const handleSaveTemplate = async () => {
         try {
+            const headers = await getAuthHeaders();
             const res = await fetch(`${API_BASE_URL}/template`, {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
+                headers,
                 body: JSON.stringify({ objectives }),
             });
             if (res.ok) {
@@ -194,6 +219,14 @@ export default function Calendar({ onNavigate }: Props) {
             date.getFullYear() === now.getFullYear()
         );
     };
+
+    const objectivesByDay = useMemo(() => {
+        const map: Record<number, Objective[]> = {};
+        for (let i = 0; i < 7; i++) {
+            map[i] = objectives.filter(o => o.days_of_week.includes(i));
+        }
+        return map;
+    }, [objectives]);
 
     return (
         <div className="app-container-calendar">
@@ -357,7 +390,7 @@ export default function Calendar({ onNavigate }: Props) {
 
                                 <div className="day-cells-container">
                                     {weekDays.map((d, dayIndex) => {
-                                        const dayObjectives = objectives.filter(o => o.days_of_week.includes(dayIndex));
+                                        const dayObjectives = objectivesByDay[dayIndex] || [];
 
                                         return (
                                             <div
@@ -372,15 +405,12 @@ export default function Calendar({ onNavigate }: Props) {
                                                     const rawStartMin = timeToMinutes(obj.start_time || "12:00");
                                                     const rawEndMin = timeToMinutes(obj.end_time || "14:00");
 
-                                                    // Calcul de l'offset par rapport à 06:00 (360 minutes)
                                                     const startMinOffset = Math.max(0, rawStartMin - START_HOUR * 60);
                                                     const durationMin = Math.max(rawEndMin - rawStartMin, 15);
 
-                                                    // Positionnement exact basé sur les 1080 minutes de la plage 06:00 - 23:59
                                                     const topPercent = (startMinOffset / TOTAL_MINUTES) * 100;
                                                     const heightPercent = (durationMin / TOTAL_MINUTES) * 100;
 
-                                                    // Masquer si l'objectif se termine avant 06:00
                                                     if (rawEndMin <= START_HOUR * 60) return null;
 
                                                     return (
@@ -415,9 +445,9 @@ export default function Calendar({ onNavigate }: Props) {
                             </div>
                         </section>
                     </section>
-                    <Panel />
                 </div>
             </main>
+            <Panel />
             <Sidebar currentPage="calendar" onNavigate={onNavigate} />
         </div>
     );

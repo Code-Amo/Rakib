@@ -3,14 +3,17 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from core.database import engine, Base
 import modules.identity.models
+from  modules.Panel.router import router as dashboard_router 
+import modules.Panel.models
 from modules.identity.router import router as identity_router
 
 Base.metadata.create_all(bind=engine)
 app= FastAPI(
-    title="Beyond the Rise API",
+    title="Rakib API",
     version="1.0.0"
 )
 app.include_router(identity_router, prefix="/auth", tags=["Auth"])
+app.include_router(dashboard_router, prefix="/panel", tags=["Dashboard"])
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["http://localhost:5173", "http://127.0.0.1:5173"],

@@ -31,3 +31,5 @@ class ForgotPasswordRequest(BaseModel):
 class ResetPassword(BaseModel):
     email: EmailStr
     new_password: str
+class AvatarUpdate(BaseModel):
+    avatar_url: str

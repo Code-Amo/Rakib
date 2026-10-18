@@ -76,9 +76,6 @@ export default function Login({ onNavigate }: Props) {
                 setError(apiErrorMessage(payload, "Impossible de vous connecter."));
                 return;
             }
-            if (payload && payload.token) {
-                localStorage.setItem("token", payload.token);
-            }
 
             onNavigate("home");
         } catch {

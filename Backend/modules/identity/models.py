@@ -11,8 +11,7 @@ class User(Base):
     verification_code = Column(String, nullable=True)
     verification_expire_at = Column(DateTime, nullable=True)
     is_verified = Column(Boolean, default=False)
+    avatar_url = Column(String, nullable=True)
 # cgu et politique de confidentialité
     cgu_accepted_at = Column(DateTime, nullable=True)
     cgu_version = Column(String, default="1.0")
-    xp = Column(Integer, default=0)
-    level = Column(Integer, default=1)
