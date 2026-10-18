@@ -1,4 +1,4 @@
-import { supabase } from "@/supabaseClient";
+import { fetchWithAuth } from "@/function/api";
 import { BookOpen, Brain, Clock, Dumbbell, Heart, Palette } from "lucide-react";
 import { useEffect, useMemo, useState, type SyntheticEvent } from "react";
 import "./calendar.css";
@@ -32,23 +32,10 @@ const HOURS_RANGE = Array.from(
     (_, i) => `${(i + START_HOUR).toString().padStart(2, "0")}:00`,
 );
 
-const API_BASE_URL = "http://localhost:8000/calendar";
-
 const timeToMinutes = (timeStr: string): number => {
     if (!timeStr) return 0;
     const [hours, minutes] = timeStr.split(":").map(Number);
     return (hours || 0) * 60 + (minutes || 0);
-};
-
-const getAuthHeaders = async (): Promise<HeadersInit> => {
-    const { data: sessionData, error } = await supabase.auth.getSession();
-    if (error || !sessionData.session) {
-        throw new Error("Utilisateur non authentifié.");
-    }
-    return {
-        Authorization: `Bearer ${sessionData.session.access_token}`,
-        "Content-Type": "application/json",
-    };
 };
 
 export default function Calendar() {
@@ -76,8 +63,14 @@ export default function Calendar() {
 
     const fetchObjectives = async (signal?: AbortSignal) => {
         try {
-            const headers = await getAuthHeaders();
-            const res = await fetch(API_BASE_URL, { headers, signal });
+            const res = await fetchWithAuth(`/calendar/get`, {
+                method: "GET",
+                signal,
+                credentials: "include",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            });
             if (res.ok) {
                 const data = await res.json();
                 setObjectives(data);
@@ -86,7 +79,7 @@ export default function Calendar() {
             }
         } catch (err: any) {
             if (err.name !== "AbortError") {
-                console.error("Erreur lors de la récupération des objectifs FastAPI:", err);
+                console.error("Erreur lors de la récupération des objectifs :", err);
                 showNotification("Impossible de charger les objectifs depuis le serveur.", "error");
             }
         }
@@ -144,13 +137,14 @@ export default function Calendar() {
         };
 
         try {
-            const headers = await getAuthHeaders();
-            const res = await fetch(API_BASE_URL, {
+            const res = await fetchWithAuth(`/calendar/post`, {
                 method: "POST",
-                headers,
+                credentials: "include",
                 body: JSON.stringify(newObj),
+                headers: {
+                    "Content-Type": "application/json",
+                },
             });
-
             if (res.ok) {
                 const createdObj = await res.json();
                 setObjectives(prev => [...prev, createdObj]);
@@ -164,7 +158,7 @@ export default function Calendar() {
                 showNotification("Erreur lors de la création de l'objectif sur le serveur.", "error");
             }
         } catch (err) {
-            console.error("Erreur serveur FastAPI:", err);
+            console.error("Erreur serveur .:", err);
             showNotification("Erreur de connexion au serveur.", "error");
         }
     };
@@ -172,10 +166,9 @@ export default function Calendar() {
     const handleDelete = async (id?: number) => {
         if (!id) return;
         try {
-            const headers = await getAuthHeaders();
-            const res = await fetch(`${API_BASE_URL}/${id}`, {
+            const res = await fetchWithAuth(`/calendar/${id}`, {
                 method: "DELETE",
-                headers,
+                credentials: "include",
             });
             if (!res.ok) throw new Error();
             setObjectives(prev => prev.filter(o => o.id !== id));
@@ -183,25 +176,6 @@ export default function Calendar() {
         } catch (err) {
             console.error("Erreur lors de la suppression :", err);
             showNotification("Erreur de suppression sur le serveur.", "error");
-        }
-    };
-
-    const handleSaveTemplate = async () => {
-        try {
-            const headers = await getAuthHeaders();
-            const res = await fetch(`${API_BASE_URL}/template`, {
-                method: "POST",
-                headers,
-                body: JSON.stringify({ objectives }),
-            });
-            if (res.ok) {
-                showNotification("Semaine type sauvegardée avec succès !", "success");
-            } else {
-                showNotification("Erreur lors de la sauvegarde de la semaine type.", "error");
-            }
-        } catch (err) {
-            console.error("Erreur lors de la sauvegarde du template :", err);
-            showNotification("Impossible de joindre le serveur pour la semaine type.", "error");
         }
     };
 
@@ -350,10 +324,6 @@ export default function Calendar() {
                                         })
                                     )}
                                 </div>
-
-                                <button type="button" className="save-template-btn" onClick={handleSaveTemplate}>
-                                    Sauvegarder en tant que semaine type
-                                </button>
                             </div>
                         </aside>
 

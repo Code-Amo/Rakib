@@ -1,4 +1,3 @@
-import { supabase } from "@/supabaseClient";
 import { AlertCircle, Brain, Dumbbell, Gem, Palette, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
@@ -170,21 +169,18 @@ export default function TrophyPage({ onClose }: TrophyPageProps) {
         }
 
         try {
-            const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
-            if (sessionError || !sessionData.session) {
-                throw new Error("Utilisateur non authentifié. Impossible de récupérer la session.");
-            }
-
-            const token = sessionData.session.access_token;
-
             const res = await fetch(API_BASE_URL, {
+                method: "GET",
+                credentials: "include",
                 headers: {
-                    Authorization: `Bearer ${token}`,
                     "Content-Type": "application/json",
                 },
             });
 
             if (!res.ok) {
+                if (res.status === 401) {
+                    throw new Error("Session expirée. Veuillez vous reconnecter.");
+                }
                 throw new Error(`Erreur HTTP (${res.status})`);
             }
 
@@ -199,12 +195,13 @@ export default function TrophyPage({ onClose }: TrophyPageProps) {
 
             setUnlockedMap(map);
         } catch (err: any) {
-            console.error("Erreur serveur FastAPI / Supabase:", err);
-            setErrorMessage("Impossible de contacter le serveur. Les trophées s'affichent en mode verrouillé.");
+            console.error("Erreur serveur FastAPI:", err);
+            setErrorMessage(
+                err.message || "Impossible de contacter le serveur. Les trophées s'affichent en mode verrouillé.",
+            );
             setUnlockedMap({});
         }
     };
-
     useEffect(() => {
         fetchTrophyStatuses();
     }, []);

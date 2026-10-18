@@ -1,13 +1,9 @@
-import type { AuthFlow } from "@/App";
 import { Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "./Register.css";
 
 const API_URL = "http://127.0.0.1:8000";
-
-interface Props {
-    onNavigate: (page: "login" | "register" | "forget" | "verification", newEmail?: string, flow?: AuthFlow) => void;
-}
 
 interface RegisterForm {
     name: string;
@@ -34,7 +30,8 @@ function apiErrorMessage(payload: unknown, fallback: string): string {
     return fallback;
 }
 
-export default function Register({ onNavigate }: Props) {
+export default function Register() {
+    const navigate = useNavigate();
     const [form, setForm] = useState<RegisterForm>({
         name: "",
         username: "",
@@ -45,7 +42,7 @@ export default function Register({ onNavigate }: Props) {
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
     const [acceptedCgu, setAcceptedCgu] = useState(false);
-    const [showPassword, setShoPassword] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
 
     const updateField = (field: keyof RegisterForm) => (value: string) => {
         setForm(current => ({ ...current, [field]: value }));
@@ -85,6 +82,7 @@ export default function Register({ onNavigate }: Props) {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
+                    name: name,
                     username,
                     email,
                     password: form.password,
@@ -99,7 +97,7 @@ export default function Register({ onNavigate }: Props) {
                 return;
             }
 
-            onNavigate("verification", email, "forget");
+            navigate("/verification", { state: { email: email, flow: "register" } });
         } catch {
             setError("Le serveur est injoignable.");
         } finally {
@@ -156,7 +154,11 @@ export default function Register({ onNavigate }: Props) {
                         value={form.password}
                         onChange={event => updateField("password")(event.target.value)}
                     />
-                    <button type="button" className="btn-toggle-password" onClick={() => setShoPassword(!showPassword)}>
+                    <button
+                        type="button"
+                        className="btn-toggle-password"
+                        onClick={() => setShowPassword(!showPassword)}
+                    >
                         {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                     </button>
                 </div>
@@ -199,7 +201,7 @@ export default function Register({ onNavigate }: Props) {
                 <button type="submit" className="btn-submit-r" disabled={loading}>
                     {loading ? "Création du compte..." : "Débuter l'aventure"}
                 </button>
-                <button type="button" className="btn-switch-r" onClick={() => onNavigate("login")}>
+                <button type="button" className="btn-switch-r" onClick={() => navigate("/login")}>
                     Se connecter
                 </button>
             </form>

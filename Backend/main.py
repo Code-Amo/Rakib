@@ -6,12 +6,15 @@ import modules.identity.models
 from  modules.Panel.router import router as dashboard_router 
 import modules.Panel.models
 from modules.identity.router import router as identity_router
-
+from modules.Calendar.router import router as calendar_router
+from modules.Panel.router import router as panel_router
 Base.metadata.create_all(bind=engine)
 app= FastAPI(
     title="Rakib API",
     version="1.0.0"
 )
+app.include_router(panel_router)
+app.include_router(calendar_router, prefix="/calendar", tags=["Calendar"])
 app.include_router(identity_router, prefix="/auth", tags=["Auth"])
 app.include_router(dashboard_router, prefix="/panel", tags=["Dashboard"])
 app.add_middleware(

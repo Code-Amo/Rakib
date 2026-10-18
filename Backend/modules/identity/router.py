@@ -1,9 +1,10 @@
-from fastapi import APIRouter, Depends, HTTPException, status, Response
+from fastapi import APIRouter, Depends, HTTPException, status, Response, Request
 from sqlalchemy.orm import Session
 from . import schemas, services, models
 from core.database import get_db  
 import random
 from core.security import create_access_token, create_refresh_token ,get_current_user
+from core.security import refresh_token as refresh_token_service
 from datetime import datetime, timezone, timedelta
 from modules.identity.models import User
 from .schemas import AvatarUpdate 
@@ -166,3 +167,7 @@ def update_user_avatar(
         "message": "Photo de profil mise à jour avec succès",
         "avatar_url": current_user.avatar_url
     }
+
+@router.post("/refresh")
+def refresh_token(request: Request, response: Response):
+    return refresh_token_service(request, response)

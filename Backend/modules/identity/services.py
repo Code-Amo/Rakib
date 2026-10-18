@@ -5,6 +5,7 @@ import smtplib
 from datetime import datetime, timezone
 from . import models, schemas
 from email.message import EmailMessage
+from modules.Panel.models import UserStats
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
@@ -28,6 +29,15 @@ def create_user(db: Session, user: schemas.UserCreate, code:str = None):
     db.add(db_user)
     db.commit()
     db.refresh(db_user)
+    new_stats = UserStats(
+        user_id = db_user.id,
+        level =1,
+        current_xp =0,
+        next_level_xp =100,
+        current_streak =0
+    )
+    db.add(new_stats)
+    db.commit()
     return db_user
 
 def authenticate_user(db: Session, email: str, password: str):

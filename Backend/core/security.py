@@ -2,7 +2,7 @@ import os
 from datetime import datetime, timedelta, timezone
 from dotenv import load_dotenv
 from sqlalchemy.orm import Session
-from fastapi import Depends, HTTPException, status, Request
+from fastapi import Depends, HTTPException, status, Request, Response
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 import jwt
 
@@ -63,3 +63,32 @@ def get_current_user(
         raise HTTPException(status_code=404, detail="Utilisateur introuvable")
     
     return user
+
+def refresh_token(request: Request, response: Response):
+    refresh_token = request.cookies.get("refresh_token")
+    if not refresh_token:
+        raise HTTPException(status_code=401, detail="Refresh token manquant")
+    
+    try:
+        payload = jwt.decode(refresh_token, SECRET_KEY, algorithms=[ALGORITHM])
+        user_id = payload.get("sub")
+        
+        if not user_id:
+            raise HTTPException(status_code=401, detail="Refresh token invalide")
+        
+        new_access_token = create_access_token(data={"sub": str(user_id)})
+        
+        response.set_cookie(
+            key="access_token",
+            value=new_access_token,
+            httponly=True,
+            samesite="lax",
+            secure=False,
+            max_age=15 * 60 
+        )
+        return {"message": "Token rafraîchi avec succès"}
+        
+    except jwt.ExpiredSignatureError:
+        raise HTTPException(status_code=401, detail="Session expirée, veuillez vous reconnecter")
+    except jwt.PyJWTError:
+        raise HTTPException(status_code=401, detail="Refresh token invalide")

@@ -357,27 +357,6 @@
 .grid-section {
     max-width: 58.5%;
 }
-.save-template-btn {
-    width: 100%;
-    margin-top: 40px;
-    padding: 10px 14px;
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    border-radius: 12px;
-    color: #e2e8f0;
-    font-size: 0.85rem;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    flex-shrink: 0;
-}
-
-.save-template-btn:hover {
-    background-color: #39135a;
-    border-color: #7b2fbe;
-    color: #ffffff;
-    box-shadow: 0 0 12px rgba(123, 47, 190, 0.4);
-}
 
 @keyframes fadeInUp {
     from {

@@ -1,12 +1,12 @@
-import type { AuthFlow } from "@/App";
 import { useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import "./verification.css";
-interface Props {
-    email?: string;
-    flow?: AuthFlow;
-    onNavigate: (page: "login" | "register" | "forget" | "new_mdp" | "home", email?: string, flow?: AuthFlow) => void;
-}
-export default function Verification({ email, onNavigate, flow }: Props) {
+
+export default function Verification() {
+    const location = useLocation();
+    const navigate = useNavigate();
+    const email = location.state?.email || "";
+    const flow = location.state?.flow || "register";
     const [otp, setOtp] = useState(new Array(6).fill(""));
     const [error, setError] = useState<string | null>(null);
 
@@ -21,6 +21,7 @@ export default function Verification({ email, onNavigate, flow }: Props) {
             (element.nextSibling as HTMLInputElement).focus();
         }
     };
+
     const handleResendCode = async () => {
         try {
             const response = await fetch("http://127.0.0.1:8000/auth/verify-reset", {
@@ -36,23 +37,29 @@ export default function Verification({ email, onNavigate, flow }: Props) {
             console.error("Erreur renvoi :", error);
         }
     };
-    const handleVerifyCode = async (e: React.SubmitEvent) => {
+
+    const handleVerifyCode = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setError(null);
         const code = otp.join("");
+
         const endpoint =
-            flow == "forget" ? "http://127.0.0.1:8000/auth/verify-reset" : "http://127.0.1:8000/auth/verify-register";
+            flow === "forget"
+                ? "http://127.0.0.1:8000/auth/verify-reset"
+                : "http://127.0.0.1:8000/auth/verify-register";
+
         try {
             const response = await fetch(endpoint, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ email, code }),
             });
+
             if (response.ok) {
-                if (flow == "forget") {
-                    onNavigate("new_mdp", email);
+                if (flow === "forget") {
+                    navigate("/new_mdp", { state: { email: email } });
                 } else {
-                    onNavigate("home");
+                    navigate("/home");
                 }
             } else {
                 setError("Code invalide ou expiré.");
@@ -61,6 +68,7 @@ export default function Verification({ email, onNavigate, flow }: Props) {
             setError("Erreur de connexion au serveur.");
         }
     };
+
     return (
         <div className="login-card-verfication">
             <form className="login-form-verfication" onSubmit={handleVerifyCode}>

@@ -1,37 +1,33 @@
-from pydantic import BaseModel
-from typing import List
+from sqlalchemy import Column, Integer, String, ForeignKey, DateTime
+from sqlalchemy.orm import relationship
+from datetime import datetime, timezone
+from core.database import Base 
 
-class UserData(BaseModel):
-    username: str
-    name: str
-    avatar_url: str | None = None
-    is_online: bool
+class UserStats(Base):
+    __tablename__ = "user_stats"
 
-class LevelData(BaseModel):
-    current_level: int
-    title: str
-    current_xp: int
-    max_xp: int
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), unique=True)
+    level = Column(Integer, default=1)
+    current_xp = Column(Integer, default=0)
+    next_level_xp = Column(Integer, default=100)
+    current_streak = Column(Integer, default=0)
 
-class TrophiesSummary(BaseModel):
-    unlocked_count: int
-    total_count: int
-    percentage: int
+class Achievement(Base):
+    __tablename__ = "achievements"
 
-class NextAchievement(BaseModel):
-    title: str
-    remaining_count: int
-    current_count: int
-    target_count: int
+    id = Column(Integer, primary_key=True, index=True)
+    title = Column(String, index=True)
+    description = Column(String)
+    rarity = Column(String)
+    category = Column(String)
+    target = Column(Integer)
+    icon = Column(String, nullable=True)
 
-class Task(BaseModel):
-    id: str
-    title: str
-    completed: bool
+class UserAchievement(Base):
+    __tablename__ = "user_achievements"
 
-class DashboardData(BaseModel):
-    user: UserData
-    level: LevelData
-    trophies_summary: TrophiesSummary
-    next_achievement: NextAchievement
-    today_focus: List[Task]
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"))
+    achievement_id = Column(Integer, ForeignKey("achievements.id"))
+    unlocked_at = Column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))

@@ -1,12 +1,9 @@
 import { Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "./Login.css";
 
 const API_URL = "http://localhost:8000";
-
-interface Props {
-    onNavigate: (page: "login" | "register" | "forget" | "verification" | "home") => void;
-}
 
 interface RegisterForm {
     email: string;
@@ -30,7 +27,8 @@ function apiErrorMessage(payload: unknown, fallback: string): string {
     return fallback;
 }
 
-export default function Login({ onNavigate }: Props) {
+export default function Login() {
+    const navigate = useNavigate();
     const [form, setForm] = useState<RegisterForm>({
         email: "",
         password: "",
@@ -77,7 +75,7 @@ export default function Login({ onNavigate }: Props) {
                 return;
             }
 
-            onNavigate("home");
+            navigate("/home");
         } catch {
             setError("Le serveur est injoignable.");
         } finally {
@@ -117,16 +115,12 @@ export default function Login({ onNavigate }: Props) {
                 <button type="submit" className="btn-submit" disabled={loading}>
                     {loading ? "Connexion..." : "Se connecter"}
                 </button>
-                {onNavigate && (
-                    <button type="button" className="btn-switch" onClick={() => onNavigate("register")}>
-                        Créer un compte
-                    </button>
-                )}
-                {onNavigate && (
-                    <button type="button" className="btn-switch" onClick={() => onNavigate("forget")}>
-                        Mot de passe oublié ?
-                    </button>
-                )}
+                <button type="button" className="btn-switch" onClick={() => navigate("/register")}>
+                    Créer un compte
+                </button>
+                <button type="button" className="btn-switch" onClick={() => navigate("/forget")}>
+                    Mot de passe oublié ?
+                </button>
             </form>
         </div>
     );

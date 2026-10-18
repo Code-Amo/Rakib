@@ -35,3 +35,10 @@ class DashboardData(BaseModel):
     trophies_summary: TrophiesSummary
     next_achievement: NextAchievement
     today_focus: List[TodayFocus]
+class TrophyResponse(BaseModel):
+    id: int
+    title: str
+    description: str
+    rarity: str
+    category: str
+    is_unlocked: bool

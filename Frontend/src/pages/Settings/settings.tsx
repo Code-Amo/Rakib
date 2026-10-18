@@ -1,14 +1,7 @@
-import Sidebar, { type SidebarPage } from "../../components/Sidebar/Sidebar";
 import "./settings.css";
-
-interface Props {
-    onNavigate: (page: SidebarPage) => void;
-}
-
-export default function Settings({ onNavigate }: Props) {
+export default function Settings() {
     return (
         <div className="app-container">
-            <Sidebar currentPage="settings" onNavigate={onNavigate} />
             <main className="page-content">
                 <h1 className="Title">Paramètres</h1>
             </main>

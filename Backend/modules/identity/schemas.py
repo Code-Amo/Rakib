@@ -16,9 +16,6 @@ class UserLogin(UserBase):
 # Schema reponse
 class UserResponse(UserBase):
     id: int
-    xp: int
-    level: int
-
     model_config = ConfigDict(from_attributes=True)
 class VerifyCode(BaseModel):
     email: EmailStr

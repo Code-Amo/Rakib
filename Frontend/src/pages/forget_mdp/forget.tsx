@@ -1,19 +1,13 @@
-import type { AuthFlow } from "@/App";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "./forget.css";
 
-interface Props {
-    onNavigate: (
-        page: "login" | "register" | "forget" | "new_mdp" | "verification",
-        email?: string,
-        flow?: AuthFlow,
-    ) => void;
-}
-
-export default function Forget({ onNavigate }: Props) {
+export default function Forget() {
+    const navigate = useNavigate();
     const [email, setEmail] = useState("");
     const [errorMessage, setErrorMessage] = useState("");
-    const handleSubmit = async (e: React.SubmitEvent) => {
+
+    const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
         e.preventDefault();
 
         if (!email.includes("@") || !email.includes(".")) {
@@ -31,7 +25,7 @@ export default function Forget({ onNavigate }: Props) {
             });
 
             if (response.ok) {
-                onNavigate("verification", email, "forget");
+                navigate("/verification", { state: { email: email, flow: "forget" } });
             } else {
                 setErrorMessage("L'adresse e-mail n'a pas pu être traitée.");
             }
@@ -40,6 +34,7 @@ export default function Forget({ onNavigate }: Props) {
             setErrorMessage("Erreur de connexion au serveur.");
         }
     };
+
     return (
         <div className="login-card-f">
             <form className="login-form-f" onSubmit={handleSubmit} noValidate>
