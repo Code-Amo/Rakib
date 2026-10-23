@@ -8,11 +8,15 @@ import modules.Panel.models
 from modules.identity.router import router as identity_router
 from modules.Calendar.router import router as calendar_router
 from modules.Panel.router import router as panel_router
+import modules.Checkins.models 
+from modules.Checkins.router import router as checkins_router
 Base.metadata.create_all(bind=engine)
 app= FastAPI(
     title="Rakib API",
     version="1.0.0"
 )
+
+app.include_router(checkins_router, prefix="/api/checkins", tags=["Checkins"])
 app.include_router(panel_router)
 app.include_router(calendar_router, prefix="/calendar", tags=["Calendar"])
 app.include_router(identity_router, prefix="/auth", tags=["Auth"])

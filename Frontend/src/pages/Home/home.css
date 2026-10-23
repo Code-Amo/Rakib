@@ -1,5 +1,121 @@
-.Title {
+.home-page-wrapper {
     display: flex;
-    align-content: center;
+    gap: 32px;
+    margin: 0 auto;
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+    align-items: flex-start;
+    padding-left: 100px;
+    padding-bottom: 32px;
+    box-sizing: border-box;
+}
+
+.home-main-content {
+    flex: 1;
+    height: 100%;
+    min-width: 0;
+    padding: 32px;
+    box-sizing: border-box;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.home-side-panel {
+    width: 380px;
+    flex-shrink: 0;
+    height: 100%;
+}
+
+.home-header {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.home-title {
+    font-size: 28px;
+    font-weight: 700;
+    color: #ffffff;
+    margin: 0;
+}
+
+.home-subtitle {
+    font-size: 16px;
+    color: #a0aec0;
+    margin: 0;
+}
+
+.home-widgets {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    width: 100%;
+    max-width: 900px;
+}
+
+.steam-toast {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    width: 320px;
+    background: linear-gradient(to right, #171a21, #2a475e);
+    border-radius: 4px;
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+    z-index: 9999;
+    color: white;
+    transform: translateX(150%);
+    opacity: 0;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.steam-toast.show {
+    transform: translateX(0);
+    opacity: 1;
+}
+
+.steam-toast-icon {
+    display: flex;
+    align-items: center;
     justify-content: center;
+    filter: drop-shadow(0 0 8px rgba(255, 215, 0, 0.6));
+}
+
+.steam-toast-content {
+    display: flex;
+    flex-direction: column;
+}
+
+.steam-toast-content h4 {
+    margin: 0;
+    font-size: 14px;
+    color: #b9b9b9;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.steam-toast-content p {
+    margin: 4px 0 0 0;
+    font-size: 16px;
+    font-weight: bold;
+    color: #ffffff;
+}
+
+.steam-toast.bronze p {
+    color: #cd7f32;
+}
+.steam-toast.silver p {
+    color: #c0c0c0;
+}
+.steam-toast.gold p {
+    color: #ffd700;
+}
+.steam-toast.platinum p {
+    color: #7b2fbe;
 }
