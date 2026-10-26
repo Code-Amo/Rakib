@@ -1,8 +1,6 @@
 from sqlalchemy.orm import Session
 from .schemas import DashboardData
-from sqlalchemy import func
 from datetime import date
-from modules.Panel.models import Achievement, UserAchievement
 from modules.Panel.models import UserStats, Achievement, UserAchievement
 from modules.Calendar.models import Objective
 
@@ -13,10 +11,12 @@ def get_dashboard_data(db: Session, current_user):
         current_level = stats.level
         current_xp = stats.current_xp
         next_level_xp = stats.next_level_xp
+        current_streak = stats.current_streak
     else:
         current_level = 1
         current_xp = 0
         next_level_xp = 100
+        current_streak = 0
 
     total_trophies = db.query(Achievement).count()
     unlocked_trophies = db.query(UserAchievement).filter(UserAchievement.user_id == current_user.id).count()
@@ -41,7 +41,6 @@ def get_dashboard_data(db: Session, current_user):
             "target_count": 1
         }
 
-    today = date.today()
     tasks_db = db.query(Objective).filter(Objective.user_id == current_user.id).limit(3).all()
     
     today_focus = [
@@ -64,6 +63,11 @@ def get_dashboard_data(db: Session, current_user):
             "title": "Bâtisseur", 
             "current_xp": current_xp,
             "max_xp": next_level_xp
+        },
+        streak={
+            "current": current_streak,
+            "next_milestone": 7,
+            "bonus_percentage": 10 if (stats and stats.current_streak >= 7) else 0
         },
         trophies_summary={
             "unlocked_count": unlocked_trophies,

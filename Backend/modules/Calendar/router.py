@@ -9,10 +9,11 @@ router = APIRouter()
 
 @router.get("/get", response_model=List[schemas.ObjectiveResponse])
 def read_objectives(
+    today_only: bool = False,
     db: Session = Depends(get_db),
     current_user = Depends(get_current_user)
 ):
-    return service.get_objectives(db, current_user.id)
+    return service.get_objectives(db, current_user.id, today_only)
 
 @router.post("/post", response_model=schemas.ObjectiveResponse, status_code=status.HTTP_201_CREATED)
 def create_new_objective(

@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, DateTime
+from sqlalchemy import Column, Integer, String, ForeignKey, DateTime, Date
 from sqlalchemy.orm import relationship
 from datetime import datetime, timezone
 from core.database import Base 
@@ -12,6 +12,7 @@ class UserStats(Base):
     current_xp = Column(Integer, default=0)
     next_level_xp = Column(Integer, default=100)
     current_streak = Column(Integer, default=0)
+    last_checkin_date = Column(Date, nullable=True)
 
 class Achievement(Base):
     __tablename__ = "achievements"

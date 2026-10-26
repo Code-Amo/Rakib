@@ -32,7 +32,6 @@
     padding: 14px;
     transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
     border-radius: 12px;
-    transition: all 0.2s ease;
 }
 
 .modify-button {
@@ -48,7 +47,6 @@
     padding: 14px;
     transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
     border-radius: 12px;
-    transition: all 0.2s ease;
 }
 
 .add-friends:hover,
@@ -61,6 +59,7 @@
     background-color: rgba(148, 163, 184, 0.12);
     border: 1px solid rgba(148, 163, 184, 0.25);
 }
+
 .profile-container {
     display: flex;
     flex-direction: column;
@@ -69,6 +68,7 @@
     gap: 8px;
     width: 100%;
 }
+
 .profile-wrapper {
     position: relative;
     display: flex;
@@ -76,8 +76,8 @@
     align-items: center;
     width: fit-content;
     margin: 0 auto;
-    display: inline-block;
 }
+
 .online {
     position: absolute;
     bottom: 12px;
@@ -89,6 +89,7 @@
     border-radius: 50%;
     z-index: 10;
 }
+
 .profile-image {
     display: flex;
     justify-content: center;
@@ -97,7 +98,6 @@
     height: 180px;
     overflow: hidden;
     background: transparent;
-    background: none;
     border: none;
     padding: 0;
     cursor: pointer;
@@ -109,7 +109,6 @@
 .profile-image:hover {
     transform: scale(1.03);
     filter: brightness(0.8);
-    filter: blur(1.2);
 }
 
 .profil-pic {
@@ -136,29 +135,13 @@
     font-family: "Inter", system-ui, sans-serif;
 }
 
-.trophy {
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    color: #cdd6f4;
-    padding: 12px 24px;
-    border-radius: 14px;
-    cursor: pointer;
-    font-size: 15px;
-    font-weight: 500;
-    transition: all 0.2s ease;
-    font-family: "Inter", system-ui, sans-serif;
-}
-
-.trophy:hover {
-    background: rgba(255, 255, 255, 0.1);
-    transform: translateY(-2px);
-}
-.stats-cards-container {
+.panel-widgets-container {
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 32px;
     width: 100%;
-    margin-top: 10px;
+    flex: 1;
+    margin-top: 32px;
 }
 
 .glass-stat-card {
@@ -224,6 +207,10 @@
     background: #5f0469;
 }
 
+.stat-bar-fill.next-achievement-bar {
+    background: linear-gradient(90deg, #9f7aea 0%, #ff00c8 100%);
+}
+
 .trophy-card-button {
     cursor: pointer;
     transition:
@@ -236,20 +223,6 @@
     background: rgba(255, 255, 255, 0.08);
     border-color: rgba(255, 215, 0, 0.3);
     transform: translateY(-2px);
-}
-.panel-container {
-    display: flex;
-    flex-direction: column;
-    box-sizing: border-box;
-}
-
-.panel-widgets-container {
-    display: flex;
-    flex-direction: column;
-    gap: 24px;
-    width: 100%;
-    flex: 1;
-    margin-top: 24px;
 }
 
 .flex-title {
@@ -278,47 +251,6 @@
     color: #ffffff;
 }
 
-.stat-bar-fill.next-achievement-bar {
-    background: linear-gradient(90deg, #9f7aea 0%, #ff00c8 100%);
-}
-
-.focus-card {
-    margin-bottom: 20px;
-}
-
-.focus-tasks-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.focus-task-item {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.checkbox-circle {
-    width: 16px;
-    height: 16px;
-    border-radius: 50%;
-    border: 2px solid rgba(255, 255, 255, 0.3);
-    flex-shrink: 0;
-    transition: border-color 0.2s ease;
-}
-
-.focus-task-item:hover .checkbox-circle {
-    border-color: #38a169;
-}
-
-.task-text {
-    color: #e2e8f0;
-    font-size: 14px;
-    font-family: "Inter", system-ui, sans-serif;
-}
 @keyframes fadeUp {
     from {
         opacity: 0;
@@ -347,6 +279,81 @@
 .panel-widgets-container > *:nth-child(4) {
     animation-delay: 0.4s;
 }
-.panel-widgets-container > *:nth-child(5) {
-    animation-delay: 0.5s;
+
+.streak-card {
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    transition: all 0.3s ease;
+}
+
+.streak-card .flame-icon {
+    transition: all 0.3s ease;
+}
+
+.streak-count {
+    font-weight: 700;
+    font-size: 16px;
+}
+
+.stat-bar-fill.streak-bar {
+    transition: all 0.3s ease;
+}
+
+/* Flame Normal (0-6 jours) */
+.streak-card.flame-normal {
+    border-color: rgba(255, 107, 0, 0.2);
+}
+.streak-card.flame-normal .flame-icon {
+    color: #ff6b00;
+    filter: drop-shadow(0 0 5px rgba(255, 107, 0, 0.5));
+}
+.streak-card.flame-normal .streak-count {
+    color: #ff6b00;
+}
+.streak-card.flame-normal .stat-bar-fill.streak-bar {
+    background: #ff6b00;
+    box-shadow: 0 0 8px rgba(255, 107, 0, 0.5);
+}
+
+/* Flame Hot (7-29 jours) */
+.streak-card.flame-hot {
+    border-color: rgba(255, 0, 0, 0.3);
+    background: linear-gradient(135deg, rgba(255, 0, 0, 0.05) 0%, transparent 100%);
+}
+.streak-card.flame-hot .flame-icon {
+    color: #ff0000;
+    filter: drop-shadow(0 0 8px rgba(255, 0, 0, 0.8));
+}
+.streak-card.flame-hot .streak-count {
+    color: #ff0000;
+}
+.streak-card.flame-hot .stat-bar-fill.streak-bar {
+    background: #ff0000;
+    box-shadow: 0 0 10px rgba(255, 0, 0, 0.6);
+}
+
+/* Flame Legendary (30+ jours) */
+.streak-card.flame-legendary {
+    border-color: rgba(159, 122, 234, 0.4);
+    background: linear-gradient(135deg, rgba(159, 122, 234, 0.15) 0%, transparent 100%);
+}
+.streak-card.flame-legendary .flame-icon {
+    color: #9f7aea;
+    filter: drop-shadow(0 0 10px rgba(159, 122, 234, 0.9));
+    animation: flamePulse 1.5s infinite alternate;
+}
+.streak-card.flame-legendary .streak-count {
+    color: #9f7aea;
+}
+.streak-card.flame-legendary .stat-bar-fill.streak-bar {
+    background: linear-gradient(90deg, #ff0000 0%, #9f7aea 100%);
+    box-shadow: 0 0 12px rgba(159, 122, 234, 0.8);
+}
+
+@keyframes flamePulse {
+    0% {
+        transform: scale(1);
+    }
+    100% {
+        transform: scale(1.15);
+    }
 }

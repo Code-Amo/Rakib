@@ -1,4 +1,4 @@
-import { AlertCircle, Brain, Dumbbell, Gem, Palette, X } from "lucide-react";
+import { AlertCircle, Brain, Briefcase, Dumbbell, Gem, Palette, Wind, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import TrophyCard, { type TrophyRarity } from "./Trophy";
@@ -9,11 +9,10 @@ export interface TrophyItem {
     title: string;
     description: string;
     rarity: TrophyRarity;
-    category: "sport" | "intelligence" | "creativite" | "platinum";
+    category: "sport" | "intelligence" | "créativité" | "career" | "mental" | "platinum";
 }
 
 const LOCAL_TROPHIES: TrophyItem[] = [
-    // Platine
     {
         id: "rakib_platine",
         title: "Rakib",
@@ -21,113 +20,185 @@ const LOCAL_TROPHIES: TrophyItem[] = [
         rarity: "platinum",
         category: "platinum",
     },
-    // Sport
+
     {
         id: "sport_1",
         title: "Premier Pas",
-        description: "Valider ta première tâche en sport.",
+        description: "1 tâche validée en Sport.",
         rarity: "bronze",
         category: "sport",
     },
     {
         id: "sport_2",
         title: "Échauffement",
-        description: "10 tâches validées sport.",
+        description: "10 tâches validées en Sport.",
         rarity: "bronze",
         category: "sport",
     },
     {
         id: "sport_3",
         title: "Machine",
-        description: "50 tâches validées en sport.",
+        description: "50 tâches validées en Sport.",
         rarity: "silver",
         category: "sport",
     },
     {
         id: "sport_4",
         title: "Mois de Fer",
-        description: "1 mois consécutifs de sport.",
+        description: "7 jours consécutifs de Sport.",
         rarity: "silver",
         category: "sport",
     },
     {
         id: "sport_5",
         title: "Centurion",
-        description: "100 tâches validées en sport.",
+        description: "100 tâches validées en Sport.",
         rarity: "gold",
         category: "sport",
     },
-    // Intelligence
+
     {
         id: "intel_1",
         title: "Étincelle",
-        description: "Valider ta première tâche intelligence.",
+        description: "1 tâche validée en Intelligence.",
         rarity: "bronze",
         category: "intelligence",
     },
     {
         id: "intel_2",
         title: "Curieux",
-        description: "10 tâches validées en intelligence.",
+        description: "10 tâches validées en Intelligence.",
         rarity: "bronze",
         category: "intelligence",
     },
     {
         id: "intel_3",
         title: "Esprit Affûté",
-        description: "50 tâches validées en intelligence.",
+        description: "50 tâches validées en Intelligence.",
         rarity: "silver",
         category: "intelligence",
     },
     {
         id: "intel_4",
-        title: "Discipline Mental",
-        description: "1 mois consécutif d'intelligence.",
+        title: "Discipline Mentale",
+        description: "7 jours consécutifs d'Intelligence.",
         rarity: "silver",
         category: "intelligence",
     },
     {
         id: "intel_5",
         title: "Génie",
-        description: "100 tâches validées en intelligence.",
+        description: "100 tâches validées en Intelligence.",
         rarity: "gold",
         category: "intelligence",
     },
-    // Créativité
+
     {
         id: "creat_1",
         title: "Première oeuvre",
-        description: "Valider ta première tâche en créativité.",
+        description: "1 tâche validée en Créativité.",
         rarity: "bronze",
-        category: "creativite",
+        category: "créativité",
     },
     {
         id: "creat_2",
         title: "Inspiration",
-        description: "10 tâches validées en créativité.",
+        description: "10 tâches validées en Créativité.",
         rarity: "bronze",
-        category: "creativite",
+        category: "créativité",
     },
     {
         id: "creat_3",
         title: "Artisan",
-        description: "50 tâches validées en créativité.",
+        description: "50 tâches validées en Créativité.",
         rarity: "silver",
-        category: "creativite",
+        category: "créativité",
     },
     {
         id: "creat_4",
         title: "Créateur confirmé",
-        description: "1 mois consécutif de créativité.",
+        description: "7 jours consécutifs de Créativité.",
         rarity: "silver",
-        category: "creativite",
+        category: "créativité",
     },
     {
         id: "creat_5",
         title: "Flow",
-        description: "100 tâches validées en créativité.",
+        description: "100 tâches validées en Créativité.",
         rarity: "gold",
-        category: "creativite",
+        category: "créativité",
+    },
+
+    {
+        id: "career_1",
+        title: "Premier contrat",
+        description: "1 tâche validée en Career.",
+        rarity: "bronze",
+        category: "career",
+    },
+    {
+        id: "career_2",
+        title: "Réseau",
+        description: "10 tâches validées en Career.",
+        rarity: "bronze",
+        category: "career",
+    },
+    {
+        id: "career_3",
+        title: "Professionnel",
+        description: "50 tâches validées en Career.",
+        rarity: "silver",
+        category: "career",
+    },
+    {
+        id: "career_4",
+        title: "Stratège",
+        description: "7 jours consécutifs de Career.",
+        rarity: "silver",
+        category: "career",
+    },
+    {
+        id: "career_5",
+        title: "Bâtisseur",
+        description: "100 tâches validées en Career.",
+        rarity: "gold",
+        category: "career",
+    },
+
+    {
+        id: "mental_1",
+        title: "Pause Mentale",
+        description: "1 tâche validée en Mental.",
+        rarity: "bronze",
+        category: "mental",
+    },
+    {
+        id: "mental_2",
+        title: "Zen",
+        description: "10 tâches validées en Mental.",
+        rarity: "bronze",
+        category: "mental",
+    },
+    {
+        id: "mental_3",
+        title: "Clarté",
+        description: "50 tâches validées en Mental.",
+        rarity: "silver",
+        category: "mental",
+    },
+    {
+        id: "mental_4",
+        title: "Esprit sain",
+        description: "7 jours consécutifs de Mental.",
+        rarity: "silver",
+        category: "mental",
+    },
+    {
+        id: "mental_5",
+        title: "Paix Intérieure",
+        description: "100 tâches validées en Mental.",
+        rarity: "gold",
+        category: "mental",
     },
 ];
 
@@ -139,9 +210,11 @@ const API_BASE_URL = "http://localhost:8000/trophy";
 const CACHE_KEY = "user_unlocked_trophies";
 
 const CATEGORY_CONFIG = {
-    sport: { name: "Sport", icon: Dumbbell, color: "#c50000" },
+    sport: { name: "Sport", icon: Dumbbell, color: "#E53E3E" },
     intelligence: { name: "Intelligence", icon: Brain, color: "#3182CE" },
-    creativite: { name: "Créativité", icon: Palette, color: "#c59100" },
+    créativité: { name: "Créativité", icon: Palette, color: "#805AD5" },
+    career: { name: "Career", icon: Briefcase, color: "#D69E2E" },
+    mental: { name: "Mental", icon: Wind, color: "#319795" },
 };
 
 export default function TrophyPage({ onClose }: TrophyPageProps) {
@@ -151,18 +224,21 @@ export default function TrophyPage({ onClose }: TrophyPageProps) {
     const fetchTrophyStatuses = async (forceRefresh = false) => {
         setErrorMessage(null);
 
+        if (forceRefresh) {
+            sessionStorage.removeItem(CACHE_KEY);
+        }
+
         if (!forceRefresh) {
             const cachedData = sessionStorage.getItem(CACHE_KEY);
             if (cachedData) {
                 try {
-                    const parsedUnlockedIds: string[] = JSON.parse(cachedData);
+                    const parsedUnlockedTitles: string[] = JSON.parse(cachedData);
                     const map: Record<string, boolean> = {};
-                    parsedUnlockedIds.forEach(id => {
-                        map[id] = true;
+                    parsedUnlockedTitles.forEach(title => {
+                        map[title] = true;
                     });
                     setUnlockedMap(map);
                 } catch (e) {
-                    console.error("Erreur lors de la lecture du cache sessionStorage:", e);
                     sessionStorage.removeItem(CACHE_KEY);
                 }
             }
@@ -184,36 +260,40 @@ export default function TrophyPage({ onClose }: TrophyPageProps) {
                 throw new Error(`Erreur HTTP (${res.status})`);
             }
 
-            const unlockedIds: string[] = await res.json();
+            const backendTrophies: { title: string; is_unlocked: boolean }[] = await res.json();
 
             const map: Record<string, boolean> = {};
-            unlockedIds.forEach(id => {
-                map[id] = true;
+            const unlockedTitles: string[] = [];
+
+            backendTrophies.forEach(trophy => {
+                if (trophy.is_unlocked) {
+                    map[trophy.title] = true;
+                    unlockedTitles.push(trophy.title);
+                }
             });
 
-            sessionStorage.setItem(CACHE_KEY, JSON.stringify(unlockedIds));
-
+            sessionStorage.setItem(CACHE_KEY, JSON.stringify(unlockedTitles));
             setUnlockedMap(map);
         } catch (err: any) {
-            console.error("Erreur serveur FastAPI:", err);
             setErrorMessage(
                 err.message || "Impossible de contacter le serveur. Les trophées s'affichent en mode verrouillé.",
             );
             setUnlockedMap({});
         }
     };
+
     useEffect(() => {
         fetchTrophyStatuses();
     }, []);
 
     const platinumTrophy = LOCAL_TROPHIES.find(t => t.category === "platinum");
 
-    const getCategoryTrophies = (catKey: "sport" | "intelligence" | "creativite") =>
+    const getCategoryTrophies = (catKey: "sport" | "intelligence" | "créativité" | "career" | "mental") =>
         LOCAL_TROPHIES.filter(t => t.category === catKey);
 
     const regularTrophies = LOCAL_TROPHIES.filter(t => t.category !== "platinum");
     const totalTrophiesCount = regularTrophies.length;
-    const unlockedTrophiesCount = regularTrophies.filter(t => !!unlockedMap[t.id]).length;
+    const unlockedTrophiesCount = regularTrophies.filter(t => !!unlockedMap[t.title]).length;
     const progressPercentage =
         totalTrophiesCount > 0 ? Math.round((unlockedTrophiesCount / totalTrophiesCount) * 100) : 0;
 
@@ -256,16 +336,16 @@ export default function TrophyPage({ onClose }: TrophyPageProps) {
                                 title={platinumTrophy.title}
                                 description={platinumTrophy.description}
                                 rarity="platinum"
-                                isUnlocked={!!unlockedMap[platinumTrophy.id]}
+                                isUnlocked={!!unlockedMap[platinumTrophy.title]}
                                 icon={<Gem size={18} color="#ffffff" />}
                             />
                         </div>
                     )}
 
-                    {(["sport", "intelligence", "creativite"] as const).map(catKey => {
+                    {(["sport", "intelligence", "créativité", "career", "mental"] as const).map(catKey => {
                         const catConfig = CATEGORY_CONFIG[catKey];
                         const catTrophies = getCategoryTrophies(catKey);
-                        const catUnlocked = catTrophies.filter(t => !!unlockedMap[t.id]).length;
+                        const catUnlocked = catTrophies.filter(t => !!unlockedMap[t.title]).length;
                         const CatIcon = catConfig.icon;
 
                         return (
@@ -287,7 +367,7 @@ export default function TrophyPage({ onClose }: TrophyPageProps) {
                                             title={t.title}
                                             description={t.description}
                                             rarity={t.rarity}
-                                            isUnlocked={!!unlockedMap[t.id]}
+                                            isUnlocked={!!unlockedMap[t.title]}
                                             icon={<CatIcon size={18} color="#ffffff" />}
                                         />
                                     ))}

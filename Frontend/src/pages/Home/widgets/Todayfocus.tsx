@@ -22,11 +22,18 @@ export const TodayFocusWidget: React.FC<TodayFocusWidgetProps> = ({ tasks, onChe
                 return "badge-sport";
             case "intelligence":
             case "étude":
-            case "etude":
                 return "badge-intelligence";
             case "foi":
-            case "religion":
+            case "imane":
                 return "badge-foi";
+            case "créativité":
+                return "badge-créativité";
+            case "mental":
+                return "badge-mental";
+            case "relations":
+                return "badge-relations";
+            case "career":
+                return "badge-career";
             default:
                 return "badge-default";
         }

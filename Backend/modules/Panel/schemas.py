@@ -42,3 +42,16 @@ class TrophyResponse(BaseModel):
     rarity: str
     category: str
     is_unlocked: bool
+
+class StreakData(BaseModel):
+    current: int
+    next_milestone: int
+    bonus_percentage: int
+
+class DashboardData(BaseModel):
+    user: UserData
+    level: LevelData
+    streak: StreakData
+    trophies_summary: TrophiesSummary
+    next_achievement: NextAchievement
+    today_focus: List[TodayFocus]

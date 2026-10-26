@@ -1,14 +1,16 @@
 from pydantic import BaseModel
 from datetime import date
+from typing import List
 
 class CheckinCreate(BaseModel):
     objective_id: int
 
-class CheckinResponse(BaseModel):
-    id: int
-    objective_id: int
-    date: date
-    xp_earned: int
+class UnlockedTrophy(BaseModel):
+    title: str
+    rarity: str
+    description: str
 
-    class Config:
-        from_attributes = True
+class CheckinResponse(BaseModel):
+    status: str
+    xp_gained: int
+    unlocked_trophies: List[UnlockedTrophy]

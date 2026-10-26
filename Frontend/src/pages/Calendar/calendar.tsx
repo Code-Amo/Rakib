@@ -1,5 +1,5 @@
 import { fetchWithAuth } from "@/function/api";
-import { BookOpen, Brain, Clock, Dumbbell, Heart, Palette } from "lucide-react";
+import { BookOpen, Brain, Briefcase, Clock, Dumbbell, Palette, Users, Wind } from "lucide-react";
 import { useEffect, useMemo, useState, type SyntheticEvent } from "react";
 import "./calendar.css";
 
@@ -14,11 +14,15 @@ interface Objective {
 }
 
 const CATEGORIES: Record<string, { color: string; icon: any }> = {
-    Sport: { color: "#c50000", icon: Dumbbell },
-    Intelligence: { color: "#3182CE", icon: Brain },
-    Foi: { color: "#38a169", icon: BookOpen },
-    Créativité: { color: "#c59100", icon: Palette },
-    Relation: { color: "#00eeff", icon: Heart },
+    Sport: { color: "#E53E3E", icon: Dumbbell }, // Rouge
+    Intelligence: { color: "#3182CE", icon: Brain }, // Bleu
+    Créativité: { color: "#805AD5", icon: Palette }, // Violet
+    Career: { color: "#D69E2E", icon: Briefcase }, // Or / Jaune
+    Mental: { color: "#319795", icon: Wind }, // Turquoise
+
+    // --- LE JARDIN SECRET ---
+    Imane: { color: "#38A169", icon: BookOpen }, // Vert
+    Relations: { color: "#ED64A6", icon: Users }, // Rose
 };
 
 const WEEK_DAYS_NAMES = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"];

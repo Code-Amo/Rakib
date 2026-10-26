@@ -1,9 +1,9 @@
 import Panel from "@/components/Sidebar/header";
 import { fetchWithAuth } from "@/function/api";
-import { Trophy } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./home.css";
+import TrophyToast from "./notification/notification";
 import type { Task } from "./widgets/Todayfocus";
 import { TodayFocusWidget } from "./widgets/Todayfocus";
 
@@ -37,7 +37,7 @@ export default function Home() {
     useEffect(() => {
         const fetchTasks = async () => {
             try {
-                const res = await fetchWithAuth("/calendar/get");
+                const res = await fetchWithAuth("/calendar/get?today_only=true");
                 if (res.ok) {
                     const data = await res.json();
                     setTasks(data);
@@ -58,7 +58,7 @@ export default function Home() {
             const res = await fetchWithAuth("/checkins/", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ objective_id: parseInt(objectiveId) }),
+                body: JSON.stringify({ objective_id: objectiveId }),
             });
 
             if (res.ok) {
@@ -85,17 +85,7 @@ export default function Home() {
 
     return (
         <div className="home-page-wrapper">
-            {toastTrophy && (
-                <div className={`steam-toast ${toastTrophy.rarity} ${isToastVisible ? "show" : ""}`}>
-                    <div className="steam-toast-icon">
-                        <Trophy size={32} color="#ffd700" />
-                    </div>
-                    <div className="steam-toast-content">
-                        <h4>Succès débloqué</h4>
-                        <p>{toastTrophy.title}</p>
-                    </div>
-                </div>
-            )}
+            <TrophyToast trophy={toastTrophy} isVisible={isToastVisible} />
 
             <div className="home-main-content">
                 <div className="home-header">

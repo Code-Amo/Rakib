@@ -1,14 +1,6 @@
 import pic from "@/assets/ichigo.jpg";
 import { supabase } from "@/supabaseClient";
-import {
-    AlertCircle,
-    CheckCircle,
-    Loader2,
-    SquarePen,
-    Target,
-    Trophy as TrophyIcon,
-    UserRoundPlus,
-} from "lucide-react";
+import { AlertCircle, Flame, Loader2, SquarePen, Target, Trophy as TrophyIcon, UserRoundPlus } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import Add from "../Add/add";
 import TrophyPage from "../Trophy/TrophyPage";
@@ -34,6 +26,11 @@ interface DashboardData {
         current_xp: number;
         max_xp: number;
     };
+    streak?: {
+        current: number;
+        next_milestone: number;
+        bonus_percentage: number;
+    };
     trophies_summary: {
         unlocked_count: number;
         total_count: number;
@@ -53,11 +50,9 @@ const API_DASHBOARD_URL = "http://localhost:8000/panel/dashboard";
 export default function Panel() {
     const [isAddOpen, setIsAddOpen] = useState(false);
     const [isTrophyOpen, setIsTrophyOpen] = useState(false);
-
     const [data, setData] = useState<DashboardData | null>(null);
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
-
     const [isUploading, setIsUploading] = useState<boolean>(false);
 
     const fetchDashboardData = useCallback(async (signal?: AbortSignal) => {
@@ -96,7 +91,6 @@ export default function Panel() {
         try {
             const file = event.target.files?.[0];
             if (!file) return;
-
             setIsUploading(true);
 
             const fileExt = file.name.split(".").pop() || "jpg";
@@ -112,22 +106,17 @@ export default function Panel() {
             const response = await fetch("http://localhost:8000/auth/me/avatar", {
                 method: "PUT",
                 credentials: "include",
-                headers: {
-                    "Content-Type": "application/json",
-                },
+                headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ avatar_url: publicUrl }),
             });
 
-            if (!response.ok) throw new Error("Erreur lors de la mise à jour de l'avatar sur le serveur");
+            if (!response.ok) throw new Error("Erreur lors de la mise à jour de l'avatar");
 
             setData(prevData => {
                 if (!prevData) return prevData;
                 return {
                     ...prevData,
-                    user: {
-                        ...prevData.user,
-                        avatar_url: publicUrl,
-                    },
+                    user: { ...prevData.user, avatar_url: publicUrl },
                 };
             });
         } catch (error) {
@@ -143,6 +132,16 @@ export default function Panel() {
     const achievementProgress = data?.next_achievement
         ? Math.min(100, Math.round((data.next_achievement.current_count / data.next_achievement.target_count) * 100))
         : 0;
+
+    const streakProgress = data?.streak
+        ? Math.min(100, Math.round((data.streak.current / data.streak.next_milestone) * 100))
+        : 0;
+
+    const getFlameLevel = (streak: number) => {
+        if (streak >= 30) return "flame-legendary";
+        if (streak >= 7) return "flame-hot";
+        return "flame-normal";
+    };
 
     return (
         <div className="panel-container">
@@ -182,7 +181,6 @@ export default function Panel() {
                                 onChange={handleAvatarUpload}
                                 disabled={isUploading}
                             />
-
                             <label
                                 htmlFor="avatar-upload"
                                 className="profile-image"
@@ -214,6 +212,24 @@ export default function Panel() {
                             </div>
                             <span className="stat-card-subtext">
                                 {data.level.current_xp} / {data.level.max_xp} XP
+                            </span>
+                        </div>
+
+                        <div className={`glass-stat-card streak-card ${getFlameLevel(data.streak?.current || 0)}`}>
+                            <div className="stat-card-header">
+                                <h3 className="stat-card-title flex-title">
+                                    <Flame size={18} className="flame-icon" />
+                                    Discipline
+                                </h3>
+                                <span className="streak-count">{data.streak?.current || 0} Jours</span>
+                            </div>
+                            <div className="stat-bar-bg">
+                                <div className="stat-bar-fill streak-bar" style={{ width: `${streakProgress}%` }}></div>
+                            </div>
+                            <span className="stat-card-subtext">
+                                {(data.streak?.bonus_percentage || 0) > 0
+                                    ? `Bonus XP : +${data.streak?.bonus_percentage}%`
+                                    : `Plus que ${(data.streak?.next_milestone || 7) - (data.streak?.current || 0)} jours pour le bonus`}
                             </span>
                         </div>
 
@@ -258,23 +274,6 @@ export default function Panel() {
                                     style={{ width: `${achievementProgress}%` }}
                                 ></div>
                             </div>
-                        </div>
-
-                        <div className="glass-stat-card focus-card">
-                            <div className="stat-card-header">
-                                <h3 className="stat-card-title flex-title">
-                                    <CheckCircle size={16} color="#38a169" />
-                                    Aujourd'hui
-                                </h3>
-                            </div>
-                            <ul className="focus-tasks-list">
-                                {data.today_focus.map(task => (
-                                    <li key={task.id} className="focus-task-item">
-                                        <span className={`checkbox-circle ${task.completed ? "completed" : ""}`}></span>
-                                        <span className="task-text">{task.title}</span>
-                                    </li>
-                                ))}
-                            </ul>
                         </div>
                     </div>
                 </>

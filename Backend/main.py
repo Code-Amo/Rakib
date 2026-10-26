@@ -16,7 +16,7 @@ app= FastAPI(
     version="1.0.0"
 )
 
-app.include_router(checkins_router, prefix="/api/checkins", tags=["Checkins"])
+app.include_router(checkins_router, prefix="/checkins", tags=["Checkins"])
 app.include_router(panel_router)
 app.include_router(calendar_router, prefix="/calendar", tags=["Calendar"])
 app.include_router(identity_router, prefix="/auth", tags=["Auth"])

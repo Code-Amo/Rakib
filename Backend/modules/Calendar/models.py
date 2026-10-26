@@ -1,4 +1,5 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, DateTime, ARRAY
+from sqlalchemy import Column, Integer, String, ForeignKey, DateTime
+from sqlalchemy.dialects.postgresql import ARRAY
 from sqlalchemy.orm import relationship
 from datetime import datetime, timezone
 from core.database import Base
