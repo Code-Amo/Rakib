@@ -1,6 +1,7 @@
+import { fetchWithAuth } from "@/function/api";
 import { AlertCircle, Award, Brain, Briefcase, Dumbbell, Flame, Loader2, Palette, Wind } from "lucide-react";
 import React, { useEffect, useState } from "react";
-import { Bar, BarChart, Cell, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+import { Bar, BarChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import "./stats.css";
 
 interface ProgressionData {
@@ -57,13 +58,7 @@ export const Stats: React.FC = () => {
             try {
                 setIsLoading(true);
                 setError(null);
-                const response = await fetch("http://localhost:8000/progression/", {
-                    method: "GET",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    credentials: "include",
-                });
+                const response = await fetchWithAuth("/progression/");
 
                 if (!response.ok) {
                     throw new Error(`Erreur HTTP: ${response.status}`);
@@ -159,11 +154,27 @@ export const Stats: React.FC = () => {
                                 axisLine={{ stroke: "rgba(255, 255, 255, 0.1)" }}
                             />
                             <Tooltip content={<CustomTooltip />} cursor={{ fill: "rgba(255, 255, 255, 0.04)" }} />
-                            <Bar dataKey="xp" radius={[8, 8, 0, 0]}>
-                                {chartData.map((entry, index) => (
-                                    <Cell key={`cell-${index}`} fill={entry.color} />
-                                ))}
-                            </Bar>
+                            <Bar
+                                dataKey="xp"
+                                radius={[8, 8, 0, 0]}
+                                fill="#9501d9"
+                                shape={(props: any) => {
+                                    const { x, y, width, height, payload } = props;
+                                    return (
+                                        <g>
+                                            <rect
+                                                x={x}
+                                                y={y}
+                                                width={width}
+                                                height={height}
+                                                fill={payload.color}
+                                                rx={8}
+                                                ry={8}
+                                            />
+                                        </g>
+                                    );
+                                }}
+                            />
                         </BarChart>
                     </ResponsiveContainer>
                 </div>

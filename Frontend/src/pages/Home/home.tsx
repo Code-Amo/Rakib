@@ -5,7 +5,9 @@ import { useNavigate } from "react-router-dom";
 import "./home.css";
 import CheckinToast from "./notification/CheckinToast";
 import TrophyToast from "./notification/notification";
+import { CompanionWidget, type Companion } from "./widgets/CompanionWidget";
 import { StatsRadarWidget } from "./widgets/Radar";
+import { SecretGardenWidget } from "./widgets/SecretGardenWidget";
 import type { Task } from "./widgets/Todayfocus";
 import { TodayFocusWidget } from "./widgets/Todayfocus";
 
@@ -27,6 +29,7 @@ const playSuccessSound = () => {
         console.error("Audio error:", e);
     }
 };
+
 const playCheckinSound = () => {
     try {
         const AudioContext = window.AudioContext || (window as any).webkitAudioContext;
@@ -50,6 +53,7 @@ const playCheckinSound = () => {
         console.error("Audio error:", e);
     }
 };
+
 const DEFAULT_STATS = {
     sport: 0,
     intel: 0,
@@ -69,14 +73,16 @@ export default function Home() {
 
     const [tasks, setTasks] = useState<Task[]>([]);
     const [stats, setStats] = useState(DEFAULT_STATS);
+    const [companion, setCompanion] = useState<Companion | null>(null);
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const [resTasks, resStats] = await Promise.all([
+                const [resTasks, resStats, resCompanions] = await Promise.all([
                     fetchWithAuth("/calendar/get?today_only=true"),
                     fetchWithAuth("/progression/"),
+                    fetchWithAuth("/compagnon/me"),
                 ]);
 
                 if (resTasks.ok) {
@@ -88,6 +94,15 @@ export default function Home() {
                     const dataStats = await resStats.json();
                     if (dataStats && dataStats.breakdown) {
                         setStats(dataStats.breakdown);
+                    }
+                }
+
+                if (resCompanions.ok) {
+                    const dataComp = await resCompanions.json();
+                    if (dataComp.accepted && dataComp.accepted.length > 0) {
+                        setCompanion(dataComp.accepted[0]);
+                    } else if (dataComp.pending && dataComp.pending.length > 0) {
+                        setCompanion(dataComp.pending[0]);
                     }
                 }
             } catch (error) {
@@ -117,6 +132,14 @@ export default function Home() {
                     const dataStats = await resStats.json();
                     if (dataStats && dataStats.breakdown) {
                         setStats(dataStats.breakdown);
+                    }
+                }
+
+                const resComp = await fetchWithAuth("/compagnon/me");
+                if (resComp.ok) {
+                    const dataComp = await resComp.json();
+                    if (dataComp.accepted && dataComp.accepted.length > 0) {
+                        setCompanion(dataComp.accepted[0]);
                     }
                 }
 
@@ -167,12 +190,17 @@ export default function Home() {
                     ) : (
                         <>
                             <StatsRadarWidget stats={stats} />
-
                             <TodayFocusWidget
                                 tasks={tasks}
                                 onCheckin={handleCheckin}
                                 onNavigateToCalendar={() => navigate("/calendar")}
                             />
+                            <CompanionWidget companion={companion} onNavigateToRivals={() => navigate("/rivals")} />
+                            <SecretGardenWidget
+                                tasks={tasks}
+                                onCheckin={handleCheckin}
+                                onNavigateToSecretGarden={() => navigate("/secret_garden")}
+                            />{" "}
                         </>
                     )}
                 </div>

@@ -1,5 +1,503 @@
-.Title {
+.rivals-page-container-rivals {
     display: flex;
-    align-content: center;
+    flex-direction: column;
+    min-height: 100vh;
+    box-sizing: border-box;
+    background-color: #141414;
+    color: #ffffff;
+    font-family:
+        "Inter",
+        system-ui,
+        -apple-system,
+        sans-serif;
+    padding: 24px;
+    margin-left: 90px;
+    margin-right: 6px;
+}
+
+.rivals-header-rivals {
+    margin-bottom: 24px;
+}
+
+.rivals-title-rivals {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #ffffff;
+    margin: 0 0 8px 0;
+}
+
+.rivals-subtitle-rivals {
+    font-size: 0.95rem;
+    color: #a0aec0;
+    margin: 0;
+}
+
+/* GRILLE PRINCIPALE */
+.rivals-grid-layout-rivals {
+    display: flex;
+    gap: 24px;
+    flex: 1;
+}
+
+.rivals-left-column-rivals {
+    flex: 0 0 55%;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.rivals-right-column-rivals {
+    flex: 0 0 45%;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+@media (max-width: 900px) {
+    .rivals-grid-layout-rivals {
+        flex-direction: column;
+    }
+    .rivals-left-column-rivals,
+    .rivals-right-column-rivals {
+        flex: 1 1 100%;
+    }
+}
+
+/* CARTES */
+.companion-card-rivals {
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 20px;
+    padding: 20px;
+    transition:
+        border-color 0.2s ease,
+        transform 0.2s ease;
+    animation: fadeInUpRivals 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.rivals-section-title-rivals {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #ffffff;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.rivals-section-title-rivals svg {
+    color: #7b2fbe;
+}
+
+/* COMPAGNON ACTIF */
+.card-header-flex-rivals {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.companion-user-info-rivals {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.companion-avatar-circle-rivals {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: #39135a;
+    border: 1px solid #7b2fbe;
+    display: flex;
+    align-items: center;
     justify-content: center;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #ffffff;
+}
+
+.companion-name-rivals {
+    font-size: 1rem;
+    font-weight: 600;
+    margin: 0 0 4px 0;
+}
+
+.companion-category-badge-rivals {
+    font-size: 0.75rem;
+    padding: 2px 8px;
+    background: rgba(123, 47, 190, 0.15);
+    color: #9f7aea;
+    border: 1px solid rgba(123, 47, 190, 0.3);
+    border-radius: 6px;
+    font-weight: 500;
+}
+
+/* BARRES DE PROGRESSION */
+.progress-dual-section-rivals {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+.progress-item-rivals {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+.progress-labels-rivals {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+.user-label-rivals {
+    color: #ffffff;
+}
+.companion-label-rivals {
+    color: #9f7aea;
+}
+.progress-counter-rivals {
+    color: #a0aec0;
+}
+
+.progress-bar-track-rivals {
+    width: 100%;
+    height: 8px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 999px;
+    overflow: hidden;
+}
+
+.progress-bar-fill-rivals {
+    height: 100%;
+    border-radius: 999px;
+    transition: width 0.4s ease;
+}
+.fill-user-rivals {
+    background: #7b2fbe;
+}
+.fill-companion-rivals {
+    background: #9f7aea;
+}
+
+.invite-form-rivals {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+.form-group-rivals {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    text-align: left;
+}
+
+.form-group-rivals label {
+    position: static !important;
+    background: transparent !important;
+    padding: 0 !important;
+    font-size: 0.85rem;
+    color: #a0aec0;
+    font-weight: 500;
+}
+
+.form-group-rivals input,
+.form-group-rivals select {
+    width: 100% !important;
+    padding: 12px 10px !important;
+    background: #1a1a1a !important;
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    border-radius: 12px !important;
+    color: #ffffff !important;
+    font-size: 0.95rem !important;
+    font-family: inherit !important;
+    outline: none !important;
+    box-shadow: none !important;
+    box-sizing: border-box !important;
+    transition: border-color 0.2s ease !important;
+}
+
+.form-group-rivals select {
+    background-color: #212121 !important;
+    cursor: pointer;
+}
+
+.form-group-rivals input:focus,
+.form-group-rivals select:focus {
+    border-color: #7b2fbe !important;
+}
+
+.form-group-rivals select option {
+    background-color: #141414;
+    color: #ffffff;
+}
+
+.btn-submit-rivals {
+    background-color: #39135a;
+    border: 1px solid #7b2fbe;
+    color: #ffffff;
+    border-radius: 12px;
+    padding: 12px 20px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 8px;
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.btn-submit-rivals:hover:not(:disabled) {
+    filter: brightness(1.15);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(123, 47, 190, 0.35);
+}
+
+.btn-submit-rivals:active:not(:disabled) {
+    transform: translateY(0) scale(0.98);
+}
+.btn-submit-rivals:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* BOUTONS D'ACTIONS */
+.pending-list-rivals {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+.pending-card-rivals {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px;
+}
+.pending-details-rivals {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+.pending-user-rivals {
+    font-size: 0.95rem;
+    font-weight: 600;
+}
+.pending-goal-rivals {
+    font-size: 0.8rem;
+    color: #a0aec0;
+}
+.pending-actions-rivals {
+    display: flex;
+    gap: 8px;
+}
+
+.btn-action-rivals {
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s ease;
+    border: 1px solid transparent;
+}
+
+.btn-accept-rivals {
+    background-color: #39135a;
+    border-color: #7b2fbe;
+    color: #ffffff;
+}
+.btn-accept-rivals:hover {
+    filter: brightness(1.2);
+}
+
+.btn-decline-rivals {
+    background-color: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.1);
+    color: #a0aec0;
+}
+.btn-decline-rivals:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+}
+
+.btn-danger-discrete-rivals {
+    background: transparent;
+    border: 1px solid rgba(197, 0, 0, 0.4);
+    color: #feb2b2;
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: 0.8rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s ease;
+}
+.btn-danger-discrete-rivals:hover {
+    background: rgba(197, 0, 0, 0.15);
+}
+
+/* BANNIÈRES */
+.rivals-error-banner-rivals,
+.rivals-success-banner-rivals {
+    padding: 10px 14px;
+    border-radius: 10px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    margin-bottom: 16px;
+    backdrop-filter: blur(10px);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    animation: slideDownRivals 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+.rivals-error-banner-rivals {
+    background: rgba(197, 0, 0, 0.15);
+    border: 1px solid rgba(197, 0, 0, 0.4);
+    color: #feb2b2;
+}
+.rivals-success-banner-rivals {
+    background: rgba(56, 161, 105, 0.15);
+    border: 1px solid rgba(56, 161, 105, 0.4);
+    color: #68d391;
+}
+
+/* VIDES & INFOS */
+.empty-card-rivals {
+    text-align: center;
+    padding: 40px 20px;
+    color: #a0aec0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+}
+.empty-icon-rivals {
+    color: rgba(255, 255, 255, 0.1);
+}
+.empty-card-rivals h3 {
+    color: #ffffff;
+    font-size: 1rem;
+    margin: 0;
+}
+.empty-card-rivals p {
+    font-size: 0.85rem;
+    margin: 0;
+    max-width: 300px;
+    line-height: 1.5;
+}
+.compact-rivals {
+    padding: 20px;
+}
+
+.info-card-rivals {
+    background: rgba(123, 47, 190, 0.05);
+    border-color: rgba(123, 47, 190, 0.15);
+}
+.info-card-header-rivals {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #9f7aea;
+    margin-bottom: 12px;
+}
+.info-card-header-rivals h3 {
+    margin: 0;
+    font-size: 0.95rem;
+}
+.info-card-rivals ul {
+    margin: 0;
+    padding-left: 16px;
+    color: #a0aec0;
+    font-size: 0.8rem;
+    line-height: 1.6;
+}
+
+/* MODAL */
+.modal-overlay-rivals {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 20px;
+}
+.modal-content-rivals {
+    max-width: 400px;
+    width: 100%;
+    background: #1a1a1a;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+.modal-actions-rivals {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 24px;
+}
+.btn-cancel-rivals {
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #a0aec0;
+    padding: 8px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+.btn-cancel-rivals:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: #fff;
+}
+.btn-confirm-danger-rivals {
+    background: rgba(197, 0, 0, 0.2);
+    border: 1px solid rgba(197, 0, 0, 0.4);
+    color: #feb2b2;
+    padding: 8px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+.btn-confirm-danger-rivals:hover {
+    background: rgba(197, 0, 0, 0.4);
+    color: #fff;
+}
+
+/* ANIMATIONS */
+@keyframes fadeInUpRivals {
+    from {
+        opacity: 0;
+        transform: translateY(12px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+@keyframes slideDownRivals {
+    from {
+        opacity: 0;
+        transform: translateY(-8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.spinner-rivals {
+    animation: spinRivals 1s linear infinite;
+}
+@keyframes spinRivals {
+    100% {
+        transform: rotate(360deg);
+    }
 }

@@ -49,11 +49,26 @@
 }
 
 .home-widgets {
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
     gap: 24px;
     width: 100%;
-    max-width: 900px;
+    align-items: stretch;
+}
+.stats-radar-widget,
+.today-focus-widget,
+.companion-widget,
+.secret-garden-widget {
+    height: 100%;
+    margin-top: 30px;
+    display: flex;
+    flex-direction: column;
+}
+
+@media (max-width: 1024px) {
+    .home-widgets {
+        grid-template-columns: 1fr;
+    }
 }
 
 .rakib-toast {
@@ -171,4 +186,40 @@
 }
 .rakib-toast.platinum .toast-content p {
     color: #9f7aea;
+}
+
+@keyframes widgetFadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.home-widgets > div {
+    animation: widgetFadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    opacity: 0;
+    transition:
+        transform 0.2s ease,
+        border-color 0.2s ease;
+}
+
+.home-widgets > div:nth-child(1) {
+    animation-delay: 0.01s;
+}
+.home-widgets > div:nth-child(2) {
+    animation-delay: 0.1s;
+}
+.home-widgets > div:nth-child(3) {
+    animation-delay: 0.2s;
+}
+.home-widgets > div:nth-child(4) {
+    animation-delay: 0.3s;
+}
+
+.home-widgets > div:hover {
+    transform: translateY(-4px);
 }

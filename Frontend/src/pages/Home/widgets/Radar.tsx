@@ -26,13 +26,15 @@ export const StatsRadarWidget: React.FC<StatsRadarWidgetProps> = ({ stats }) => 
         value: stats[key],
     }));
 
-    const maxStat = Math.max(...Object.values(stats), 20);
-    const axisMax = Math.ceil(maxStat * 1.2);
-
     return (
         <div className="stats-radar-widget">
             <div className="stats-radar-header">
-                <h3 className="stats-radar-title">Équilibre</h3>
+                <div className="stats-radar-title-wrapper">
+                    <svg className="stats-radar-icon" viewBox="0 0 24 24" width="20" height="20" fill="#9501d9">
+                        <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" />
+                    </svg>
+                    <h3 className="stats-radar-title">Équilibre</h3>
+                </div>
                 <p className="stats-radar-subtitle">Ta progression globale</p>
             </div>
 
@@ -41,9 +43,7 @@ export const StatsRadarWidget: React.FC<StatsRadarWidgetProps> = ({ stats }) => 
                     <RadarChart data={chartData} margin={{ top: 10, right: 20, bottom: 10, left: 20 }}>
                         <PolarGrid stroke="rgba(255, 255, 255, 0.1)" />
                         <PolarAngleAxis dataKey="subject" tick={{ fill: "#A0AEC0", fontSize: 12 }} />
-
-                        <PolarRadiusAxis angle={90} domain={[0, axisMax]} tick={false} axisLine={false} />
-
+                        <PolarRadiusAxis angle={90} domain={[0, 100]} tick={false} axisLine={false} />
                         <Radar
                             name="Stats"
                             dataKey="value"

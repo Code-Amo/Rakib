@@ -11,6 +11,7 @@ from modules.Panel.router import router as panel_router
 import modules.Checkins.models 
 from modules.Checkins.router import router as checkins_router
 from modules.Progression.router import router as progression_router
+from modules.companion.router import router as compagnon_router
 Base.metadata.create_all(bind=engine)
 app= FastAPI(
     title="Rakib API",
@@ -22,6 +23,7 @@ app.include_router(panel_router)
 app.include_router(calendar_router, prefix="/calendar", tags=["Calendar"])
 app.include_router(identity_router, prefix="/auth", tags=["Auth"])
 app.include_router(dashboard_router, prefix="/panel", tags=["Dashboard"])
+app.include_router(compagnon_router, prefix="/compagnon", tags=["Compagnon"])
 app.include_router(progression_router, prefix="/progression", tags=["Progression"])
 app.add_middleware(
     CORSMiddleware,
