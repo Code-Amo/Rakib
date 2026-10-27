@@ -8,6 +8,8 @@ from core.security import refresh_token as refresh_token_service
 from datetime import datetime, timezone, timedelta
 from modules.identity.models import User
 from .schemas import AvatarUpdate 
+from modules.Panel.models import UserStats
+
 
 router = APIRouter()
 
@@ -34,7 +36,15 @@ def register_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
 
     code = str(random.randint(100000, 999999))
     print(f"le code est : {code}")
-    return services.create_user(db=db , user=user, code=code)
+
+    db_user = services.create_user(db=db, user=user, code=code)
+
+    new_stats = UserStats(user_id=db_user.id)
+    db.add(new_stats)
+    db.commit()
+    db.refresh(new_stats)
+
+    return db_user
 
 @router.post("/login")
 def login_user(credentials: schemas.UserLogin, response: Response, db: Session = Depends(get_db)):
@@ -57,9 +67,9 @@ def login_user(credentials: schemas.UserLogin, response: Response, db: Session =
     response.set_cookie(
         key="access_token",
         value=access_token,
-        httponly=True,        # Empêche la lecture via JS (XSS)
-        samesite="lax",       # Protège contre les attaques CSRF
-        secure=False,         # Mettre à True en production avec HTTPS
+        httponly=True,       
+        samesite="lax",       
+        secure=False,         
         max_age=15*60 
     )
 

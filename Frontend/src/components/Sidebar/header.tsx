@@ -1,8 +1,7 @@
 import pic from "@/assets/ichigo.jpg";
 import { supabase } from "@/supabaseClient";
-import { AlertCircle, Flame, Loader2, SquarePen, Target, Trophy as TrophyIcon, UserRoundPlus } from "lucide-react";
+import { AlertCircle, Flame, Loader2, Pencil, Target, Trophy as TrophyIcon } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
-import Add from "../Add/add";
 import TrophyPage from "../Trophy/TrophyPage";
 import "./header.css";
 
@@ -48,7 +47,6 @@ interface DashboardData {
 const API_DASHBOARD_URL = "http://localhost:8000/panel/dashboard";
 
 export default function Panel() {
-    const [isAddOpen, setIsAddOpen] = useState(false);
     const [isTrophyOpen, setIsTrophyOpen] = useState(false);
     const [data, setData] = useState<DashboardData | null>(null);
     const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -85,6 +83,18 @@ export default function Panel() {
         const controller = new AbortController();
         fetchDashboardData(controller.signal);
         return () => controller.abort();
+    }, [fetchDashboardData]);
+
+    useEffect(() => {
+        const handleRefresh = () => {
+            fetchDashboardData();
+        };
+
+        window.addEventListener("refreshPanel", handleRefresh);
+
+        return () => {
+            window.removeEventListener("refreshPanel", handleRefresh);
+        };
     }, [fetchDashboardData]);
 
     const handleAvatarUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -145,13 +155,6 @@ export default function Panel() {
 
     return (
         <div className="panel-container">
-            <button className="add-friends" onClick={() => setIsAddOpen(!isAddOpen)} aria-label="Ajouter un ami">
-                <UserRoundPlus />
-            </button>
-            <button className="modify-button" aria-label="Modifier le profil">
-                <SquarePen />
-            </button>
-
             {isLoading && (
                 <div className="panel-loading-container">
                     <Loader2 className="panel-spinner" size={32} />
@@ -189,11 +192,16 @@ export default function Panel() {
                                 {isUploading ? (
                                     <div className="avatar-loading">...</div>
                                 ) : (
-                                    <img
-                                        src={data.user.avatar_url || pic}
-                                        alt="Photo de profil"
-                                        className="profil-pic"
-                                    />
+                                    <>
+                                        <img
+                                            src={data.user.avatar_url || pic}
+                                            alt="Photo de profil"
+                                            className="profil-pic"
+                                        />
+                                        <span className="avatar-edit-icon">
+                                            <Pencil size={28} />
+                                        </span>
+                                    </>
                                 )}
                             </label>
                             {data.user.is_online && <span className="online"></span>}
@@ -279,7 +287,6 @@ export default function Panel() {
                 </>
             )}
 
-            {isAddOpen && <Add onClose={() => setIsAddOpen(false)} />}
             {isTrophyOpen && <TrophyPage onClose={() => setIsTrophyOpen(false)} />}
         </div>
     );

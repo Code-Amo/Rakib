@@ -20,6 +20,7 @@ def create_user(db: Session, user: schemas.UserCreate, code:str = None):
     db_user = models.User(
         email=user.email,
         username=user.username,
+        name=user.name,
         hashed_password=hashed_pwd,
         verification_code=code,
         is_verified=False,

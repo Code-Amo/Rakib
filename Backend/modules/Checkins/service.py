@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 from .models import Checkin
 from modules.Panel.models import UserStats, Achievement, UserAchievement
 from modules.Calendar.models import Objective 
@@ -10,7 +10,7 @@ def check_trophies(db, user_id: int):
     
     sport_checkins = db.query(Checkin).join(Objective).filter(Checkin.user_id == user_id, Objective.category == 'Sport').count()
     intel_checkins = db.query(Checkin).join(Objective).filter(Checkin.user_id == user_id, Objective.category == 'Intelligence').count()
-    creation_checkins = db.query(Checkin).join(Objective).filter(Checkin.user_id == user_id, Objective.category == 'Créativité').count()
+    creat_checkins = db.query(Checkin).join(Objective).filter(Checkin.user_id == user_id, Objective.category == 'Créativité').count()
     career_checkins = db.query(Checkin).join(Objective).filter(Checkin.user_id == user_id, Objective.category == 'Career').count()
     mental_checkins = db.query(Checkin).join(Objective).filter(Checkin.user_id == user_id, Objective.category == 'Mental').count()
     
@@ -26,7 +26,7 @@ def check_trophies(db, user_id: int):
             is_earned = True
         elif ach.category == 'Intelligence' and intel_checkins >= ach.target:
             is_earned = True
-        elif ach.category == 'Créativité' and creation_checkins >= ach.target:
+        elif ach.category == 'Créativité' and creat_checkins >= ach.target:
             is_earned = True
         elif ach.category == 'Career' and career_checkins >= ach.target:
             is_earned = True
@@ -39,6 +39,7 @@ def check_trophies(db, user_id: int):
         if is_earned:
             new_unlock = UserAchievement(user_id=user_id, achievement_id=ach.id)
             db.add(new_unlock)
+            
             newly_unlocked.append({
                 "title": ach.title, 
                 "rarity": ach.rarity, 
@@ -71,67 +72,40 @@ def register_checkin(db: Session, user_id: int, objective_id: int):
         xp_earned=10
     )
     db.add(new_checkin)
+    db.flush()
 
     stats = db.query(UserStats).filter(UserStats.user_id == user_id).first()
+    
+    if not stats:
+        stats = UserStats(user_id=user_id)
+        db.add(stats)
+        db.flush()
+
     if stats:
-        stats.current_xp += new_checkin.xp_earned
-        while stats.current_xp >= stats.next_level_xp:
-            stats.level += 1
-            stats.current_xp -= stats.next_level_xp
+        cat = objective.category.lower() if objective.category else ""
+        
+        if cat == 'sport': 
+            stats.xp_sport = (stats.xp_sport or 0) + (new_checkin.xp_earned or 10)
+        elif cat == 'intelligence': 
+            stats.xp_intel = (stats.xp_intel or 0) + (new_checkin.xp_earned or 10)
+        elif cat == 'créativité' or cat == 'creativite': 
+            stats.xp_crea = (stats.xp_crea or 0) + (new_checkin.xp_earned or 10)
+        elif cat == 'career': 
+            stats.xp_career = (stats.xp_career or 0) + (new_checkin.xp_earned or 10)
+        elif cat == 'mental': 
+            stats.xp_mental = (stats.xp_mental or 0) + (new_checkin.xp_earned or 10)
             
-    db.commit()
-    db.refresh(new_checkin)
-    
-    unlocked_trophies = check_trophies(db, user_id)
-    
-    return new_checkin, unlocked_trophies
-from datetime import datetime, timezone, timedelta # <-- Ajoute timedelta
-
-def register_checkin(db: Session, user_id: int, objective_id: int):
-    today = datetime.now(timezone.utc).date()
-
-    objective = db.query(Objective).filter(Objective.id == objective_id, Objective.user_id == user_id).first()
-    if not objective:
-        raise ValueError("Objectif introuvable.")
-
-    existing = db.query(Checkin).filter(
-        Checkin.user_id == user_id,
-        Checkin.objective_id == objective_id,
-        Checkin.date == today
-    ).first()
-    
-    if existing:
-        raise ValueError("Déjà validé aujourd'hui !")
-
-    new_checkin = Checkin(
-        user_id=user_id, 
-        objective_id=objective_id, 
-        date=today,
-        xp_earned=10
-    )
-    db.add(new_checkin)
-
-    stats = db.query(UserStats).filter(UserStats.user_id == user_id).first()
-    if stats:
-        if stats.last_checkin_date == today - timedelta(days=1):
-            stats.current_streak += 1
+        if stats.last_checkin_date is None:
+            stats.current_streak = 1
         elif stats.last_checkin_date == today:
-            pass
+            pass 
+        elif stats.last_checkin_date == today - timedelta(days=1):
+            stats.current_streak += 1
         else:
             stats.current_streak = 1
             
         stats.last_checkin_date = today
-        
-        xp_to_add = new_checkin.xp_earned
-        if stats.current_streak >= 7:
-            xp_to_add = int(xp_to_add * 1.2)
-            
-        stats.current_xp += xp_to_add
-        
-        while stats.current_xp >= stats.next_level_xp:
-            stats.level += 1
-            stats.current_xp -= stats.next_level_xp
-            
+
     db.commit()
     db.refresh(new_checkin)
     

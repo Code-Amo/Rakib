@@ -3,7 +3,9 @@ import { fetchWithAuth } from "@/function/api";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./home.css";
+import CheckinToast from "./notification/CheckinToast";
 import TrophyToast from "./notification/notification";
+import { StatsRadarWidget } from "./widgets/Radar";
 import type { Task } from "./widgets/Todayfocus";
 import { TodayFocusWidget } from "./widgets/Todayfocus";
 
@@ -25,30 +27,76 @@ const playSuccessSound = () => {
         console.error("Audio error:", e);
     }
 };
+const playCheckinSound = () => {
+    try {
+        const AudioContext = window.AudioContext || (window as any).webkitAudioContext;
+        const ctx = new AudioContext();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+
+        osc.type = "triangle";
+        osc.frequency.setValueAtTime(600, ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(900, ctx.currentTime + 0.1);
+
+        gain.gain.setValueAtTime(0.05, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.15);
+
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+
+        osc.start();
+        osc.stop(ctx.currentTime + 0.15);
+    } catch (e) {
+        console.error("Audio error:", e);
+    }
+};
+const DEFAULT_STATS = {
+    sport: 0,
+    intel: 0,
+    crea: 0,
+    career: 0,
+    mental: 0,
+};
 
 export default function Home() {
     const navigate = useNavigate();
+
     const [toastTrophy, setToastTrophy] = useState<{ title: string; rarity: string } | null>(null);
     const [isToastVisible, setIsToastVisible] = useState(false);
 
+    const [isCheckinToastVisible, setIsCheckinToastVisible] = useState(false);
+    const [earnedXp, setEarnedXp] = useState(0);
+
     const [tasks, setTasks] = useState<Task[]>([]);
+    const [stats, setStats] = useState(DEFAULT_STATS);
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
-        const fetchTasks = async () => {
+        const fetchData = async () => {
             try {
-                const res = await fetchWithAuth("/calendar/get?today_only=true");
-                if (res.ok) {
-                    const data = await res.json();
-                    setTasks(data);
+                const [resTasks, resStats] = await Promise.all([
+                    fetchWithAuth("/calendar/get?today_only=true"),
+                    fetchWithAuth("/progression/"),
+                ]);
+
+                if (resTasks.ok) {
+                    const dataTasks = await resTasks.json();
+                    setTasks(dataTasks);
+                }
+
+                if (resStats.ok) {
+                    const dataStats = await resStats.json();
+                    if (dataStats && dataStats.breakdown) {
+                        setStats(dataStats.breakdown);
+                    }
                 }
             } catch (error) {
-                console.error("Erreur chargement tâches:", error);
+                console.error("Erreur chargement données:", error);
             } finally {
                 setIsLoading(false);
             }
         };
-        fetchTasks();
+        fetchData();
     }, []);
 
     const handleCheckin = async (objectiveId: string) => {
@@ -63,16 +111,35 @@ export default function Home() {
 
             if (res.ok) {
                 const data = await res.json();
+
+                const resStats = await fetchWithAuth("/progression/");
+                if (resStats.ok) {
+                    const dataStats = await resStats.json();
+                    if (dataStats && dataStats.breakdown) {
+                        setStats(dataStats.breakdown);
+                    }
+                }
+
+                window.dispatchEvent(new Event("refreshPanel"));
+
+                setEarnedXp(data.xp_gained || 10);
+                playCheckinSound();
+                setIsCheckinToastVisible(true);
+                setTimeout(() => setIsCheckinToastVisible(false), 2500);
+
                 if (data.unlocked_trophies && data.unlocked_trophies.length > 0) {
                     const trophy = data.unlocked_trophies[0];
                     playSuccessSound();
-                    setToastTrophy(trophy);
-                    setIsToastVisible(true);
 
                     setTimeout(() => {
-                        setIsToastVisible(false);
-                        setTimeout(() => setToastTrophy(null), 400);
-                    }, 4000);
+                        setToastTrophy(trophy);
+                        setIsToastVisible(true);
+
+                        setTimeout(() => {
+                            setIsToastVisible(false);
+                            setTimeout(() => setToastTrophy(null), 400);
+                        }, 4000);
+                    }, 500);
                 }
             } else {
                 setTasks(prevTasks => prevTasks.map(t => (t.id === objectiveId ? { ...t, completed: false } : t)));
@@ -85,6 +152,7 @@ export default function Home() {
 
     return (
         <div className="home-page-wrapper">
+            <CheckinToast isVisible={isCheckinToastVisible} xp={earnedXp} />
             <TrophyToast trophy={toastTrophy} isVisible={isToastVisible} />
 
             <div className="home-main-content">
@@ -95,13 +163,17 @@ export default function Home() {
 
                 <div className="home-widgets">
                     {isLoading ? (
-                        <p style={{ color: "#A0AEC0" }}>Chargement des tâches...</p>
+                        <p style={{ color: "#A0AEC0" }}>Chargement des données...</p>
                     ) : (
-                        <TodayFocusWidget
-                            tasks={tasks}
-                            onCheckin={handleCheckin}
-                            onNavigateToCalendar={() => navigate("/calendar")}
-                        />
+                        <>
+                            <StatsRadarWidget stats={stats} />
+
+                            <TodayFocusWidget
+                                tasks={tasks}
+                                onCheckin={handleCheckin}
+                                onNavigateToCalendar={() => navigate("/calendar")}
+                            />
+                        </>
                     )}
                 </div>
             </div>

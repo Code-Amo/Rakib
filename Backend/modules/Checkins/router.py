@@ -7,7 +7,7 @@ from . import service
 
 router = APIRouter()
 
-@router.post("/", status_code=201) 
+@router.post("/", status_code=201)
 def create_checkin(
     data: CheckinCreate,
     db: Session = Depends(get_db),
@@ -19,7 +19,9 @@ def create_checkin(
         return {
             "status": "success",
             "xp_gained": checkin.xp_earned,
-            "unlocked_trophies": unlocked_trophies 
+            "unlocked_trophies": unlocked_trophies
         }
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Erreur interne : {str(e)}")

@@ -7,18 +7,12 @@ def get_objectives(db: Session, user_id: int, today_only: bool = False):
     query = db.query(models.Objective).filter(models.Objective.user_id == user_id)
     
     total_objectives = query.count()
-    print(f"DEBUG: Nombre total d'objectifs en base pour cet user : {total_objectives}")
     
     if today_only:
         today_idx = datetime.now().weekday()
-        print(f"DEBUG: On cherche les objectifs du jour (Index Python : {today_idx})")
         
         query = query.filter(models.Objective.days_of_week.any(today_idx))
-    else:
-        print("DEBUG: Pas de filtre de jour (today_only = False)")
-    
     objectives = query.all()
-    print(f"DEBUG: Nombre d'objectifs trouvés après filtre : {len(objectives)}")
     
     today = datetime.now(timezone.utc).date()
     todays_checkins = db.query(Checkin).filter(

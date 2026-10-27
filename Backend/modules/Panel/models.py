@@ -8,9 +8,17 @@ class UserStats(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     user_id = Column(Integer, ForeignKey("users.id"), unique=True)
+
+    xp_sport = Column(Integer, default=0)
+    xp_intel = Column(Integer, default=0)
+    xp_crea = Column(Integer, default=0)
+    xp_career = Column(Integer, default=0)
+    xp_mental = Column(Integer, default=0)
+
     level = Column(Integer, default=1)
     current_xp = Column(Integer, default=0)
     next_level_xp = Column(Integer, default=100)
+
     current_streak = Column(Integer, default=0)
     last_checkin_date = Column(Date, nullable=True)
 
