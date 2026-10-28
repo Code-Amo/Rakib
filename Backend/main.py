@@ -65,7 +65,7 @@ app.include_router(compagnon_router, prefix="/compagnon", tags=["Compagnon"])
 app.include_router(progression_router, prefix="/progression", tags=["Progression"])
 app.include_router(secret_garden_router, prefix="/secret_garden", tags=["Secret Garden"])
 
-@app.get("/")
+@app.get("/", methods=["GET", "HEAD"])
 def root():
     return {"status": "ok", "message": "Good"}
 
