@@ -23,7 +23,6 @@ dist-ssr
 *.sln
 *.sw?
 .env
-supabaseClient.ts
 # Backend
 Backend/.env
 Backend/.venv/
