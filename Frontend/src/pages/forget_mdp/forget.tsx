@@ -2,12 +2,14 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./forget.css";
 
+const API_URL = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000";
+
 export default function Forget() {
     const navigate = useNavigate();
     const [email, setEmail] = useState("");
     const [errorMessage, setErrorMessage] = useState("");
 
-    const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
+    const handleSubmit = async (e: React.SubmitEvent) => {
         e.preventDefault();
 
         if (!email.includes("@") || !email.includes(".")) {
@@ -18,7 +20,7 @@ export default function Forget() {
         setErrorMessage("");
 
         try {
-            const response = await fetch("http://127.0.0.1:8000/auth/forget", {
+            const response = await fetch(`${API_URL}/auth/forget`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ email }),

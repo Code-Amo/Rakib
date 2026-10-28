@@ -2,6 +2,8 @@ import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import "./verification.css";
 
+const API_URL = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000";
+
 export default function Verification() {
     const location = useLocation();
     const navigate = useNavigate();
@@ -35,10 +37,7 @@ export default function Verification() {
         setError(null);
         setSuccess(null);
         try {
-            const endpoint =
-                flow === "forget"
-                    ? "http://127.0.0.1:8000/auth/forget"
-                    : "http://127.0.0.1:8000/auth/resend-verification";
+            const endpoint = flow === "forget" ? `${API_URL}/auth/forget` : `${API_URL}/auth/resend-verification`;
 
             const response = await fetch(endpoint, {
                 method: "POST",
@@ -58,7 +57,7 @@ export default function Verification() {
         }
     };
 
-    const handleVerifyCode = async (e: React.SubmitEvent<HTMLFormElement>) => {
+    const handleVerifyCode = async (e: React.SubmitEvent) => {
         e.preventDefault();
         setError(null);
         setSuccess(null);
@@ -69,10 +68,7 @@ export default function Verification() {
             return;
         }
 
-        const endpoint =
-            flow === "forget"
-                ? "http://127.0.0.1:8000/auth/verify-reset"
-                : "http://127.0.0.1:8000/auth/verify-register";
+        const endpoint = flow === "forget" ? `${API_URL}/auth/verify-reset` : `${API_URL}/auth/verify-register`;
 
         try {
             const response = await fetch(endpoint, {

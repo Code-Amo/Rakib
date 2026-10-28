@@ -46,12 +46,15 @@ async def add_security_headers(request: Request, call_next):
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[os.getenv("FRONTEND_URL", "http://localhost:5173")],
+    allow_origins=[
+        "http://localhost:5173", 
+        "http://127.0.0.1:5173",
+        "https://rakib-5fydpcx0u-rakib-8611.vercel.app",
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
 # --- ROUTERS ---
 app.include_router(identity_router, prefix="/auth", tags=["Auth"])
 app.include_router(checkins_router, prefix="/checkins", tags=["Checkins"])

@@ -3,6 +3,8 @@ import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import "./new_mdp.css";
 
+const API_URL = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000";
+
 export default function New_pswd() {
     const navigate = useNavigate();
     const location = useLocation();
@@ -16,7 +18,7 @@ export default function New_pswd() {
     const [success, setSuccess] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
 
-    const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
+    const handleSubmit = async (e: React.SubmitEvent) => {
         e.preventDefault();
         setError(null);
         setSuccess(null);
@@ -37,7 +39,7 @@ export default function New_pswd() {
 
         setLoading(true);
         try {
-            const response = await fetch("http://127.0.0.1:8000/auth/password-reset", {
+            const response = await fetch(`${API_URL}/auth/password-reset`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
