@@ -80,7 +80,7 @@ def login_user(request: Request, credentials: schemas.UserLogin, response: Respo
         key="refresh_token",
         value=refresh_token,
         httponly=True,
-        samesite="lax",
+        samesite="none",
         secure=is_production,
         max_age=30 * 24 * 3600 
     )
@@ -88,7 +88,7 @@ def login_user(request: Request, credentials: schemas.UserLogin, response: Respo
         key="access_token",
         value=access_token,
         httponly=True,       
-        samesite="lax",       
+        samesite="none",       
         secure=is_production,         
         max_age=15*60 
     )
@@ -141,10 +141,10 @@ def verify_register(request: Request, payload: schemas.VerifyCode, response: Res
         db.commit()
         
         response.set_cookie(
-            key="refresh_token", value=refresh_token, httponly=True, samesite="lax", secure=is_production, max_age=30 * 24 * 3600 
+            key="refresh_token", value=refresh_token, httponly=True, samesite="none", secure=is_production, max_age=30 * 24 * 3600 
         )
         response.set_cookie(
-            key="access_token", value=access_token, httponly=True, samesite="lax", secure=is_production, max_age=15*60 
+            key="access_token", value=access_token, httponly=True, samesite="none", secure=is_production, max_age=15*60 
         )
         
         return {
@@ -245,6 +245,6 @@ def delete_account(
 
 @router.post("/logout")
 def logout(response: Response):
-    response.delete_cookie(key="access_token", httponly=True, samesite="lax")
-    response.delete_cookie(key="refresh_token", httponly=True, samesite="lax")
+    response.delete_cookie(key="access_token", httponly=True, samesite="none")
+    response.delete_cookie(key="refresh_token", httponly=True, samesite="none")
     return {"message": "Déconnexion réussie."}

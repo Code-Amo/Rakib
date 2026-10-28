@@ -81,7 +81,7 @@ def refresh_token(request: Request, response: Response):
             key="access_token",
             value=new_access_token,
             httponly=True,
-            samesite="lax",
+            samesite="none",
             secure=False,
             max_age=15 * 60 
         )
