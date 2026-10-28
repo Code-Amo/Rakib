@@ -82,7 +82,7 @@ def refresh_token(request: Request, response: Response):
             value=new_access_token,
             httponly=True,
             samesite="none",
-            secure=False,
+            secure=True,
             max_age=15 * 60 
         )
         return {"message": "Token rafraîchi avec succès"}

@@ -75,6 +75,7 @@ export default function Verification() {
             const response = await fetch(endpoint, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
+                credentials: "include", // <-- LA LIGNE CRUCIALE AJOUTÉE ICI
                 body: JSON.stringify({ email, code }),
             });
             const data = await response.json();
