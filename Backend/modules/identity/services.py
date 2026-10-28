@@ -64,7 +64,7 @@ def send_verification_email(to_email: str, code: str):
         
         email = SendSmtpEmail(
             to=[{"email": to_email}],
-            sender={"name": "Rakib", "email": "contact.app.rakib@gmail.com"}, # L'adresse vérifiée sur Brevo
+            sender={"name": "Rakib", "email": "contact.rakib.app@gmail.com"},
             subject="Votre code de vérification - Rakib",
             html_content=f"""
                 <div style="font-family: sans-serif; background-color: #141414; color: #ffffff; padding: 20px; border-radius: 10px;">
