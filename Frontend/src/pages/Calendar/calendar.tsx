@@ -1,5 +1,16 @@
 import { fetchWithAuth } from "@/function/api";
-import { BookOpen, Brain, Briefcase, Clock, Dumbbell, Palette, Users, Wind } from "lucide-react";
+import {
+    BookOpen,
+    Brain,
+    Briefcase,
+    ChevronLeft,
+    ChevronRight,
+    Clock,
+    Dumbbell,
+    Palette,
+    Users,
+    Wind,
+} from "lucide-react";
 import { useEffect, useMemo, useState, type SyntheticEvent } from "react";
 import "./calendar.css";
 
@@ -14,19 +25,16 @@ interface Objective {
 }
 
 const CATEGORIES: Record<string, { color: string; icon: any }> = {
-    Sport: { color: "#E53E3E", icon: Dumbbell }, // Rouge
-    Intelligence: { color: "#3182CE", icon: Brain }, // Bleu
-    Créativité: { color: "#805AD5", icon: Palette }, // Violet
-    Career: { color: "#D69E2E", icon: Briefcase }, // Or / Jaune
-    Mental: { color: "#319795", icon: Wind }, // Turquoise
-
-    // --- LE JARDIN SECRET ---
-    Imane: { color: "#38A169", icon: BookOpen }, // Vert
-    Relations: { color: "#ED64A6", icon: Users }, // Rose
+    Sport: { color: "#E53E3E", icon: Dumbbell },
+    Intelligence: { color: "#3182CE", icon: Brain },
+    Créativité: { color: "#805AD5", icon: Palette },
+    Career: { color: "#D69E2E", icon: Briefcase },
+    Mental: { color: "#319795", icon: Wind },
+    Imane: { color: "#38A169", icon: BookOpen },
+    Relations: { color: "#ED64A6", icon: Users },
 };
 
 const WEEK_DAYS_NAMES = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"];
-
 const START_HOUR = 6;
 const END_HOUR = 23;
 const TOTAL_MINUTES = (END_HOUR - START_HOUR + 1) * 60;
@@ -52,6 +60,9 @@ export default function Calendar() {
     const [weekDays, setWeekDays] = useState<{ name: string; date: Date; dayIndex: number }[]>([]);
     const [feedbackMessage, setFeedbackMessage] = useState<{ text: string; type: "success" | "error" } | null>(null);
 
+    // NOUVEAU STATE POUR LA VUE MOBILE
+    const [mobileDayIndex, setMobileDayIndex] = useState(0);
+
     const showNotification = (text: string, type: "success" | "error") => {
         setFeedbackMessage({ text, type });
         setTimeout(() => setFeedbackMessage(null), 4000);
@@ -71,20 +82,15 @@ export default function Calendar() {
                 method: "GET",
                 signal,
                 credentials: "include",
-                headers: {
-                    "Content-Type": "application/json",
-                },
+                headers: { "Content-Type": "application/json" },
             });
             if (res.ok) {
                 const data = await res.json();
                 setObjectives(data);
-            } else {
-                throw new Error(`Erreur HTTP (${res.status})`);
             }
         } catch (err: any) {
             if (err.name !== "AbortError") {
-                console.error("Erreur lors de la récupération des objectifs :", err);
-                showNotification("Impossible de charger les objectifs depuis le serveur.", "error");
+                showNotification("Impossible de charger les objectifs.", "error");
             }
         }
     };
@@ -107,6 +113,11 @@ export default function Calendar() {
         }
         setWeekDays(days);
 
+        const todayIndex = days.findIndex(
+            d => d.date.getDate() === today.getDate() && d.date.getMonth() === today.getMonth(),
+        );
+        if (todayIndex !== -1) setMobileDayIndex(todayIndex);
+
         return () => controller.abort();
     }, []);
 
@@ -117,7 +128,6 @@ export default function Calendar() {
 
     const handleSubmit = async (e: SyntheticEvent) => {
         e.preventDefault();
-
         const startMin = timeToMinutes(startTime);
         const endMin = timeToMinutes(endTime);
 
@@ -125,9 +135,23 @@ export default function Calendar() {
             showNotification("Veuillez saisir un titre et sélectionner au moins un jour.", "error");
             return;
         }
-
         if (endMin <= startMin) {
             showNotification("L'heure de fin doit être supérieure à l'heure de début.", "error");
+            return;
+        }
+
+        const hasConflict = objectives.some(obj => {
+            const sharedDay = selectedDays.some(day => obj.days_of_week.includes(day));
+            if (!sharedDay) return false;
+
+            const objStartMin = timeToMinutes(obj.start_time);
+            const objEndMin = timeToMinutes(obj.end_time);
+
+            return startMin < objEndMin && endMin > objStartMin;
+        });
+
+        if (hasConflict) {
+            showNotification("Conflit d'horaire : tu as déjà un objectif sur ce créneau.", "error");
             return;
         }
 
@@ -145,45 +169,35 @@ export default function Calendar() {
                 method: "POST",
                 credentials: "include",
                 body: JSON.stringify(newObj),
-                headers: {
-                    "Content-Type": "application/json",
-                },
+                headers: { "Content-Type": "application/json" },
             });
             if (res.ok) {
                 const createdObj = await res.json();
                 setObjectives(prev => [...prev, createdObj]);
-                showNotification("Objectif créé avec succès !", "success");
-
+                showNotification("Objectif créé !", "success");
                 setTitle("");
-                setStartTime("12:00");
-                setEndTime("14:00");
                 setSelectedDays([]);
             } else {
-                showNotification("Erreur lors de la création de l'objectif sur le serveur.", "error");
+                showNotification("Erreur de création.", "error");
             }
         } catch (err) {
-            console.error("Erreur serveur .:", err);
-            showNotification("Erreur de connexion au serveur.", "error");
+            showNotification("Erreur de connexion.", "error");
         }
     };
-
     const handleDelete = async (id?: number) => {
         if (!id) return;
         try {
-            const res = await fetchWithAuth(`/calendar/${id}`, {
-                method: "DELETE",
-                credentials: "include",
-            });
+            const res = await fetchWithAuth(`/calendar/${id}`, { method: "DELETE", credentials: "include" });
             if (!res.ok) throw new Error();
             setObjectives(prev => prev.filter(o => o.id !== id));
             showNotification("Objectif supprimé.", "success");
         } catch (err) {
-            console.error("Erreur lors de la suppression :", err);
-            showNotification("Erreur de suppression sur le serveur.", "error");
+            showNotification("Erreur de suppression.", "error");
         }
     };
 
     const isToday = (date: Date) => {
+        if (!date) return false;
         const now = new Date();
         return (
             date.getDate() === now.getDate() &&
@@ -212,7 +226,6 @@ export default function Calendar() {
 
                             <form className="objective-form glass-card" onSubmit={handleSubmit}>
                                 <h2 className="section-title">Créer un objectif</h2>
-
                                 <input
                                     type="text"
                                     placeholder="Titre de l'objectif..."
@@ -221,7 +234,6 @@ export default function Calendar() {
                                     className="input-field"
                                     required
                                 />
-
                                 <div className="select-with-icon-wrapper">
                                     <select
                                         value={category}
@@ -235,7 +247,6 @@ export default function Calendar() {
                                         ))}
                                     </select>
                                 </div>
-
                                 <div className="time-interval-wrapper">
                                     <Clock size={16} color="#A0AEC0" />
                                     <label className="duration-label">Horaire :</label>
@@ -243,8 +254,6 @@ export default function Calendar() {
                                         <input
                                             type="time"
                                             value={startTime}
-                                            min="06:00"
-                                            max="23:00"
                                             onChange={e => setStartTime(e.target.value)}
                                             className="input-field time-input"
                                             required
@@ -253,15 +262,12 @@ export default function Calendar() {
                                         <input
                                             type="time"
                                             value={endTime}
-                                            min="06:00"
-                                            max="23:00"
                                             onChange={e => setEndTime(e.target.value)}
                                             className="input-field time-input"
                                             required
                                         />
                                     </div>
                                 </div>
-
                                 <div className="days-picker">
                                     <label className="days-label">Jours programmés :</label>
                                     <div className="days-buttons">
@@ -277,7 +283,6 @@ export default function Calendar() {
                                         ))}
                                     </div>
                                 </div>
-
                                 <button type="submit" className="btn-primary">
                                     Créer l'objectif
                                 </button>
@@ -285,11 +290,10 @@ export default function Calendar() {
 
                             <div className="objectives-section-wrapper">
                                 <h3 className="section-title">Mes objectifs</h3>
-
                                 <div className="objectives-list">
                                     {objectives.length === 0 ? (
                                         <div className="glass-card empty-state">
-                                            <p className="empty-msg">Aucun objectif pour l'instant.</p>
+                                            <p className="empty-msg">Aucun objectif.</p>
                                         </div>
                                     ) : (
                                         objectives.map(obj => {
@@ -309,17 +313,14 @@ export default function Calendar() {
                                                         <div className="tags-container">
                                                             <span className="category-label">{obj.category}</span>
                                                             <span className="frequency-label">
-                                                                • {obj.start_time || "12:00"} -{" "}
-                                                                {obj.end_time || "14:00"}
+                                                                • {obj.start_time} - {obj.end_time}
                                                             </span>
-                                                            <span className="frequency-label">• {obj.frequency}</span>
                                                         </div>
                                                     </div>
                                                     <button
                                                         type="button"
                                                         className="close-btn"
                                                         onClick={() => handleDelete(obj.id)}
-                                                        aria-label="Supprimer l'objectif"
                                                     >
                                                         ✕
                                                     </button>
@@ -332,7 +333,8 @@ export default function Calendar() {
                         </aside>
 
                         <section className="grid-section glass-card">
-                            <div className="calendar-grid-header">
+                            {/* PC */}
+                            <div className="calendar-grid-header desktop-only">
                                 <div style={{ width: "50px", flexShrink: 0 }}></div>
                                 <div style={{ display: "flex", flex: 1, minWidth: 0 }}>
                                     {weekDays.map(d => (
@@ -347,6 +349,27 @@ export default function Calendar() {
                                 </div>
                             </div>
 
+                            {/*MOBILE*/}
+                            <div className="mobile-day-nav">
+                                <button
+                                    onClick={() => setMobileDayIndex(prev => Math.max(0, prev - 1))}
+                                    disabled={mobileDayIndex === 0}
+                                >
+                                    <ChevronLeft size={20} />
+                                </button>
+                                <div className="mobile-day-title">
+                                    <span className={isToday(weekDays[mobileDayIndex]?.date) ? "today-text" : ""}>
+                                        {weekDays[mobileDayIndex]?.name} {weekDays[mobileDayIndex]?.date.getDate()}
+                                    </span>
+                                </div>
+                                <button
+                                    onClick={() => setMobileDayIndex(prev => Math.min(6, prev + 1))}
+                                    disabled={mobileDayIndex === 6}
+                                >
+                                    <ChevronRight size={20} />
+                                </button>
+                            </div>
+
                             <div className="calendar-grid-body-time">
                                 <div className="time-sidebar">
                                     {HOURS_RANGE.map(hour => (
@@ -359,23 +382,21 @@ export default function Calendar() {
                                 <div className="day-cells-container">
                                     {weekDays.map((d, dayIndex) => {
                                         const dayObjectives = objectivesByDay[dayIndex] || [];
+                                        const isMobileActive = dayIndex === mobileDayIndex;
 
                                         return (
                                             <div
                                                 key={d.name}
-                                                className={`day-cell-time ${isToday(d.date) ? "today" : ""}`}
+                                                className={`day-cell-time ${isToday(d.date) ? "today" : ""} ${isMobileActive ? "mobile-active" : ""}`}
                                             >
                                                 {dayObjectives.map(obj => {
                                                     const catConfig = CATEGORIES[obj.category] || CATEGORIES["Sport"];
                                                     const IconComponent = catConfig.icon;
                                                     const baseColor = catConfig.color;
-
                                                     const rawStartMin = timeToMinutes(obj.start_time || "12:00");
                                                     const rawEndMin = timeToMinutes(obj.end_time || "14:00");
-
                                                     const startMinOffset = Math.max(0, rawStartMin - START_HOUR * 60);
                                                     const durationMin = Math.max(rawEndMin - rawStartMin, 15);
-
                                                     const topPercent = (startMinOffset / TOTAL_MINUTES) * 100;
                                                     const heightPercent = (durationMin / TOTAL_MINUTES) * 100;
 

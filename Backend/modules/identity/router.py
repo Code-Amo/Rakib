@@ -3,18 +3,23 @@ from sqlalchemy.orm import Session
 from . import schemas, services, models
 from core.database import get_db  
 import random
-from core.security import create_access_token, create_refresh_token ,get_current_user
+import os
+from core.security import create_access_token, create_refresh_token, get_current_user
 from core.security import refresh_token as refresh_token_service
 from datetime import datetime, timezone, timedelta
 from modules.identity.models import User
 from .schemas import AvatarUpdate 
-from modules.Panel.models import UserStats
-
+import jwt
+from core.security import SECRET_KEY, ALGORITHM
+from core.rate_limiter import limiter
 
 router = APIRouter()
 
+is_production = os.getenv("ENVIRONMENT") == "production"
+
 @router.post("/register", response_model=schemas.UserResponse, status_code=status.HTTP_201_CREATED)
-def register_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
+@limiter.limit("3/hour")
+def register_user(request: Request, user: schemas.UserCreate, db: Session = Depends(get_db)):
     if not user.accepted_cgu:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
@@ -35,19 +40,33 @@ def register_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
         )
 
     code = str(random.randint(100000, 999999))
-    print(f"le code est : {code}")
 
     db_user = services.create_user(db=db, user=user, code=code)
-
-    new_stats = UserStats(user_id=db_user.id)
-    db.add(new_stats)
-    db.commit()
-    db.refresh(new_stats)
+    services.send_verification_email(user.email, code)
 
     return db_user
 
+@router.post("/resend-verification")
+@limiter.limit("3/hour")
+def resend_verification(request: Request, payload: schemas.ForgotPasswordRequest, db: Session = Depends(get_db)):
+    user = db.query(models.User).filter(models.User.email == payload.email).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="Utilisateur introuvable.")
+    
+    if user.is_verified:
+        raise HTTPException(status_code=400, detail="Ce compte est déjà vérifié.")
+
+    code = str(random.randint(100000, 999999))
+    user.verification_code = code
+    user.verification_expire_at = datetime.now(timezone.utc).replace(tzinfo=None) + timedelta(minutes=15)
+    db.commit()
+    
+    services.send_verification_email(user.email, code)    
+    return {"message": "Un nouveau code a été envoyé avec succès."}
+
 @router.post("/login")
-def login_user(credentials: schemas.UserLogin, response: Response, db: Session = Depends(get_db)):
+@limiter.limit("5/minute")
+def login_user(request: Request, credentials: schemas.UserLogin, response: Response, db: Session = Depends(get_db)):
     user = services.authenticate_user(db=db, email=credentials.email, password=credentials.password)
     if not user:
         raise HTTPException(
@@ -56,12 +75,13 @@ def login_user(credentials: schemas.UserLogin, response: Response, db: Session =
         )
     access_token = create_access_token(data={"sub": str(user.id)})
     refresh_token = create_refresh_token(data={"sub": str(user.id)})
+    
     response.set_cookie(
         key="refresh_token",
         value=refresh_token,
-        httponly=True,        # Empêche la lecture via JS (XSS)
-        samesite="lax",       # Protège contre les attaques CSRF
-        secure=False,         # Mettre à True en production avec HTTPS
+        httponly=True,
+        samesite="lax",
+        secure=is_production,
         max_age=30 * 24 * 3600 
     )
     response.set_cookie(
@@ -69,7 +89,7 @@ def login_user(credentials: schemas.UserLogin, response: Response, db: Session =
         value=access_token,
         httponly=True,       
         samesite="lax",       
-        secure=False,         
+        secure=is_production,         
         max_age=15*60 
     )
 
@@ -80,87 +100,94 @@ def login_user(credentials: schemas.UserLogin, response: Response, db: Session =
         "user_id": user.id,
         "username": user.username
     }
+
 @router.post("/verify-reset")
-def verify_code(payload: schemas.VerifyCode, db: Session = Depends(get_db)):
+@limiter.limit("10/minute")
+def verify_reset_code(request: Request, payload: schemas.VerifyCode, db: Session = Depends(get_db)):
     user = db.query(models.User).filter(models.User.email == payload.email).first()
     if not user:
         raise HTTPException(status_code=404, detail="Utilisateur introuvable.")
-    if user.verification_expire_at and datetime.now(timezone.utc) > user.verification_expire_at:
+    
+    now = datetime.now(timezone.utc).replace(tzinfo=None)
+    if user.verification_expire_at and now > user.verification_expire_at:
         raise HTTPException(status_code=400, detail="Le code de vérification a expiré")
-    print(payload.email)
-    print(f"{repr(user.verification_code)}")
-    print(f"{repr(payload.code)}")
+        
     if str(user.verification_code).strip() == str(payload.code).strip():
         user.is_verified = True
-        user.verification_expire_at = datetime.now(timezone.utc) + timedelta(minutes=3)
+        user.verification_expire_at = None 
         user.verification_code = None  
         db.commit()
         reset_token = create_access_token(data={"sub": str(user.id), "scope": "reset_password"})
-        return {"message": "Compte vérifié avec succès !",
-                "reset_token": reset_token
-        }
+        return {"message": "Compte vérifié avec succès !", "reset_token": reset_token}
     raise HTTPException(status_code=400, detail="Code de vérification incorrect.")
+
 @router.post("/verify-register")
-def verify_register(payload: schemas.VerifyCode, response:Response, db: Session = Depends(get_db)):
+@limiter.limit("10/minute")
+def verify_register(request: Request, payload: schemas.VerifyCode, response: Response, db: Session = Depends(get_db)):
     user = db.query(models.User).filter(models.User.email == payload.email).first()
     if not user:
         raise HTTPException(status_code=404, detail="Utilisateur introuvable.")
-    if user.verification_expire_at and datetime.now(timezone.utc) > user.verification_expire_at:
+    
+    now = datetime.now(timezone.utc).replace(tzinfo=None)
+    if user.verification_expire_at and now > user.verification_expire_at:
         raise HTTPException(status_code=400, detail="Le code de vérification a expiré")
-    print(payload.email)
-    print(f"{repr(user.verification_code)}")
-    print(f"{repr(payload.code)}")
+        
     if str(user.verification_code).strip() == str(payload.code).strip():
         user.is_verified = True
-        user.verification_expire_at = datetime.now(timezone.utc) + timedelta(minutes=3)
+        user.verification_expire_at = None
         user.verification_code = None  
         access_token = create_access_token(data={"sub": str(user.id)})
         refresh_token = create_refresh_token(data={"sub": str(user.id)})
         db.commit()
+        
         response.set_cookie(
-            key="refresh_token",
-            value=refresh_token,
-            httponly=True,        # Empêche la lecture via JS (XSS)
-            samesite="lax",       # Protège contre les attaques CSRF
-            secure=False,         # Mettre à True en production avec HTTPS
-            max_age=30 * 24 * 3600 
+            key="refresh_token", value=refresh_token, httponly=True, samesite="lax", secure=is_production, max_age=30 * 24 * 3600 
         )
         response.set_cookie(
-        key="access_token",
-        value=access_token,
-        httponly=True,        # Empêche la lecture via JS (XSS)
-        samesite="lax",       # Protège contre les attaques CSRF
-        secure=False,         # Mettre à True en production avec HTTPS
-        max_age=15*60 
-    )
+            key="access_token", value=access_token, httponly=True, samesite="lax", secure=is_production, max_age=15*60 
+        )
+        
         return {
-            "message": "Connexion réussie",
-            "access_token": access_token,
-            "token_type": "bearer",
-            "user_id": user.id,
-            "username": user.username
+            "message": "Connexion réussie", "access_token": access_token, "token_type": "bearer", "user_id": user.id, "username": user.username
         }
     raise HTTPException(status_code=400, detail="Code de vérification incorrect.")
+
 @router.post("/forget")
-def forget(payload: schemas.ForgotPasswordRequest, db: Session = Depends(get_db)):
+@limiter.limit("3/hour")
+def forget(request: Request, payload: schemas.ForgotPasswordRequest, db: Session = Depends(get_db)):
     user = db.query(models.User).filter(models.User.email == payload.email).first()
     if not user:
         raise HTTPException(status_code=404, detail="Aucun compte n'est inscris avec cet e-mail.")
-    code = random.randint(100000,900000)
+    code = str(random.randint(100000, 900000))
     user.verification_code = code
-    user.verification_expire_at = datetime.now(timezone.utc) + timedelta(minutes=3)
+    user.verification_expire_at = datetime.now(timezone.utc).replace(tzinfo=None) + timedelta(minutes=15)
     db.commit()
-    print(payload.email)
-    print(f"{repr(user.verification_code)}")
+    services.send_verification_email(user.email, code)
     return {"message": "Compte trouvé !"}
+
 @router.post("/password-reset")
-def reset_password(payload: schemas.ResetPassword, db: Session=Depends(get_db)):
-    user = db.query(models.User).filter(models.User.email == payload.email).first()
-    if not user:
-        raise HTTPException(status_code=404, detail="Aucun compte trouvé")
+@limiter.limit("5/hour")
+def reset_password(request: Request, payload: schemas.ResetPassword, db: Session=Depends(get_db)):
+    try:
+        token_data = jwt.decode(payload.reset_token, SECRET_KEY, algorithms=[ALGORITHM])
+        user_id_from_token = token_data.get("sub")
+        scope = token_data.get("scope")
+        
+        if scope != "reset_password":
+            raise HTTPException(status_code=403, detail="Token invalide pour cette action.")
+            
+        user = db.query(models.User).filter(models.User.id == int(user_id_from_token)).first()
+        if not user or user.email != payload.email:
+            raise HTTPException(status_code=403, detail="Action non autorisée.")
+            
+    except jwt.ExpiredSignatureError:
+        raise HTTPException(status_code=401, detail="Le lien de réinitialisation a expiré.")
+    except Exception:
+        raise HTTPException(status_code=401, detail="Token invalide.")
+
     user.hashed_password = services.hash_password(payload.new_password)
     db.commit()
-    return {"message": "Mot de passe réinitialié avec succès :"}
+    return {"message": "Mot de passe réinitialisé avec succès !"}
 
 @router.put("/me/avatar", status_code=status.HTTP_200_OK)
 def update_user_avatar(
@@ -169,7 +196,6 @@ def update_user_avatar(
     current_user: User = Depends(get_current_user)
 ):
     current_user.avatar_url = data.avatar_url
-    
     db.commit()
     db.refresh(current_user)
     
@@ -181,3 +207,44 @@ def update_user_avatar(
 @router.post("/refresh")
 def refresh_token(request: Request, response: Response):
     return refresh_token_service(request, response)
+
+@router.put("/me")
+def update_profile(
+    data: schemas.UserUpdateName,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    if not data.name.strip():
+        raise HTTPException(status_code=400, detail="Le nom ne peut pas être vide.")
+    
+    updated_user = services.update_user_name(db, current_user, data.name.strip())
+    return {"message": "Profil mis à jour avec succès.", "name": updated_user.name}
+
+@router.put("/me/password")
+def update_password(
+    data: schemas.UserUpdatePassword,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    if len(data.new_password) < 8:
+        raise HTTPException(status_code=400, detail="Le nouveau mot de passe doit faire au moins 8 caractères.")
+        
+    try:
+        services.update_user_password(db, current_user, data.old_password, data.new_password)
+        return {"message": "Mot de passe mis à jour avec succès."}
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+@router.delete("/me", status_code=status.HTTP_200_OK)
+def delete_account(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    services.delete_user_account(db, current_user)
+    return {"message": "Compte supprimé avec succès."}
+
+@router.post("/logout")
+def logout(response: Response):
+    response.delete_cookie(key="access_token", httponly=True, samesite="lax")
+    response.delete_cookie(key="refresh_token", httponly=True, samesite="lax")
+    return {"message": "Déconnexion réussie."}

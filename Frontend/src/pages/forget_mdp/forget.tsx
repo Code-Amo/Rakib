@@ -37,8 +37,17 @@ export default function Forget() {
 
     return (
         <div className="login-card-f">
+            <div className="login-brand-f">
+                <svg width="72" height="72" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M32 10 L52 28 L46 34 L32 21 L18 34 L12 28 Z" fill="#9501d9" />
+                    <path d="M32 25 L52 43 L46 49 L32 36 L18 49 L12 43 Z" fill="#9501d9" />
+                    <path d="M32 40 L52 58 L46 64 L32 51 L18 64 L12 58 Z" fill="#9501d9" />
+                </svg>
+                <h1 className="login-brand-text-f">Rakib</h1>
+            </div>
+
             <form className="login-form-f" onSubmit={handleSubmit} noValidate>
-                <h1 className="title-f">Récupération</h1>
+                <h2 className="title-f">Récupération</h2>
                 <p className="subtitle-f">Entrez votre e-mail pour recevoir un code de vérification.</p>
 
                 <div className="form-group-f">

@@ -24,3 +24,23 @@ dist-ssr
 *.sw?
 .env
 supabaseClient.ts
+# Backend
+Backend/.env
+Backend/.venv/
+Backend/venv/
+__pycache__/
+*.pyc
+
+# Frontend
+Frontend/.env
+Frontend/node_modules/
+Frontend/dist/
+Frontend/build/
+
+# General
+.env
+.env.local
+.DS_Store
+__pycache__/
+*.pyc
+*.pyo

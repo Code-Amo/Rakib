@@ -7,41 +7,67 @@ export default function Verification() {
     const navigate = useNavigate();
     const email = location.state?.email || "";
     const flow = location.state?.flow || "register";
+
     const [otp, setOtp] = useState(new Array(6).fill(""));
     const [error, setError] = useState<string | null>(null);
+    const [success, setSuccess] = useState<string | null>(null);
 
     const handleOtpChange = (element: HTMLInputElement, index: number) => {
-        if (isNaN(Number(element.value))) return false;
+        if (isNaN(Number(element.value))) return;
 
         const newOtp = [...otp];
         newOtp[index] = element.value;
         setOtp(newOtp);
 
-        if (element.nextSibling && element.value !== "") {
+        if (element.value !== "" && element.nextSibling) {
             (element.nextSibling as HTMLInputElement).focus();
         }
     };
 
+    const handleOtpKeyDown = (e: React.KeyboardEvent<HTMLInputElement>, index: number) => {
+        if (e.key === "Backspace" && !otp[index] && index > 0) {
+            const prevSibling = e.currentTarget.previousSibling as HTMLInputElement;
+            if (prevSibling) prevSibling.focus();
+        }
+    };
+
     const handleResendCode = async () => {
+        setError(null);
+        setSuccess(null);
         try {
-            const response = await fetch("http://127.0.0.1:8000/auth/verify-reset", {
+            const endpoint =
+                flow === "forget"
+                    ? "http://127.0.0.1:8000/auth/forget"
+                    : "http://127.0.0.1:8000/auth/resend-verification";
+
+            const response = await fetch(endpoint, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ email }),
             });
 
             if (response.ok) {
-                alert("Un nouveau code a été envoyé !");
+                setSuccess("Un nouveau code vous a été envoyé !");
+                setTimeout(() => setSuccess(null), 4000);
+            } else {
+                setError("Impossible de renvoyer le code.");
             }
         } catch (error) {
             console.error("Erreur renvoi :", error);
+            setError("Erreur serveur.");
         }
     };
 
-    const handleVerifyCode = async (e: React.FormEvent<HTMLFormElement>) => {
+    const handleVerifyCode = async (e: React.SubmitEvent<HTMLFormElement>) => {
         e.preventDefault();
         setError(null);
+        setSuccess(null);
         const code = otp.join("");
+
+        if (code.length < 6) {
+            setError("Veuillez remplir les 6 chiffres.");
+            return;
+        }
 
         const endpoint =
             flow === "forget"
@@ -54,10 +80,11 @@ export default function Verification() {
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ email, code }),
             });
+            const data = await response.json();
 
             if (response.ok) {
                 if (flow === "forget") {
-                    navigate("/new_mdp", { state: { email: email } });
+                    navigate("/new-mdp", { state: { email: email, reset_token: data.reset_token } });
                 } else {
                     navigate("/home");
                 }
@@ -70,13 +97,25 @@ export default function Verification() {
     };
 
     return (
-        <div className="login-card-verfication">
-            <form className="login-form-verfication" onSubmit={handleVerifyCode}>
-                <h1 className="title-verfication">Récupération</h1>
+        <div className="login-card-verification">
+            <div className="login-brand-verification">
+                <svg width="72" height="72" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M32 10 L52 28 L46 34 L32 21 L18 34 L12 28 Z" fill="#9501d9" />
+                    <path d="M32 25 L52 43 L46 49 L32 36 L18 49 L12 43 Z" fill="#9501d9" />
+                    <path d="M32 40 L52 58 L46 64 L32 51 L18 64 L12 58 Z" fill="#9501d9" />
+                </svg>
+                <h1 className="login-brand-text-verification">Rakib</h1>
+            </div>
+
+            <form className="login-form-verification" onSubmit={handleVerifyCode}>
+                <h2 className="title-verification">Vérification</h2>
                 <p className="subtitle-verification">
                     Code envoyé à <span className="email-highlight">{email || "votre e-mail"}</span>
                 </p>
+
                 {error && <p className="error-message">{error}</p>}
+                {success && <p className="success-message">{success}</p>}
+
                 <div className="otp-container">
                     {otp.map((data, index) => (
                         <input
@@ -87,20 +126,24 @@ export default function Verification() {
                             key={index}
                             value={data}
                             onChange={e => handleOtpChange(e.target, index)}
+                            onKeyDown={e => handleOtpKeyDown(e, index)}
                             onFocus={e => e.target.select()}
                         />
                     ))}
                 </div>
+
                 <div className="resend-box">
-                    <span>Vous n'avez rien reçu ? </span>
+                    <span>Vous n'avez rien reçu ?</span>
                     <button type="button" className="btn-resend" onClick={handleResendCode}>
                         Renvoyer le code
                     </button>
                 </div>
-                <button type="submit" className="btn-submit-verfication">
+
+                <button type="submit" className="btn-submit-verification">
                     Confirmer
                 </button>
-                <button type="button" className="btn-switch-verfication" onClick={() => window.history.back()}>
+
+                <button type="button" className="btn-switch-verification" onClick={() => window.history.back()}>
                     Retour
                 </button>
             </form>

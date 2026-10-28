@@ -350,3 +350,72 @@
         transform: scale(1.15);
     }
 }
+
+.panel-loading-container,
+.panel-error-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    width: 100%;
+    gap: 16px;
+    text-align: center;
+    padding: 24px;
+    box-sizing: border-box;
+}
+
+.panel-loading-container p,
+.panel-error-text {
+    color: #a6adc8;
+    font-size: 14px;
+    font-family: "Inter", system-ui, sans-serif;
+    margin: 0;
+    line-height: 1.5;
+}
+
+.panel-spinner {
+    color: #7b2fbe;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.panel-error-container {
+    background: rgba(229, 62, 62, 0.05);
+    border: 1px dashed rgba(229, 62, 62, 0.3);
+    border-radius: 16px;
+    height: auto;
+    margin: auto 0;
+}
+
+.panel-retry-btn {
+    margin-top: 8px;
+    background: rgba(123, 47, 190, 0.2);
+    border: 1px solid #7b2fbe;
+    color: #ffffff;
+    padding: 8px 20px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: "Inter", system-ui, sans-serif;
+}
+
+.panel-retry-btn:hover {
+    background: #7b2fbe;
+    box-shadow: 0 0 12px rgba(123, 47, 190, 0.4);
+    transform: translateY(-1px);
+}
+
+.panel-retry-btn:active {
+    transform: translateY(0) scale(0.98);
+}

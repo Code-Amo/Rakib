@@ -57,13 +57,12 @@ def get_current_user(
     if not user_id:
         raise HTTPException(status_code=401, detail="Token invalide (ID manquant)")
     
-    user = db.query(User).filter(User.id == user_id).first()
+    user = db.query(User).filter(User.id == int(user_id)).first()
     
     if user is None:
         raise HTTPException(status_code=404, detail="Utilisateur introuvable")
     
     return user
-
 def refresh_token(request: Request, response: Response):
     refresh_token = request.cookies.get("refresh_token")
     if not refresh_token:

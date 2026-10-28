@@ -7,7 +7,7 @@ class UserStats(Base):
     __tablename__ = "user_stats"
 
     id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(Integer, ForeignKey("users.id"), unique=True)
+    user_id = Column(Integer, ForeignKey("users.id",ondelete="CASCADE"), unique=True)
 
     xp_sport = Column(Integer, default=0)
     xp_intel = Column(Integer, default=0)

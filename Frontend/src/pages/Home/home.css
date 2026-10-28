@@ -60,7 +60,7 @@
 .companion-widget,
 .secret-garden-widget {
     height: 100%;
-    margin-top: 30px;
+    margin-top: 25px;
     display: flex;
     flex-direction: column;
 }
@@ -222,4 +222,50 @@
 
 .home-widgets > div:hover {
     transform: translateY(-4px);
+}
+@media (max-width: 768px) {
+    .home-page-wrapper {
+        display: flex;
+        flex-direction: column;
+        padding-left: 0;
+        padding-bottom: 100px;
+
+        height: auto !important;
+        min-height: 100vh;
+        overflow: visible !important;
+
+        gap: 0;
+    }
+
+    .home-main-content {
+        padding: 20px;
+        padding-top: 30px;
+
+        height: auto !important;
+        overflow: visible !important;
+
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .home-side-panel {
+        display: none;
+    }
+
+    .home-widgets {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+
+    .home-title {
+        font-size: 24px;
+    }
+
+    .stats-radar-widget,
+    .today-focus-widget,
+    .companion-widget,
+    .secret-garden-widget {
+        margin-top: 0;
+        height: auto;
+    }
 }

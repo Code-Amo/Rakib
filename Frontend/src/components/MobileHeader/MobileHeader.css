@@ -1,0 +1,119 @@
+.mobile-header {
+    display: none;
+}
+
+@media (max-width: 768px) {
+    .mobile-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 70px;
+        padding: 0 20px;
+        box-sizing: border-box;
+        background: rgba(33, 33, 33, 0.144);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        z-index: 50;
+        border-radius: 10px;
+    }
+
+    .mobile-header-profile {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .mobile-avatar {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 1px solid rgba(123, 47, 190, 0.5);
+    }
+
+    .mobile-username {
+        font-size: 0.95rem;
+        font-weight: 600;
+        color: #ffffff;
+    }
+
+    .mobile-header-stats {
+        display: flex;
+        gap: 8px;
+    }
+
+    .mobile-stat-badge {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 10px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        cursor: pointer;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .flame-badge {
+        color: #ff6b00;
+        border-color: rgba(255, 107, 0, 0.2);
+    }
+
+    .trophy-badge {
+        color: #ffd700;
+        border-color: rgba(255, 215, 0, 0.2);
+        transition: transform 0.2s ease;
+    }
+
+    .trophy-badge:active {
+        transform: scale(0.95);
+    }
+}
+
+.mobile-avatar-label {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.mobile-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 1px solid rgba(123, 47, 190, 0.5);
+    transition: opacity 0.2s ease;
+}
+
+.mobile-avatar-label:hover .mobile-avatar {
+    opacity: 0.8;
+}
+
+.mobile-avatar-loader {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.spinner {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    100% {
+        transform: rotate(360deg);
+    }
+}

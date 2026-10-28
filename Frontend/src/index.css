@@ -9,14 +9,49 @@ body,
 #root {
     width: 100%;
     height: 100%;
-    margin: O;
-    padding: O;
+    margin: 0;
+    padding: 0;
     overflow: hidden;
     background-color: #141414;
     font-family:
         system-ui,
         -apple-system,
         sans-serif;
+}
+
+@media (max-width: 768px) {
+    html,
+    body,
+    #root {
+        overflow-y: auto !important;
+        overflow-x: hidden !important;
+        height: auto !important;
+    }
+
+    .main-content {
+        padding-top: 80px !important;
+    }
+}
+.custom-scrollbar::-webkit-scrollbar {
+    width: 8px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+    background: #141414;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background: rgba(149, 1, 217, 0.4);
+    border-radius: 10px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: rgba(149, 1, 217, 0.9);
+}
+
+.custom-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(149, 1, 217, 0.5) #141414;
 }
 @theme inline {
     --font-heading: var(--font-sans);

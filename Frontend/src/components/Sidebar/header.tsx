@@ -1,4 +1,5 @@
 import pic from "@/assets/logo.png";
+import { fetchWithAuth } from "@/function/api";
 import { supabase } from "@/supabaseClient";
 import { AlertCircle, Flame, Loader2, Pencil, Target, Trophy as TrophyIcon } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
@@ -44,8 +45,6 @@ interface DashboardData {
     today_focus: Task[];
 }
 
-const API_DASHBOARD_URL = "http://localhost:8000/panel/dashboard";
-
 export default function Panel() {
     const [isTrophyOpen, setIsTrophyOpen] = useState(false);
     const [data, setData] = useState<DashboardData | null>(null);
@@ -57,10 +56,8 @@ export default function Panel() {
         setIsLoading(true);
         setError(null);
         try {
-            const response = await fetch(API_DASHBOARD_URL, {
-                signal,
-                credentials: "include",
-            });
+            // Utilisation de fetchWithAuth pour gérer le rafraîchissement silencieux du token
+            const response = await fetchWithAuth("/panel/dashboard", { signal });
 
             if (!response.ok) {
                 throw new Error(`Erreur serveur (${response.status})`);
@@ -70,7 +67,7 @@ export default function Panel() {
             setData(json);
         } catch (err: any) {
             if (err.name !== "AbortError") {
-                setError(err.message || "Impossible de charger les données.");
+                setError(err.message || "Impossible de récupérer les données du profil.");
             }
         } finally {
             if (!signal?.aborted) {
@@ -113,9 +110,9 @@ export default function Panel() {
             const { data: urlData } = supabase.storage.from("avatars").getPublicUrl(fileName);
             const publicUrl = urlData.publicUrl;
 
-            const response = await fetch("http://localhost:8000/auth/me/avatar", {
+            // Utilisation de fetchWithAuth ici aussi
+            const response = await fetchWithAuth("/auth/me/avatar", {
                 method: "PUT",
-                credentials: "include",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ avatar_url: publicUrl }),
             });
@@ -131,7 +128,7 @@ export default function Panel() {
             });
         } catch (error) {
             console.error("Erreur upload:", error);
-            alert("Erreur lors de l'upload de l'image.");
+            alert("Impossible de mettre à jour la photo de profil.");
         } finally {
             setIsUploading(false);
         }
@@ -158,16 +155,16 @@ export default function Panel() {
             {isLoading && (
                 <div className="panel-loading-container">
                     <Loader2 className="panel-spinner" size={32} />
-                    <p>Chargement de votre profil...</p>
+                    <p>Connexion à votre espace...</p>
                 </div>
             )}
 
             {!isLoading && error && (
                 <div className="panel-error-container">
                     <AlertCircle size={28} color="#e53e3e" />
-                    <p className="panel-error-text">{error}</p>
+                    <p className="panel-error-text">Oups, impossible de charger votre profil.</p>
                     <button className="panel-retry-btn" disabled={isLoading} onClick={() => fetchDashboardData()}>
-                        Réessayer
+                        Actualiser
                     </button>
                 </div>
             )}
@@ -236,7 +233,7 @@ export default function Panel() {
                             </div>
                             <span className="stat-card-subtext">
                                 {(data.streak?.bonus_percentage || 0) > 0
-                                    ? `Bonus XP : +${data.streak?.bonus_percentage}%`
+                                    ? `Bonus XP actif : +${data.streak?.bonus_percentage}%`
                                     : `Plus que ${(data.streak?.next_milestone || 7) - (data.streak?.current || 0)} jours pour le bonus`}
                             </span>
                         </div>
@@ -266,7 +263,7 @@ export default function Panel() {
                             <div className="stat-card-header">
                                 <h3 className="stat-card-title flex-title">
                                     <Target size={16} color="#9f7aea" />
-                                    Objectif suivant
+                                    Prochain palier
                                 </h3>
                             </div>
                             <div className="next-achievement-info">

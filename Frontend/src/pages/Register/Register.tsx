@@ -107,8 +107,18 @@ export default function Register() {
 
     return (
         <div className="login-card-r">
+            <div className="login-brand-r">
+                <svg width="72" height="72" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M32 10 L52 28 L46 34 L32 21 L18 34 L12 28 Z" fill="#9501d9" />
+                    <path d="M32 25 L52 43 L46 49 L32 36 L18 49 L12 43 Z" fill="#9501d9" />
+                    <path d="M32 40 L52 58 L46 64 L32 51 L18 64 L12 58 Z" fill="#9501d9" />
+                </svg>
+                <h1 className="login-brand-text-r">Rakib</h1>
+            </div>
+
             <form className="login-form-r" onSubmit={handleSubmit} noValidate>
-                <h1 className="title-r">S'inscrire</h1>
+                <h2 className="title-r">S'inscrire</h2>
+
                 <div className="form-row-r">
                     <div className="form-group-r">
                         <input
@@ -133,6 +143,7 @@ export default function Register() {
                         />
                     </div>
                 </div>
+
                 <div className="form-group-r">
                     <input
                         className="input-r"
@@ -144,6 +155,7 @@ export default function Register() {
                         onChange={event => updateField("email")(event.target.value)}
                     />
                 </div>
+
                 <div className="form-group-r">
                     <input
                         className="input-r"
@@ -162,6 +174,7 @@ export default function Register() {
                         {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                     </button>
                 </div>
+
                 <div className="form-group-r">
                     <input
                         className="input-r"
@@ -173,6 +186,7 @@ export default function Register() {
                         onChange={event => updateField("confirmPassword")(event.target.value)}
                     />
                 </div>
+
                 <label className="cyberpunk-checkbox-label">
                     <input
                         type="checkbox"
@@ -182,27 +196,25 @@ export default function Register() {
                     />
                     <span>
                         Vous acceptez les{" "}
-                        <a href="/cgu.pdf" target="_blank" rel="noopener noreferrer" className="cyberpunk-link">
+                        <a href="/legal#cgu" target="_blank" rel="noopener noreferrer" className="cyberpunk-link">
                             CGU
                         </a>{" "}
                         et notre{" "}
-                        <a
-                            href="/politique-de-confidentialite.pdf"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="cyberpunk-link"
-                        >
+                        <a href="/legal#privacy" target="_blank" rel="noopener noreferrer" className="cyberpunk-link">
                             politique de confidentialité
                         </a>
                         .
                     </span>
                 </label>
+
                 {error && <p className="form-error-r">{error}</p>}
+
                 <button type="submit" className="btn-submit-r" disabled={loading}>
                     {loading ? "Création du compte..." : "Débuter l'aventure"}
                 </button>
+
                 <button type="button" className="btn-switch-r" onClick={() => navigate("/login")}>
-                    Se connecter
+                    Déjà un compte ? Se connecter
                 </button>
             </form>
         </div>

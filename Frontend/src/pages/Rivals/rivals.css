@@ -500,3 +500,63 @@
         transform: rotate(360deg);
     }
 }
+@media (max-width: 768px) {
+    .rivals-page-container-rivals {
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        padding: 16px !important;
+        padding-bottom: 100px !important;
+        width: 100% !important;
+        max-width: 100vw !important;
+        box-sizing: border-box !important;
+        overflow-x: hidden !important;
+    }
+
+    .rivals-header-rivals {
+        margin-bottom: 20px;
+    }
+
+    .rivals-title-rivals {
+        font-size: 1.5rem;
+    }
+
+    .rivals-grid-layout-rivals {
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .rivals-left-column-rivals,
+    .rivals-right-column-rivals {
+        flex: 1 1 100%;
+        width: 100%;
+    }
+
+    .companion-card-rivals {
+        padding: 16px;
+    }
+
+    .pending-card-rivals {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+
+    .pending-actions-rivals {
+        width: 100%;
+        justify-content: flex-end;
+    }
+
+    .btn-action-rivals {
+        flex: 1;
+        justify-content: center;
+        padding: 10px 12px;
+    }
+
+    .card-header-flex-rivals {
+        align-items: flex-start;
+    }
+
+    .invite-form-rivals {
+        gap: 12px;
+    }
+}

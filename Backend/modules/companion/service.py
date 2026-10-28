@@ -65,6 +65,7 @@ def remove_companion(db: Session, user_id: int, companionship_id: int):
     db.refresh(companion)
     
     return {"message": "Action effectuée avec succès."}
+
 def get_my_companions(db: Session, user_id: int):
     companionships = db.query(Companionship).options(
         joinedload(Companionship.user1),
