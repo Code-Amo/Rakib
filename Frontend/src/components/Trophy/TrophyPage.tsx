@@ -1,3 +1,4 @@
+import { fetchWithAuth } from "@/function/api";
 import { AlertCircle, Brain, Briefcase, Dumbbell, Gem, Palette, Wind, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
@@ -20,7 +21,6 @@ const LOCAL_TROPHIES: TrophyItem[] = [
         rarity: "platinum",
         category: "platinum",
     },
-
     {
         id: "sport_1",
         title: "Premier Pas",
@@ -56,7 +56,6 @@ const LOCAL_TROPHIES: TrophyItem[] = [
         rarity: "gold",
         category: "sport",
     },
-
     {
         id: "intel_1",
         title: "Étincelle",
@@ -92,7 +91,6 @@ const LOCAL_TROPHIES: TrophyItem[] = [
         rarity: "gold",
         category: "intelligence",
     },
-
     {
         id: "creat_1",
         title: "Première oeuvre",
@@ -128,7 +126,6 @@ const LOCAL_TROPHIES: TrophyItem[] = [
         rarity: "gold",
         category: "créativité",
     },
-
     {
         id: "career_1",
         title: "Premier contrat",
@@ -164,7 +161,6 @@ const LOCAL_TROPHIES: TrophyItem[] = [
         rarity: "gold",
         category: "career",
     },
-
     {
         id: "mental_1",
         title: "Pause Mentale",
@@ -206,7 +202,6 @@ interface TrophyPageProps {
     onClose: () => void;
 }
 
-const API_BASE_URL = "http://localhost:8000/trophy";
 const CACHE_KEY = "user_unlocked_trophies";
 
 const CATEGORY_CONFIG = {
@@ -245,9 +240,8 @@ export default function TrophyPage({ onClose }: TrophyPageProps) {
         }
 
         try {
-            const res = await fetch(API_BASE_URL, {
+            const res = await fetchWithAuth("/trophy", {
                 method: "GET",
-                credentials: "include",
                 headers: {
                     "Content-Type": "application/json",
                 },

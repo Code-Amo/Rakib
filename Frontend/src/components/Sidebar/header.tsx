@@ -1,4 +1,4 @@
-import pic from "@/assets/ichigo.jpg";
+import pic from "@/assets/logo.png";
 import { supabase } from "@/supabaseClient";
 import { AlertCircle, Flame, Loader2, Pencil, Target, Trophy as TrophyIcon } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";

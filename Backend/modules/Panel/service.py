@@ -4,6 +4,8 @@ from modules.Panel.models import UserStats, Achievement, UserAchievement
 from modules.Calendar.models import Objective
 from modules.Checkins.models import Checkin
 from modules.Progression.service import calculate_global_stats
+from sqlalchemy import func
+
 def get_dashboard_data(db: Session, current_user):
     stats = db.query(UserStats).filter(UserStats.user_id == current_user.id).first()
     
@@ -20,15 +22,22 @@ def get_dashboard_data(db: Session, current_user):
         Achievement.category != 'global'
     ).all()
     
+    checkin_counts = db.query(
+        Objective.category, 
+        func.count(Checkin.id)
+    ).join(Checkin, Checkin.objective_id == Objective.id)\
+     .filter(Checkin.user_id == current_user.id)\
+     .group_by(Objective.category).all()
+     
+    counts_dict = {category: count for category, count in checkin_counts}
+    # ------------------------
+
     next_ach = None
     min_remaining = float('inf')
     best_current_count = 0
 
     for ach in all_unlocked_achievements:
-        current_count = db.query(Checkin).join(Objective).filter(
-            Checkin.user_id == current_user.id,
-            Objective.category == ach.category
-        ).count()
+        current_count = counts_dict.get(ach.category, 0)
         
         current_count = min(current_count, ach.target)
         remaining = ach.target - current_count
@@ -52,6 +61,7 @@ def get_dashboard_data(db: Session, current_user):
             "current_count": 1,
             "target_count": 1
         }
+        
     tasks_db = db.query(Objective).filter(Objective.user_id == current_user.id).limit(3).all()
     today_focus = [{"id": str(t.id), "title": t.title, "completed": False} for t in tasks_db]
     if not today_focus:

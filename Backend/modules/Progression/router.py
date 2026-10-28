@@ -1,10 +1,11 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from core.database import get_db
 from core.security import get_current_user
 from modules.Panel.models import UserStats
 from .schemas import GlobalStatsResponse
 from .service import calculate_global_stats
+from . import service
 
 router = APIRouter()
 
@@ -26,3 +27,13 @@ def get_progression(
             "mental": stats.xp_mental if stats else 0,
         }
     }
+
+@router.get("/weekly-chart")
+def get_chart_data(
+    db: Session = Depends(get_db),
+    current_user = Depends(get_current_user)
+):
+    try:
+        return service.get_weekly_xp_chart(db, current_user.id)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))

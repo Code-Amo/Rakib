@@ -1,9 +1,9 @@
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 from datetime import datetime, timezone
 from .models import Companionship
 from modules.identity.models import User
 from modules.Calendar.models import Objective
-from modules.Checkins.service import Checkin
+from modules.Checkins.models import Checkin
 
 def send_invite(db: Session, user_id: int, pseudo: str, category: str, target: int):
     friend = db.query(User).filter(User.username == pseudo).first()
@@ -47,6 +47,7 @@ def accept_invite(db: Session, user_id: int, companionship_id: int):
     db.commit()
     db.refresh(companion)
     return companion
+
 def remove_companion(db: Session, user_id: int, companionship_id: int):
     companion = db.query(Companionship).filter(Companionship.id == companionship_id).first()
 
@@ -54,18 +55,21 @@ def remove_companion(db: Session, user_id: int, companionship_id: int):
         raise ValueError("Ce compagnonnage n'existe pas.")
     
     if user_id != companion.user1_id and user_id != companion.user2_id:
-        raise ValueError("Tu n'as pas le droit de supprimer ce compagnon.")
+        raise ValueError("Tu n'as pas le droit d'effectuer cette action.")
 
-    if companion.status != "accepted":
-        raise ValueError("Vous n'êtes pas compagnons actuellement (statut: " + companion.status + ")")
+    if companion.status not in ["accepted", "pending"]:
+        raise ValueError("Cette action n'est pas possible avec le statut actuel (" + companion.status + ")")
 
     companion.status = "cancelled"
     db.commit()
     db.refresh(companion)
     
-    return {"message": "Compagnon retiré avec succès."}
+    return {"message": "Action effectuée avec succès."}
 def get_my_companions(db: Session, user_id: int):
-    companionships = db.query(Companionship).filter(
+    companionships = db.query(Companionship).options(
+        joinedload(Companionship.user1),
+        joinedload(Companionship.user2)
+    ).filter(
         (Companionship.user1_id == user_id) | (Companionship.user2_id == user_id)
     ).all()
 
@@ -74,12 +78,11 @@ def get_my_companions(db: Session, user_id: int):
     completed = []
 
     for comp in companionships:
-        other_id = comp.user2_id if comp.user1_id == user_id else comp.user1_id
-        other_user = db.query(User).filter(User.id == other_id).first()
+        other_user = comp.user2 if comp.user1_id == user_id else comp.user1
         
         data = {
             "id": comp.id,
-            "pseudo": other_user.pseudo if other_user else "Inconnu",
+            "pseudo": other_user.username if other_user else "Inconnu",
             "category": comp.category,
             "target_checkins": comp.target_checkins,
             "status": comp.status,
@@ -95,6 +98,7 @@ def get_my_companions(db: Session, user_id: int):
                 Checkin.date >= comp.start_date
             ).count()
 
+            other_id = other_user.id if other_user else 0
             data["companion_checkins"] = db.query(Checkin).join(Objective).filter(
                 Checkin.user_id == other_id,
                 Objective.category == comp.category,

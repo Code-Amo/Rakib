@@ -1,7 +1,30 @@
 import { fetchWithAuth } from "@/function/api";
-import { AlertCircle, Award, Brain, Briefcase, Dumbbell, Flame, Loader2, Palette, Wind } from "lucide-react";
+import {
+    AlertCircle,
+    Award,
+    BarChart3,
+    Brain,
+    Briefcase,
+    Dumbbell,
+    Flame,
+    Loader2,
+    Palette,
+    TrendingUp,
+    Wind,
+} from "lucide-react";
 import React, { useEffect, useState } from "react";
-import { Bar, BarChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+import {
+    Area,
+    AreaChart,
+    Bar,
+    BarChart,
+    CartesianGrid,
+    Cell,
+    ResponsiveContainer,
+    Tooltip,
+    XAxis,
+    YAxis,
+} from "recharts";
 import "./stats.css";
 
 interface ProgressionData {
@@ -16,6 +39,11 @@ interface ProgressionData {
         career: number;
         mental: number;
     };
+}
+
+interface WeeklyData {
+    day: string;
+    xp: number;
 }
 
 interface StatConfigItem {
@@ -35,13 +63,27 @@ const STAT_CONFIG: StatConfigItem[] = [
 
 const CustomTooltip = ({ active, payload, label }: any) => {
     if (active && payload && payload.length) {
-        const data = payload[0];
         return (
-            <div className="custom-tooltip">
-                <p className="tooltip-label">{label}</p>
-                <p className="tooltip-value" style={{ color: data.payload.color }}>
-                    {data.value} XP
+            <div
+                className="custom-tooltip"
+                style={{
+                    backgroundColor: "#141414",
+                    border: "1px solid #7b2fbe",
+                    padding: "10px",
+                    borderRadius: "8px",
+                }}
+            >
+                <p className="tooltip-label" style={{ color: "#fff", margin: 0, fontWeight: "bold" }}>
+                    {label}
                 </p>
+                <div className="tooltip-items">
+                    {payload.map((entry: any, index: number) => (
+                        <p key={`tooltip-item-${index}`} style={{ color: entry.color || entry.stroke, margin: 0 }}>
+                            {entry.name ? `${entry.name} : ` : ""}
+                            {entry.value} XP
+                        </p>
+                    ))}
+                </div>
             </div>
         );
     }
@@ -50,22 +92,31 @@ const CustomTooltip = ({ active, payload, label }: any) => {
 
 export const Stats: React.FC = () => {
     const [data, setData] = useState<ProgressionData | null>(null);
+    const [weeklyData, setWeeklyData] = useState<WeeklyData[]>([]);
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
+    const [chartType, setChartType] = useState<"bar" | "line">("bar");
 
     useEffect(() => {
-        const fetchProgression = async () => {
+        const fetchAllData = async () => {
             try {
                 setIsLoading(true);
                 setError(null);
-                const response = await fetchWithAuth("/progression/");
 
-                if (!response.ok) {
-                    throw new Error(`Erreur HTTP: ${response.status}`);
+                const [resProgression, resWeekly] = await Promise.all([
+                    fetchWithAuth("/progression/"),
+                    fetchWithAuth("/progression/weekly-chart"),
+                ]);
+
+                if (!resProgression.ok || !resWeekly.ok) {
+                    throw new Error(`Erreur de chargement des données.`);
                 }
 
-                const result: ProgressionData = await response.json();
-                setData(result);
+                const resultProgression: ProgressionData = await resProgression.json();
+                const resultWeekly: WeeklyData[] = await resWeekly.json();
+
+                setData(resultProgression);
+                setWeeklyData(resultWeekly);
             } catch (err) {
                 setError(err instanceof Error ? err.message : "Une erreur est survenue");
             } finally {
@@ -73,7 +124,7 @@ export const Stats: React.FC = () => {
             }
         };
 
-        fetchProgression();
+        fetchAllData();
     }, []);
 
     if (isLoading) {
@@ -99,7 +150,7 @@ export const Stats: React.FC = () => {
         Math.round((data.current_xp_in_level / data.xp_for_next_level) * 100),
     );
 
-    const chartData = STAT_CONFIG.map(stat => ({
+    const barChartData = STAT_CONFIG.map(stat => ({
         name: stat.label,
         xp: data.breakdown[stat.key],
         color: stat.color,
@@ -138,45 +189,95 @@ export const Stats: React.FC = () => {
             </header>
 
             <section className="chart-card">
-                <h2 className="section-title">Aperçu des Statistiques</h2>
-                <div className="chart-wrapper">
-                    <ResponsiveContainer width="100%" height={360}>
-                        <BarChart data={chartData} margin={{ top: 20, right: 20, left: -20, bottom: 0 }}>
-                            <XAxis
-                                dataKey="name"
-                                stroke="#A0AEC0"
-                                tickLine={false}
-                                axisLine={{ stroke: "rgba(255, 255, 255, 0.1)" }}
-                            />
-                            <YAxis
-                                stroke="#A0AEC0"
-                                tickLine={false}
-                                axisLine={{ stroke: "rgba(255, 255, 255, 0.1)" }}
-                            />
-                            <Tooltip content={<CustomTooltip />} cursor={{ fill: "rgba(255, 255, 255, 0.04)" }} />
-                            <Bar
-                                dataKey="xp"
-                                radius={[8, 8, 0, 0]}
-                                fill="#9501d9"
-                                shape={(props: any) => {
-                                    const { x, y, width, height, payload } = props;
-                                    return (
-                                        <g>
-                                            <rect
-                                                x={x}
-                                                y={y}
-                                                width={width}
-                                                height={height}
-                                                fill={payload.color}
-                                                rx={8}
-                                                ry={8}
-                                            />
-                                        </g>
-                                    );
-                                }}
-                            />
-                        </BarChart>
-                    </ResponsiveContainer>
+                <div className="chart-header-row">
+                    <h2 className="section-title">
+                        {chartType === "bar" ? "Aperçu des Statistiques" : "Évolution (7 derniers jours)"}
+                    </h2>
+                    <div className="chart-toggle-group">
+                        <button
+                            className={`chart-toggle-btn ${chartType === "bar" ? "active" : ""}`}
+                            onClick={() => setChartType("bar")}
+                            title="Graphique en barres"
+                        >
+                            <BarChart3 size={18} />
+                            <span>Statistiques</span>
+                        </button>
+                        <button
+                            className={`chart-toggle-btn ${chartType === "line" ? "active" : ""}`}
+                            onClick={() => setChartType("line")}
+                            title="Graphique évolutif"
+                        >
+                            <TrendingUp size={18} />
+                            <span>Évolution</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div className="chart-wrapper" key={chartType}>
+                    {chartType === "bar" ? (
+                        <ResponsiveContainer width="100%" height={360}>
+                            <BarChart data={barChartData} margin={{ top: 20, right: 20, left: -20, bottom: 0 }}>
+                                <XAxis
+                                    dataKey="name"
+                                    stroke="#A0AEC0"
+                                    tickLine={false}
+                                    axisLine={{ stroke: "rgba(255, 255, 255, 0.1)" }}
+                                />
+                                <YAxis
+                                    stroke="#A0AEC0"
+                                    tickLine={false}
+                                    axisLine={{ stroke: "rgba(255, 255, 255, 0.1)" }}
+                                />
+                                <Tooltip content={<CustomTooltip />} cursor={{ fill: "rgba(255, 255, 255, 0.04)" }} />
+                                <Bar dataKey="xp" radius={[8, 8, 0, 0]}>
+                                    {barChartData.map((entry, index) => (
+                                        <Cell key={`cell-${index}`} fill={entry.color} />
+                                    ))}
+                                </Bar>
+                            </BarChart>
+                        </ResponsiveContainer>
+                    ) : (
+                        <ResponsiveContainer width="100%" height={360}>
+                            <AreaChart data={weeklyData} margin={{ top: 20, right: 20, left: -20, bottom: 0 }}>
+                                <defs>
+                                    <linearGradient id="xpGradient" x1="0" y1="0" x2="0" y2="1">
+                                        <stop offset="5%" stopColor="#7b2fbe" stopOpacity={0.6} />
+                                        <stop offset="95%" stopColor="#7b2fbe" stopOpacity={0} />
+                                    </linearGradient>
+                                </defs>
+                                <CartesianGrid
+                                    strokeDasharray="3 3"
+                                    stroke="rgba(255, 255, 255, 0.05)"
+                                    vertical={false}
+                                />
+                                <XAxis
+                                    dataKey="day"
+                                    stroke="#A0AEC0"
+                                    tickLine={false}
+                                    axisLine={{ stroke: "rgba(255, 255, 255, 0.1)" }}
+                                />
+                                <YAxis
+                                    stroke="#A0AEC0"
+                                    tickLine={false}
+                                    axisLine={{ stroke: "rgba(255, 255, 255, 0.1)" }}
+                                />
+                                <Tooltip
+                                    content={<CustomTooltip />}
+                                    cursor={{ stroke: "rgba(255, 255, 255, 0.1)", strokeWidth: 1 }}
+                                />
+                                <Area
+                                    type="monotone"
+                                    dataKey="xp"
+                                    name="XP Total"
+                                    stroke="#9f7aea"
+                                    strokeWidth={3}
+                                    fillOpacity={1}
+                                    fill="url(#xpGradient)"
+                                    activeDot={{ r: 6, fill: "#7b2fbe", stroke: "#fff" }}
+                                />
+                            </AreaChart>
+                        </ResponsiveContainer>
+                    )}
                 </div>
             </section>
 

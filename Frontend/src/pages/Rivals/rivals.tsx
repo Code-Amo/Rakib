@@ -1,5 +1,17 @@
 import { fetchWithAuth } from "@/function/api";
-import { AlertCircle, Award, CheckCircle2, Loader2, Shield, Trash2, UserPlus, Users, XCircle } from "lucide-react";
+import {
+    AlertCircle,
+    Award,
+    CheckCircle2,
+    Loader2,
+    Mail,
+    Send,
+    Shield,
+    Trash2,
+    UserPlus,
+    Users,
+    XCircle,
+} from "lucide-react";
 import React, { useEffect, useState } from "react";
 import "./rivals.css";
 
@@ -13,12 +25,6 @@ export interface Companion {
     status: "pending" | "accepted" | "completed";
     is_requester: boolean;
     created_at?: string;
-}
-
-export interface ApiResponseData {
-    accepted?: Companion[];
-    pending?: Companion[];
-    completed?: Companion[];
 }
 
 export interface InviteFormData {
@@ -47,6 +53,9 @@ export const Rivals: React.FC = () => {
     const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false);
     const [selectedToDelete, setSelectedToDelete] = useState<Companion | null>(null);
 
+    const receivedInvites = pendingCompanions.filter(c => !c.is_requester);
+    const sentInvites = pendingCompanions.filter(c => c.is_requester);
+
     const fetchCompanions = async () => {
         try {
             setIsLoading(true);
@@ -66,6 +75,7 @@ export const Rivals: React.FC = () => {
             setIsLoading(false);
         }
     };
+
     useEffect(() => {
         fetchCompanions();
     }, []);
@@ -77,6 +87,7 @@ export const Rivals: React.FC = () => {
             [name]: name === "target_checkins" ? Number(value) : value,
         }));
     };
+
     const handleInviteSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
         e.preventDefault();
         if (!formData.pseudo.trim()) {
@@ -109,13 +120,18 @@ export const Rivals: React.FC = () => {
             setIsSubmitting(false);
         }
     };
+
     const handleAccept = async (id: number) => {
         try {
             setActionLoadingId(id);
             setError(null);
-            await fetchWithAuth(`/compagnon/${id}/accept`, {
+            const res = await fetchWithAuth(`/compagnon/${id}/accept`, {
                 method: "POST",
             });
+            if (!res.ok) {
+                const errorData = await res.json();
+                throw new Error(errorData.detail || "Impossible d'accepter l'invitation.");
+            }
             await fetchCompanions();
         } catch (err: any) {
             setError(err.message || "Impossible d'accepter l'invitation.");
@@ -128,9 +144,13 @@ export const Rivals: React.FC = () => {
         try {
             setActionLoadingId(id);
             setError(null);
-            await fetchWithAuth(`/compagnon/${id}`, {
+            const res = await fetchWithAuth(`/compagnon/${id}`, {
                 method: "DELETE",
             });
+            if (!res.ok) {
+                const errorData = await res.json();
+                throw new Error(errorData.detail || "Impossible d'effectuer cette action.");
+            }
             setShowDeleteModal(false);
             setSelectedToDelete(null);
             await fetchCompanions();
@@ -271,12 +291,11 @@ export const Rivals: React.FC = () => {
 
                         <section className="rivals-section-rivals">
                             <h2 className="rivals-section-title-rivals">
-                                <Users size={22} /> Demandes en attente
+                                <Mail size={22} /> Invitations reçues
                             </h2>
-
-                            {pendingCompanions.length > 0 ? (
+                            {receivedInvites.length > 0 ? (
                                 <div className="pending-list-rivals">
-                                    {pendingCompanions.map(comp => (
+                                    {receivedInvites.map(comp => (
                                         <div key={comp.id} className="companion-card-rivals pending-card-rivals">
                                             <div className="pending-details-rivals">
                                                 <span className="pending-user-rivals">{comp.pseudo}</span>
@@ -285,53 +304,74 @@ export const Rivals: React.FC = () => {
                                                     {comp.category})
                                                 </span>
                                             </div>
-
                                             <div className="pending-actions-rivals">
-                                                {!comp.is_requester ? (
-                                                    <>
-                                                        <button
-                                                            type="button"
-                                                            className="btn-action-rivals btn-accept-rivals"
-                                                            disabled={actionLoadingId === comp.id}
-                                                            onClick={() => handleAccept(comp.id)}
-                                                        >
-                                                            {actionLoadingId === comp.id ? (
-                                                                <Loader2 size={16} className="spinner-rivals" />
-                                                            ) : (
-                                                                <CheckCircle2 size={16} />
-                                                            )}
-                                                            <span>Accepter</span>
-                                                        </button>
-                                                        <button
-                                                            type="button"
-                                                            className="btn-action-rivals btn-decline-rivals"
-                                                            disabled={actionLoadingId === comp.id}
-                                                            onClick={() => handleDeclineOrBreak(comp.id)}
-                                                        >
-                                                            <XCircle size={16} />
-                                                            <span>Refuser</span>
-                                                        </button>
-                                                    </>
-                                                ) : (
-                                                    <div className="pending-sent-tag-rivals">
-                                                        <span>Invitation envoyée</span>
-                                                        <button
-                                                            type="button"
-                                                            className="btn-action-rivals btn-decline-rivals btn-icon-only-rivals"
-                                                            onClick={() => handleDeclineOrBreak(comp.id)}
-                                                            title="Annuler l'invitation"
-                                                        >
-                                                            <XCircle size={16} />
-                                                        </button>
-                                                    </div>
-                                                )}
+                                                <button
+                                                    type="button"
+                                                    className="btn-action-rivals btn-accept-rivals"
+                                                    disabled={actionLoadingId === comp.id}
+                                                    onClick={() => handleAccept(comp.id)}
+                                                >
+                                                    {actionLoadingId === comp.id ? (
+                                                        <Loader2 size={16} className="spinner-rivals" />
+                                                    ) : (
+                                                        <CheckCircle2 size={16} />
+                                                    )}
+                                                    <span>Accepter</span>
+                                                </button>
+                                                <button
+                                                    type="button"
+                                                    className="btn-action-rivals btn-decline-rivals"
+                                                    disabled={actionLoadingId === comp.id}
+                                                    onClick={() => handleDeclineOrBreak(comp.id)}
+                                                >
+                                                    <XCircle size={16} />
+                                                    <span>Refuser</span>
+                                                </button>
                                             </div>
                                         </div>
                                     ))}
                                 </div>
                             ) : (
                                 <div className="companion-card-rivals empty-card-rivals compact-rivals">
-                                    <p>Aucune demande en attente pour le moment.</p>
+                                    <p>Aucune invitation reçue.</p>
+                                </div>
+                            )}
+                        </section>
+
+                        <section className="rivals-section-rivals">
+                            <h2 className="rivals-section-title-rivals">
+                                <Send size={22} /> Invitations envoyées
+                            </h2>
+                            {sentInvites.length > 0 ? (
+                                <div className="pending-list-rivals">
+                                    {sentInvites.map(comp => (
+                                        <div key={comp.id} className="companion-card-rivals pending-card-rivals">
+                                            <div className="pending-details-rivals">
+                                                <span className="pending-user-rivals">{comp.pseudo}</span>
+                                                <span className="pending-goal-rivals">En attente de réponse...</span>
+                                            </div>
+                                            <div className="pending-actions-rivals">
+                                                <button
+                                                    type="button"
+                                                    className="btn-action-rivals btn-decline-rivals"
+                                                    disabled={actionLoadingId === comp.id}
+                                                    onClick={() => handleDeclineOrBreak(comp.id)}
+                                                    title="Annuler l'invitation"
+                                                >
+                                                    {actionLoadingId === comp.id ? (
+                                                        <Loader2 size={16} className="spinner-rivals" />
+                                                    ) : (
+                                                        <XCircle size={16} />
+                                                    )}
+                                                    <span>Annuler</span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            ) : (
+                                <div className="companion-card-rivals empty-card-rivals compact-rivals">
+                                    <p>Aucune invitation envoyée.</p>
                                 </div>
                             )}
                         </section>

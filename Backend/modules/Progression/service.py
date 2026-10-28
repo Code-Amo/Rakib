@@ -1,4 +1,7 @@
 from modules.Panel.models import UserStats
+from sqlalchemy import func
+from datetime import date, timedelta
+from modules.Checkins.models import Checkin
 
 def calculate_global_stats(stats: UserStats):
     if not stats:
@@ -29,3 +32,34 @@ def calculate_global_stats(stats: UserStats):
         "xp_for_next_level": xp_needed_for_next_level,
         "current_streak": stats.current_streak or 0
     }
+
+def get_weekly_xp_chart(db, user_id: int):
+    today = date.today()
+    seven_days_ago = today - timedelta(days=6)
+
+    results = db.query(
+        Checkin.date, 
+        func.sum(Checkin.xp_earned).label('total_xp')
+    ).filter(
+        Checkin.user_id == user_id,
+        Checkin.date >= seven_days_ago
+    ).group_by(Checkin.date).all()
+
+    xp_by_date = {row.date: row.total_xp for row in results}
+
+    chart_data = []
+    
+    for i in range(7):
+        current_date = seven_days_ago + timedelta(days=i)
+        xp = xp_by_date.get(current_date, 0)
+        
+        jours_fr = ["Lun", "Mar", "Mer", "Jeu", "Ven", "Sam", "Dim"]
+        day_name = jours_fr[current_date.weekday()]
+        
+        chart_data.append({
+            "day": day_name,
+            "date": current_date.isoformat(),
+            "xp": xp
+        })
+
+    return chart_data

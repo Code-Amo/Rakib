@@ -32,7 +32,6 @@
     margin: 0;
 }
 
-/* GRILLE PRINCIPALE */
 .rivals-grid-layout-rivals {
     display: flex;
     gap: 24px;
