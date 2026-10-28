@@ -19,7 +19,7 @@ is_production = os.getenv("ENVIRONMENT") == "production"
 
 @router.post("/register", response_model=schemas.UserResponse, status_code=status.HTTP_201_CREATED)
 @limiter.limit("3/hour")
-def register_user(request: Request, user: schemas.UserCreate, db: Session = Depends(get_db)):
+def register_user(request: Request, response: Response, user: schemas.UserCreate, db: Session = Depends(get_db)):
     if not user.accepted_cgu:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
@@ -48,7 +48,7 @@ def register_user(request: Request, user: schemas.UserCreate, db: Session = Depe
 
 @router.post("/resend-verification")
 @limiter.limit("3/hour")
-def resend_verification(request: Request, payload: schemas.ForgotPasswordRequest, db: Session = Depends(get_db)):
+def resend_verification(request: Request, response: Response, payload: schemas.ForgotPasswordRequest, db: Session = Depends(get_db)):
     user = db.query(models.User).filter(models.User.email == payload.email).first()
     if not user:
         raise HTTPException(status_code=404, detail="Utilisateur introuvable.")
@@ -103,7 +103,7 @@ def login_user(request: Request, credentials: schemas.UserLogin, response: Respo
 
 @router.post("/verify-reset")
 @limiter.limit("10/minute")
-def verify_reset_code(request: Request, payload: schemas.VerifyCode, db: Session = Depends(get_db)):
+def verify_reset_code(request: Request, response: Response, payload: schemas.VerifyCode, db: Session = Depends(get_db)):
     user = db.query(models.User).filter(models.User.email == payload.email).first()
     if not user:
         raise HTTPException(status_code=404, detail="Utilisateur introuvable.")
@@ -154,7 +154,7 @@ def verify_register(request: Request, payload: schemas.VerifyCode, response: Res
 
 @router.post("/forget")
 @limiter.limit("3/hour")
-def forget(request: Request, payload: schemas.ForgotPasswordRequest, db: Session = Depends(get_db)):
+def forget(request: Request, response: Response, payload: schemas.ForgotPasswordRequest, db: Session = Depends(get_db)):
     user = db.query(models.User).filter(models.User.email == payload.email).first()
     if not user:
         raise HTTPException(status_code=404, detail="Aucun compte n'est inscris avec cet e-mail.")
@@ -167,7 +167,7 @@ def forget(request: Request, payload: schemas.ForgotPasswordRequest, db: Session
 
 @router.post("/password-reset")
 @limiter.limit("5/hour")
-def reset_password(request: Request, payload: schemas.ResetPassword, db: Session=Depends(get_db)):
+def reset_password(request: Request, response: Response, payload: schemas.ResetPassword, db: Session=Depends(get_db)):
     try:
         token_data = jwt.decode(payload.reset_token, SECRET_KEY, algorithms=[ALGORITHM])
         user_id_from_token = token_data.get("sub")
@@ -245,6 +245,6 @@ def delete_account(
 
 @router.post("/logout")
 def logout(response: Response):
-    response.delete_cookie(key="access_token", httponly=True, samesite="none")
-    response.delete_cookie(key="refresh_token", httponly=True, samesite="none")
+    response.delete_cookie(key="access_token", httponly=True, samesite="none", secure=is_production)
+    response.delete_cookie(key="refresh_token", httponly=True, samesite="none", secure=is_production)
     return {"message": "Déconnexion réussie."}
