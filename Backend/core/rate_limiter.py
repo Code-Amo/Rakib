@@ -31,8 +31,7 @@ def get_rate_limit_key(request: Request) -> str:
 limiter = Limiter(
     key_func=get_rate_limit_key,
     headers_enabled=True,
-    storage_uri=os.getenv("REDIS_URL", "memory://"),
-    default_limits=["100/minute"]
+    storage_uri=os.getenv("REDIS_URL", "memory://")
 )
 
 def rate_limit_exceeded_handler(request: Request, exc: RateLimitExceeded) -> Response:
