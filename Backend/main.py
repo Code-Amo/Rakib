@@ -49,7 +49,7 @@ app.add_middleware(
     allow_origins=[
         "http://localhost:5173", 
         "http://127.0.0.1:5173",
-        "https://rakib-5fydpcx0u-rakib-8611.vercel.app",
+        "https://rakib-opal.vercel.app/",
     ],
     allow_credentials=True,
     allow_methods=["*"],
