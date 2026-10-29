@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import "./verification.css";
 
@@ -14,6 +14,8 @@ export default function Verification() {
     const [error, setError] = useState<string | null>(null);
     const [success, setSuccess] = useState<string | null>(null);
 
+    const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
+
     const handleOtpChange = (element: HTMLInputElement, index: number) => {
         if (isNaN(Number(element.value))) return;
 
@@ -21,15 +23,32 @@ export default function Verification() {
         newOtp[index] = element.value;
         setOtp(newOtp);
 
-        if (element.value !== "" && element.nextSibling) {
-            (element.nextSibling as HTMLInputElement).focus();
+        if (element.value !== "" && index < 5) {
+            inputRefs.current[index + 1]?.focus();
         }
     };
 
     const handleOtpKeyDown = (e: React.KeyboardEvent<HTMLInputElement>, index: number) => {
         if (e.key === "Backspace" && !otp[index] && index > 0) {
-            const prevSibling = e.currentTarget.previousSibling as HTMLInputElement;
-            if (prevSibling) prevSibling.focus();
+            inputRefs.current[index - 1]?.focus();
+        }
+    };
+
+    const handlePaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
+        e.preventDefault();
+        const pastedData = e.clipboardData.getData("text");
+        const digits = pastedData.replace(/\D/g, "").slice(0, 6);
+
+        if (digits.length > 0) {
+            const newOtp = [...otp];
+            for (let i = 0; i < 6; i++) {
+                if (digits[i]) {
+                    newOtp[i] = digits[i];
+                }
+            }
+            setOtp(newOtp);
+            const nextFocusIndex = Math.min(digits.length, 5);
+            inputRefs.current[nextFocusIndex]?.focus();
         }
     };
 
@@ -42,7 +61,6 @@ export default function Verification() {
             const response = await fetch(endpoint, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                credentials: "include",
                 body: JSON.stringify({ email }),
             });
 
@@ -75,7 +93,7 @@ export default function Verification() {
             const response = await fetch(endpoint, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                credentials: "include", // <-- LA LIGNE CRUCIALE AJOUTÉE ICI
+                credentials: "include",
                 body: JSON.stringify({ email, code }),
             });
             const data = await response.json();
@@ -123,8 +141,12 @@ export default function Verification() {
                             maxLength={1}
                             key={index}
                             value={data}
+                            ref={el => {
+                                inputRefs.current[index] = el;
+                            }}
                             onChange={e => handleOtpChange(e.target, index)}
                             onKeyDown={e => handleOtpKeyDown(e, index)}
+                            onPaste={e => handlePaste(e)}
                             onFocus={e => e.target.select()}
                         />
                     ))}
