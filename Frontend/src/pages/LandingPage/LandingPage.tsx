@@ -214,6 +214,11 @@ export default function LandingPage() {
 
                 {/* Hero Interactive App Mockup Preview */}
                 <div className="mt-16 relative max-w-5xl mx-auto">
+                    {/* CORRECTION 1 : Mention de transparence */}
+                    <p className="text-center text-xs text-gray-500 mb-4 italic">
+                        Aperçu de l'interface — Données de démonstration
+                    </p>
+
                     <div className="absolute -inset-1 bg-gradient-to-r from-[#9501d9]/30 via-purple-500/20 to-indigo-500/30 rounded-3xl blur-2xl opacity-50" />
                     <div className="relative rounded-2xl border border-white/10 bg-[#1a1a1a]/90 backdrop-blur-xl overflow-hidden shadow-2xl">
                         <div className="px-4 py-3 bg-[#111111] border-b border-white/5 flex items-center justify-between">
@@ -266,9 +271,9 @@ export default function LandingPage() {
                                 </div>
                                 <div className="space-y-3">
                                     {[
-                                        { label: "Séance de sport & étirements", cat: "Corps", status: true },
+                                        { label: "Séance de sport & étirements", cat: "Physique", status: true },
                                         { label: "Lecture (20 pages d'apprentissage)", cat: "Intellect", status: true },
-                                        { label: "Session de deep work (2h)", cat: "Projets", status: true },
+                                        { label: "Session de deep work (2h)", cat: "Créativité", status: true },
                                         { label: "Méditation & Temps de recueillement", cat: "Mental", status: false },
                                     ].map((item, idx) => (
                                         <div
@@ -392,9 +397,10 @@ export default function LandingPage() {
                             </span>
                         </div>
                         <h3 className="text-2xl font-bold text-white mb-3">Radar de Compétences</h3>
+                        {/* CORRECTION 3 : Vocabulaire harmonisé */}
                         <p className="text-gray-400 text-sm leading-relaxed mb-6">
-                            Visualise ton équilibre global sur 5 piliers fondamentaux : Sport, Mental, Discipline,
-                            Savoir et Projets. Fais monter en niveau ton personnage réel.
+                            Visualise ton équilibre global sur 5 piliers fondamentaux : Physique, Intellect, Créativité,
+                            Career et Mental. Fais monter en niveau ton personnage réel.
                         </p>
                         <div className="h-48 w-full bg-[#111] rounded-2xl border border-white/5 flex items-center justify-center relative p-4">
                             <div className="absolute inset-0 flex items-center justify-center opacity-20">
@@ -557,10 +563,11 @@ export default function LandingPage() {
                                     <CheckCircle2 size={20} />
                                 </div>
                                 <div>
+                                    {/* CORRECTION 2 : Promesse tenue */}
                                     <h4 className="text-white font-semibold mb-1">Pas de Revente de Données</h4>
                                     <p className="text-xs text-gray-400">
-                                        Tes données personnelles sont chiffrées et ne seront jamais partagées à des
-                                        tiers.
+                                        Tes données personnelles sont stockées en Europe et ne seront jamais revendues
+                                        ni partagées à des tiers.
                                     </p>
                                 </div>
                             </div>
@@ -651,7 +658,6 @@ export default function LandingPage() {
             {/* Footer */}
             <footer className="border-t border-white/10 bg-[#0f0f0f] py-12 px-4 sm:px-6 lg:px-8">
                 <div className="max-w-7xl mx-auto flex flex-col lg:flex-row items-center justify-between gap-6">
-                    {/* LOGO CORRIGÉ (Footer) */}
                     <div className="flex items-center gap-3">
                         <svg width="28" height="28" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
                             <path d="M32 10 L52 28 L46 34 L32 21 L18 34 L12 28 Z" fill="#9501d9" />
