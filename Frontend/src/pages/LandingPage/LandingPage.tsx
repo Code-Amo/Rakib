@@ -1,3 +1,4 @@
+import { checkAuth } from "@/function/api";
 import {
     Activity,
     ArrowRight,
@@ -22,6 +23,18 @@ export default function LandingPage() {
     const navigate = useNavigate();
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+
+    useEffect(() => {
+        let cancelled = false;
+        checkAuth().then(isAuth => {
+            if (!cancelled && isAuth) {
+                navigate("/home", { replace: true });
+            }
+        });
+        return () => {
+            cancelled = true;
+        };
+    }, [navigate]);
 
     useEffect(() => {
         const handleMouseMove = (e: MouseEvent) => {

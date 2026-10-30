@@ -1,5 +1,6 @@
+import { checkAuth } from "@/function/api";
 import { Eye, EyeOff } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Login.css";
 
@@ -31,7 +32,17 @@ export default function Login() {
         setForm(current => ({ ...current, [field]: value }));
         if (error) setError("");
     };
-
+    useEffect(() => {
+        let cancelled = false;
+        checkAuth().then(isAuth => {
+            if (!cancelled && isAuth) {
+                navigate("/home", { replace: true });
+            }
+        });
+        return () => {
+            cancelled = true;
+        };
+    }, [navigate]);
     const handleSubmit = async (event: React.SubmitEvent<HTMLFormElement>) => {
         event.preventDefault();
         const email = form.email.trim();

@@ -1,8 +1,8 @@
 .sidebar {
     width: 80px;
     position: fixed;
-    background: rgba(255, 255, 255, 0.03);
     border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(33, 33, 33, 0.616);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     padding: 24px 0;

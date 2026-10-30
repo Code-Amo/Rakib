@@ -1,3 +1,5 @@
-<svg width="64" height="64" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-  <path d="M50 25 L85 55 L75 65 L50 45 L25 65 L15 55 Z" fill="#7B2FBE" />
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512"><rect width="512" height="512" fill="#141414"></rect><g transform="translate(64, 18) scale(6)">
+    <path d="M32 10 L52 28 L46 34 L32 21 L18 34 L12 28 Z" fill="#ffffff"></path>
+    <path d="M32 25 L52 43 L46 49 L32 36 L18 49 L12 43 Z" fill="#ffffff"></path>
+    <path d="M32 40 L52 58 L46 64 L32 51 L18 64 L12 58 Z" fill="#ffffff"></path>
+  </g></svg>

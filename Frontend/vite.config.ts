@@ -19,6 +19,7 @@ export default defineConfig({
                 background_color: "#141414",
                 display: "standalone",
                 orientation: "portrait",
+                start_url: "/home",
                 icons: [
                     {
                         src: "pwa-192x192.png",
@@ -35,6 +36,20 @@ export default defineConfig({
                         sizes: "512x512",
                         type: "image/png",
                         purpose: "any maskable",
+                    },
+                ],
+            },
+            workbox: {
+                navigateFallback: "/index.html",
+                runtimeCaching: [
+                    {
+                        urlPattern: /\/api\/.*/i,
+                        handler: "NetworkOnly",
+                        options: {
+                            fetchOptions: {
+                                credentials: "include",
+                            },
+                        },
                     },
                 ],
             },
