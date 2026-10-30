@@ -9,7 +9,7 @@ from . import service
 
 router = APIRouter()
 
-@router.get("/", response_model=GlobalStatsResponse)
+@router.get("", response_model=GlobalStatsResponse)
 def get_progression(
     db: Session = Depends(get_db),
     current_user = Depends(get_current_user)

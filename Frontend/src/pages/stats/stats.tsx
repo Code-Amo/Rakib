@@ -85,6 +85,14 @@ export const Stats: React.FC = () => {
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
     const [chartType, setChartType] = useState<"bar" | "line">("bar");
+    const [isMobile, setIsMobile] = useState(false);
+
+    useEffect(() => {
+        const checkMobile = () => setIsMobile(window.innerWidth <= 768);
+        checkMobile();
+        window.addEventListener("resize", checkMobile);
+        return () => window.removeEventListener("resize", checkMobile);
+    }, []);
 
     useEffect(() => {
         const fetchAllData = async () => {
@@ -206,21 +214,37 @@ export const Stats: React.FC = () => {
                 <div className="chart-wrapper" key={chartType}>
                     {chartType === "bar" ? (
                         <ResponsiveContainer width="100%" height={360}>
-                            <BarChart data={barChartData} margin={{ top: 20, right: 20, left: -20, bottom: 0 }}>
+                            <BarChart
+                                data={barChartData}
+                                margin={{
+                                    top: 20,
+                                    right: 10,
+                                    left: isMobile ? -25 : -20,
+                                    bottom: isMobile ? 20 : 0,
+                                }}
+                                barCategoryGap={isMobile ? "15%" : "10%"}
+                            >
                                 <XAxis
                                     dataKey="name"
                                     stroke="#A0AEC0"
                                     tickLine={false}
                                     axisLine={{ stroke: "rgba(255, 255, 255, 0.1)" }}
+                                    interval={0}
+                                    tick={{ fontSize: isMobile ? 10 : 12 }}
+                                    angle={isMobile ? -35 : 0}
+                                    textAnchor={isMobile ? "end" : "middle"}
+                                    height={isMobile ? 60 : 30}
                                 />
                                 <YAxis
                                     stroke="#A0AEC0"
                                     tickLine={false}
                                     axisLine={{ stroke: "rgba(255, 255, 255, 0.1)" }}
+                                    width={35}
                                 />
                                 <Tooltip content={<CustomTooltip />} cursor={{ fill: "rgba(255, 255, 255, 0.04)" }} />
                                 <Bar
                                     dataKey="xp"
+                                    maxBarSize={isMobile ? 30 : 60}
                                     shape={(props: any) => {
                                         const { x, y, width, height, index } = props;
                                         const color = barChartData[index]?.color || "#8884d8";
@@ -231,8 +255,8 @@ export const Stats: React.FC = () => {
                                                 width={width}
                                                 height={height}
                                                 fill={color}
-                                                rx={8}
-                                                ry={8}
+                                                rx={6}
+                                                ry={6}
                                             />
                                         );
                                     }}
