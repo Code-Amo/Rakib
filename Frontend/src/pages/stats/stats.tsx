@@ -13,18 +13,7 @@ import {
     Wind,
 } from "lucide-react";
 import React, { useEffect, useState } from "react";
-import {
-    Area,
-    AreaChart,
-    Bar,
-    BarChart,
-    CartesianGrid,
-    Cell,
-    ResponsiveContainer,
-    Tooltip,
-    XAxis,
-    YAxis,
-} from "recharts";
+import { Area, AreaChart, Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import "./stats.css";
 
 interface ProgressionData {
@@ -104,7 +93,7 @@ export const Stats: React.FC = () => {
                 setError(null);
 
                 const [resProgression, resWeekly] = await Promise.all([
-                    fetchWithAuth("/progression/"),
+                    fetchWithAuth("/progression"),
                     fetchWithAuth("/progression/weekly-chart"),
                 ]);
 
@@ -145,18 +134,19 @@ export const Stats: React.FC = () => {
         );
     }
 
-    const globalProgressPercentage = Math.min(
-        100,
-        Math.round((data.current_xp_in_level / data.xp_for_next_level) * 100),
-    );
+    const currentXp = data.current_xp_in_level || 0;
+    const maxXp = data.xp_for_next_level || 100;
+    const globalProgressPercentage = Math.min(100, Math.round((currentXp / maxXp) * 100));
+
+    const breakdown = data.breakdown || { sport: 0, intel: 0, crea: 0, career: 0, mental: 0 };
 
     const barChartData = STAT_CONFIG.map(stat => ({
         name: stat.label,
-        xp: data.breakdown[stat.key],
+        xp: breakdown[stat.key] || 0,
         color: stat.color,
     }));
 
-    const maxStatXp = Math.max(...Object.values(data.breakdown), 100);
+    const maxStatXp = Math.max(...Object.values(breakdown), 100);
 
     return (
         <div className="progression-container">
@@ -166,12 +156,12 @@ export const Stats: React.FC = () => {
                         <Award className="level-icon" size={32} />
                         <div>
                             <span className="level-subtitle">NIVEAU ACTUEL</span>
-                            <h1 className="level-number">Niveau {data.level}</h1>
+                            <h1 className="level-number">Niveau {data.level || 1}</h1>
                         </div>
                     </div>
                     <div className="streak-badge">
                         <Flame size={20} color="#FF6B6B" />
-                        <span>{data.current_streak} Jours de série</span>
+                        <span>{data.current_streak || 0} Jours de série</span>
                     </div>
                 </div>
 
@@ -179,7 +169,7 @@ export const Stats: React.FC = () => {
                     <div className="xp-labels">
                         <span>Expérience globale</span>
                         <span>
-                            {data.current_xp_in_level} / {data.xp_for_next_level} XP ({globalProgressPercentage}%)
+                            {currentXp} / {maxXp} XP ({globalProgressPercentage}%)
                         </span>
                     </div>
                     <div className="global-progress-bar">
@@ -229,16 +219,29 @@ export const Stats: React.FC = () => {
                                     axisLine={{ stroke: "rgba(255, 255, 255, 0.1)" }}
                                 />
                                 <Tooltip content={<CustomTooltip />} cursor={{ fill: "rgba(255, 255, 255, 0.04)" }} />
-                                <Bar dataKey="xp" radius={[8, 8, 0, 0]}>
-                                    {barChartData.map((entry, index) => (
-                                        <Cell key={`cell-${index}`} fill={entry.color} />
-                                    ))}
-                                </Bar>
+                                <Bar
+                                    dataKey="xp"
+                                    shape={(props: any) => {
+                                        const { x, y, width, height, index } = props;
+                                        const color = barChartData[index]?.color || "#8884d8";
+                                        return (
+                                            <rect
+                                                x={x}
+                                                y={y}
+                                                width={width}
+                                                height={height}
+                                                fill={color}
+                                                rx={8}
+                                                ry={8}
+                                            />
+                                        );
+                                    }}
+                                />
                             </BarChart>
                         </ResponsiveContainer>
                     ) : (
                         <ResponsiveContainer width="100%" height={360}>
-                            <AreaChart data={weeklyData} margin={{ top: 20, right: 20, left: -20, bottom: 0 }}>
+                            <AreaChart data={weeklyData || []} margin={{ top: 20, right: 20, left: -20, bottom: 0 }}>
                                 <defs>
                                     <linearGradient id="xpGradient" x1="0" y1="0" x2="0" y2="1">
                                         <stop offset="5%" stopColor="#7b2fbe" stopOpacity={0.6} />
@@ -284,8 +287,8 @@ export const Stats: React.FC = () => {
             <section className="stats-grid">
                 {STAT_CONFIG.map(stat => {
                     const Icon = stat.icon;
-                    const currentXp = data.breakdown[stat.key];
-                    const percent = Math.min(100, Math.round((currentXp / maxStatXp) * 100));
+                    const currentStatXp = breakdown[stat.key] || 0;
+                    const percent = Math.min(100, Math.round((currentStatXp / maxStatXp) * 100));
 
                     return (
                         <div className="stat-card" key={stat.key}>
@@ -299,7 +302,7 @@ export const Stats: React.FC = () => {
                                     </div>
                                     <span className="stat-name">{stat.label}</span>
                                 </div>
-                                <span className="stat-xp-value">{currentXp} XP</span>
+                                <span className="stat-xp-value">{currentStatXp} XP</span>
                             </div>
 
                             <div className="stat-progress-bar">
