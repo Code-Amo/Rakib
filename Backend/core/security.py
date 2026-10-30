@@ -19,36 +19,28 @@ if not SECRET_KEY:
     raise ValueError("La variable SECRET_KEY n'est pas définie dans le fichier .env")
 
 
+import os
+
 def get_cookie_config() -> dict:
-    """
-    Config cookie adaptée à l'environnement.
 
-    Détection auto de la prod :
-    - ENVIRONMENT=production  (si défini)
-    - RENDER=true             (Render le pose automatiquement)
-    - COOKIE_SECURE=true      (override manuel)
-
-    En prod (HTTPS cross-site) : SameSite=None + Secure=True
-    En dev  (HTTP localhost)   : SameSite=Lax  + Secure=False
-    """
     is_prod = (
         os.getenv("ENVIRONMENT") == "production"
         or os.getenv("RENDER") == "true"
-        or os.getenv("COOKIE_SECURE", "").lower() == "true"
     )
-
+    
     if is_prod:
         return {
             "httponly": True,
-            "samesite": "none",
+            "samesite": "lax",
             "secure": True,
             "path": "/",
         }
-
+    
+    force_insecure = os.getenv("COOKIE_INSECURE", "").lower() == "true"
     return {
         "httponly": True,
         "samesite": "lax",
-        "secure": False,
+        "secure": not force_insecure,
         "path": "/",
     }
 def create_access_token(data: dict) -> str:
