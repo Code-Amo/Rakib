@@ -91,7 +91,7 @@ export default function Home() {
             try {
                 const [resTasks, resStats, resCompanions] = await Promise.all([
                     fetchWithAuth("/calendar/get?today_only=true"),
-                    fetchWithAuth("/progression/"),
+                    fetchWithAuth("/progression"),
                     fetchWithAuth("/compagnon/me"),
                 ]);
 
@@ -128,7 +128,8 @@ export default function Home() {
         setTasks(prevTasks => prevTasks.map(t => (t.id === objectiveId ? { ...t, completed: true } : t)));
 
         try {
-            const res = await fetchWithAuth("/checkins/", {
+            // ✅ FIX : Retrait du slash final sur /checkins
+            const res = await fetchWithAuth("/checkins", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ objective_id: objectiveId }),
@@ -137,7 +138,8 @@ export default function Home() {
             if (res.ok) {
                 const data = await res.json();
 
-                const resStats = await fetchWithAuth("/progression/");
+                // ✅ FIX : Retrait du slash final sur /progression
+                const resStats = await fetchWithAuth("/progression");
                 if (resStats.ok) {
                     const dataStats = await resStats.json();
                     if (dataStats && dataStats.breakdown) {

@@ -7,7 +7,7 @@ from . import service
 
 router = APIRouter()
 
-@router.post("/", status_code=201)
+@router.post("", status_code=201)
 def create_checkin(
     data: CheckinCreate,
     db: Session = Depends(get_db),
