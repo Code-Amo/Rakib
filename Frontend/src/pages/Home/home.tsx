@@ -1,7 +1,8 @@
 import Panel from "@/components/Sidebar/header";
 import { fetchWithAuth } from "@/function/api";
+import { OnboardingModal } from "@/pages/Onboarding/Onboarding";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import "./home.css";
 import CheckinToast from "./notification/CheckinToast";
 import TrophyToast from "./notification/notification";
@@ -64,6 +65,15 @@ const DEFAULT_STATS = {
 
 export default function Home() {
     const navigate = useNavigate();
+    const location = useLocation();
+
+    // --- ÉTAT DE L'ONBOARDING ---
+    const [showOnboarding, setShowOnboarding] = useState<boolean>(Boolean(location.state?.isNewUser));
+
+    const handleCloseOnboarding = () => {
+        setShowOnboarding(false);
+        navigate(location.pathname, { replace: true, state: {} });
+    };
 
     const [toastTrophy, setToastTrophy] = useState<{ title: string; rarity: string } | null>(null);
     const [isToastVisible, setIsToastVisible] = useState(false);
@@ -209,6 +219,8 @@ export default function Home() {
             <div className="home-side-panel">
                 <Panel />
             </div>
+
+            <OnboardingModal isOpen={showOnboarding} onClose={handleCloseOnboarding} />
         </div>
     );
 }

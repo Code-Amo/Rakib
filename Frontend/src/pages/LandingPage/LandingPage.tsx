@@ -43,8 +43,10 @@ export default function LandingPage() {
             <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-[500px] bg-gradient-to-b from-[#9501d9]/15 via-transparent to-transparent blur-3xl pointer-events-none -z-10" />
             <nav className="sticky top-0 z-50 backdrop-blur-xl bg-[#141414]/80 border-b border-white/10 transition-all duration-300">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
-                    {/* LOGO CORRIGÉ (Navbar) */}
-                    <a href="/" className="flex items-center gap-3 group">
+                    <a
+                        href="/"
+                        className="flex items-center gap-3 group active:scale-95 transition-transform duration-100"
+                    >
                         <svg
                             width="36"
                             height="36"
@@ -64,25 +66,25 @@ export default function LandingPage() {
                     <div className="hidden md:flex items-center gap-8">
                         <a
                             href="#problemes"
-                            className="text-sm font-medium text-gray-400 hover:text-white transition-colors"
+                            className="text-sm font-medium text-gray-400 hover:text-white transition-colors active:scale-95 active:text-white transition-transform duration-100"
                         >
                             Problématique
                         </a>
                         <a
                             href="#fonctionnalites"
-                            className="text-sm font-medium text-gray-400 hover:text-white transition-colors"
+                            className="text-sm font-medium text-gray-400 hover:text-white transition-colors active:scale-95 active:text-white transition-transform duration-100"
                         >
                             Fonctionnalités
                         </a>
                         <a
                             href="#ethique"
-                            className="text-sm font-medium text-gray-400 hover:text-white transition-colors"
+                            className="text-sm font-medium text-gray-400 hover:text-white transition-colors active:scale-95 active:text-white transition-transform duration-100"
                         >
                             Notre Éthique
                         </a>
                         <a
                             href="#createur"
-                            className="text-sm font-medium text-gray-400 hover:text-white transition-colors"
+                            className="text-sm font-medium text-gray-400 hover:text-white transition-colors active:scale-95 active:text-white transition-transform duration-100"
                         >
                             Le Créateur
                         </a>
@@ -91,13 +93,13 @@ export default function LandingPage() {
                     <div className="hidden md:flex items-center gap-4">
                         <button
                             onClick={() => navigate("/login")}
-                            className="px-5 py-2.5 text-sm font-medium text-gray-300 hover:text-white transition-colors rounded-xl hover:bg-white/5"
+                            className="px-5 py-2.5 text-sm font-medium text-gray-300 hover:text-white transition-all rounded-xl hover:bg-white/5 active:scale-95 active:bg-white/10 duration-100"
                         >
                             Se connecter
                         </button>
                         <button
                             onClick={() => navigate("/register")}
-                            className="relative group px-6 py-2.5 text-sm font-semibold text-white rounded-xl bg-[#9501d9] hover:bg-[#a813eb] transition-all duration-300 shadow-[0_0_20px_rgba(149,1,217,0.4)] hover:shadow-[0_0_30px_rgba(149,1,217,0.7)] active:scale-95"
+                            className="relative group px-6 py-2.5 text-sm font-semibold text-white rounded-xl bg-[#9501d9] hover:bg-[#a813eb] transition-all duration-300 shadow-[0_0_20px_rgba(149,1,217,0.4)] hover:shadow-[0_0_30px_rgba(149,1,217,0.7)] active:scale-90 active:brightness-90 active:shadow-[0_0_15px_rgba(149,1,217,0.9)]"
                         >
                             <span>S'inscrire</span>
                         </button>
@@ -106,7 +108,7 @@ export default function LandingPage() {
                     <div className="md:hidden flex items-center">
                         <button
                             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                            className="p-2 text-gray-400 hover:text-white rounded-lg focus:outline-none"
+                            className="p-2 text-gray-400 hover:text-white rounded-lg focus:outline-none transition-all active:scale-90 active:bg-white/10 duration-100"
                         >
                             {mobileMenuOpen ? <X size={26} /> : <Menu size={26} />}
                         </button>
@@ -118,41 +120,41 @@ export default function LandingPage() {
                         <a
                             href="#problemes"
                             onClick={() => setMobileMenuOpen(false)}
-                            className="block px-3 py-2 text-base font-medium text-gray-300 hover:text-white hover:bg-white/5 rounded-lg"
+                            className="block px-3 py-2 text-base font-medium text-gray-300 hover:text-white hover:bg-white/5 rounded-lg transition-all active:scale-[0.98] active:bg-white/10 duration-100"
                         >
                             Problématique
                         </a>
                         <a
                             href="#fonctionnalites"
                             onClick={() => setMobileMenuOpen(false)}
-                            className="block px-3 py-2 text-base font-medium text-gray-300 hover:text-white hover:bg-white/5 rounded-lg"
+                            className="block px-3 py-2 text-base font-medium text-gray-300 hover:text-white hover:bg-white/5 rounded-lg transition-all active:scale-[0.98] active:bg-white/10 duration-100"
                         >
                             Fonctionnalités
                         </a>
                         <a
                             href="#ethique"
                             onClick={() => setMobileMenuOpen(false)}
-                            className="block px-3 py-2 text-base font-medium text-gray-300 hover:text-white hover:bg-white/5 rounded-lg"
+                            className="block px-3 py-2 text-base font-medium text-gray-300 hover:text-white hover:bg-white/5 rounded-lg transition-all active:scale-[0.98] active:bg-white/10 duration-100"
                         >
                             Notre Éthique
                         </a>
                         <a
                             href="#createur"
                             onClick={() => setMobileMenuOpen(false)}
-                            className="block px-3 py-2 text-base font-medium text-gray-300 hover:text-white hover:bg-white/5 rounded-lg"
+                            className="block px-3 py-2 text-base font-medium text-gray-300 hover:text-white hover:bg-white/5 rounded-lg transition-all active:scale-[0.98] active:bg-white/10 duration-100"
                         >
                             Le Créateur
                         </a>
                         <div className="pt-4 flex flex-col gap-2">
                             <button
                                 onClick={() => navigate("/login")}
-                                className="w-full py-3 text-center font-medium text-gray-300 bg-white/5 rounded-xl"
+                                className="w-full py-3 text-center font-medium text-gray-300 bg-white/5 rounded-xl transition-all active:scale-[0.97] active:bg-white/10 duration-100"
                             >
                                 Se connecter
                             </button>
                             <button
                                 onClick={() => navigate("/register")}
-                                className="w-full py-3 text-center font-semibold text-white bg-[#9501d9] rounded-xl shadow-lg"
+                                className="w-full py-3 text-center font-semibold text-white bg-[#9501d9] rounded-xl shadow-lg transition-all active:scale-[0.97] active:brightness-90 duration-100"
                             >
                                 S'inscrire
                             </button>
@@ -183,14 +185,14 @@ export default function LandingPage() {
                     <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
                         <button
                             onClick={() => navigate("/register")}
-                            className="w-full sm:w-auto px-8 py-4 text-base font-bold text-white bg-[#9501d9] hover:bg-[#a813eb] rounded-2xl shadow-[0_0_30px_rgba(149,1,217,0.5)] hover:shadow-[0_0_40px_rgba(149,1,217,0.8)] transition-all duration-300 transform hover:-translate-y-0.5 active:translate-y-0 flex items-center justify-center gap-3"
+                            className="w-full sm:w-auto px-8 py-4 text-base font-bold text-white bg-[#9501d9] hover:bg-[#a813eb] rounded-2xl shadow-[0_0_30px_rgba(149,1,217,0.5)] hover:shadow-[0_0_40px_rgba(149,1,217,0.8)] transition-all duration-300 transform hover:-translate-y-0.5 active:translate-y-0 active:scale-95 active:brightness-90 active:shadow-[0_0_20px_rgba(149,1,217,0.9)] flex items-center justify-center gap-3"
                         >
                             <span>Créer mon compte</span>
                             <ArrowRight size={20} />
                         </button>
                         <a
                             href="#fonctionnalites"
-                            className="w-full sm:w-auto px-8 py-4 text-base font-medium text-gray-300 hover:text-white bg-white/[0.03] hover:bg-white/[0.08] border border-white/10 rounded-2xl transition-all duration-300 flex items-center justify-center gap-2 backdrop-blur-sm"
+                            className="w-full sm:w-auto px-8 py-4 text-base font-medium text-gray-300 hover:text-white bg-white/[0.03] hover:bg-white/[0.08] border border-white/10 rounded-2xl transition-all duration-300 flex items-center justify-center gap-2 backdrop-blur-sm active:scale-95 active:bg-white/[0.12] active:text-white"
                         >
                             <span>Découvrir l'app</span>
                         </a>
@@ -214,7 +216,6 @@ export default function LandingPage() {
 
                 {/* Hero Interactive App Mockup Preview */}
                 <div className="mt-16 relative max-w-5xl mx-auto">
-                    {/* CORRECTION 1 : Mention de transparence */}
                     <p className="text-center text-xs text-gray-500 mb-4 italic">
                         Aperçu de l'interface — Données de démonstration
                     </p>
@@ -278,7 +279,7 @@ export default function LandingPage() {
                                     ].map((item, idx) => (
                                         <div
                                             key={idx}
-                                            className="p-3 rounded-lg bg-white/[0.02] border border-white/5 flex items-center justify-between text-sm"
+                                            className="p-3 rounded-lg bg-white/[0.02] border border-white/5 flex items-center justify-between text-sm transition-all active:scale-[0.99] active:bg-white/[0.05] duration-100"
                                         >
                                             <div className="flex items-center gap-3">
                                                 <div
@@ -338,7 +339,7 @@ export default function LandingPage() {
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                    <div className="p-8 rounded-2xl bg-white/[0.02] border border-white/10 hover:border-[#9501d9]/40 transition-all duration-300 backdrop-blur-md group hover:-translate-y-1">
+                    <div className="p-8 rounded-2xl bg-white/[0.02] border border-white/10 hover:border-[#9501d9]/40 transition-all duration-300 backdrop-blur-md group hover:-translate-y-1 active:translate-y-0 active:scale-[0.99] active:bg-white/[0.05]">
                         <div className="w-12 h-12 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
                             <BrainCircuit size={24} />
                         </div>
@@ -349,7 +350,7 @@ export default function LandingPage() {
                         </p>
                     </div>
 
-                    <div className="p-8 rounded-2xl bg-white/[0.02] border border-white/10 hover:border-[#9501d9]/40 transition-all duration-300 backdrop-blur-md group hover:-translate-y-1">
+                    <div className="p-8 rounded-2xl bg-white/[0.02] border border-white/10 hover:border-[#9501d9]/40 transition-all duration-300 backdrop-blur-md group hover:-translate-y-1 active:translate-y-0 active:scale-[0.99] active:bg-white/[0.05]">
                         <div className="w-12 h-12 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-400 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
                             <EyeOff size={24} />
                         </div>
@@ -360,7 +361,7 @@ export default function LandingPage() {
                         </p>
                     </div>
 
-                    <div className="p-8 rounded-2xl bg-white/[0.02] border border-white/10 hover:border-[#9501d9]/40 transition-all duration-300 backdrop-blur-md group hover:-translate-y-1">
+                    <div className="p-8 rounded-2xl bg-white/[0.02] border border-white/10 hover:border-[#9501d9]/40 transition-all duration-300 backdrop-blur-md group hover:-translate-y-1 active:translate-y-0 active:scale-[0.99] active:bg-white/[0.05]">
                         <div className="w-12 h-12 rounded-xl bg-purple-500/10 border border-purple-500/20 text-[#9501d9] flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
                             <Smartphone size={24} />
                         </div>
@@ -387,7 +388,7 @@ export default function LandingPage() {
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    <div className="p-8 rounded-3xl bg-white/[0.03] border border-white/10 hover:border-[#9501d9]/50 transition-all duration-300 backdrop-blur-xl relative overflow-hidden group">
+                    <div className="p-8 rounded-3xl bg-white/[0.03] border border-white/10 hover:border-[#9501d9]/50 transition-all duration-300 backdrop-blur-xl relative overflow-hidden group active:scale-[0.99] active:bg-white/[0.06]">
                         <div className="flex items-center justify-between mb-6">
                             <div className="p-3 rounded-2xl bg-[#9501d9]/20 text-[#9501d9]">
                                 <Activity size={28} />
@@ -397,7 +398,6 @@ export default function LandingPage() {
                             </span>
                         </div>
                         <h3 className="text-2xl font-bold text-white mb-3">Radar de Compétences</h3>
-                        {/* CORRECTION 3 : Vocabulaire harmonisé */}
                         <p className="text-gray-400 text-sm leading-relaxed mb-6">
                             Visualise ton équilibre global sur 5 piliers fondamentaux : Physique, Intellect, Créativité,
                             Career et Mental. Fais monter en niveau ton personnage réel.
@@ -425,7 +425,7 @@ export default function LandingPage() {
                         </div>
                     </div>
 
-                    <div className="p-8 rounded-3xl bg-white/[0.03] border border-white/10 hover:border-[#9501d9]/50 transition-all duration-300 backdrop-blur-xl relative overflow-hidden group">
+                    <div className="p-8 rounded-3xl bg-white/[0.03] border border-white/10 hover:border-[#9501d9]/50 transition-all duration-300 backdrop-blur-xl relative overflow-hidden group active:scale-[0.99] active:bg-white/[0.06]">
                         <div className="flex items-center justify-between mb-6">
                             <div className="p-3 rounded-2xl bg-emerald-500/20 text-emerald-400">
                                 <Lock size={28} />
@@ -453,7 +453,7 @@ export default function LandingPage() {
                         </div>
                     </div>
 
-                    <div className="p-8 rounded-3xl bg-white/[0.03] border border-white/10 hover:border-[#9501d9]/50 transition-all duration-300 backdrop-blur-xl relative overflow-hidden group">
+                    <div className="p-8 rounded-3xl bg-white/[0.03] border border-white/10 hover:border-[#9501d9]/50 transition-all duration-300 backdrop-blur-xl relative overflow-hidden group active:scale-[0.99] active:bg-white/[0.06]">
                         <div className="flex items-center justify-between mb-6">
                             <div className="p-3 rounded-2xl bg-blue-500/20 text-blue-400">
                                 <Users size={28} />
@@ -488,7 +488,7 @@ export default function LandingPage() {
                         </div>
                     </div>
 
-                    <div className="p-8 rounded-3xl bg-white/[0.03] border border-white/10 hover:border-[#9501d9]/50 transition-all duration-300 backdrop-blur-xl relative overflow-hidden group">
+                    <div className="p-8 rounded-3xl bg-white/[0.03] border border-white/10 hover:border-[#9501d9]/50 transition-all duration-300 backdrop-blur-xl relative overflow-hidden group active:scale-[0.99] active:bg-white/[0.06]">
                         <div className="flex items-center justify-between mb-6">
                             <div className="p-3 rounded-2xl bg-amber-500/20 text-amber-400">
                                 <TrendingUp size={28} />
@@ -563,7 +563,6 @@ export default function LandingPage() {
                                     <CheckCircle2 size={20} />
                                 </div>
                                 <div>
-                                    {/* CORRECTION 2 : Promesse tenue */}
                                     <h4 className="text-white font-semibold mb-1">Pas de Revente de Données</h4>
                                     <p className="text-xs text-gray-400">
                                         Tes données personnelles sont stockées en Europe et ne seront jamais revendues
@@ -648,7 +647,7 @@ export default function LandingPage() {
                     <div className="pt-4">
                         <button
                             onClick={() => navigate("/register")}
-                            className="px-8 py-4 text-base font-bold text-white bg-[#9501d9] hover:bg-[#a813eb] rounded-2xl shadow-[0_0_30px_rgba(149,1,217,0.6)] transition-all duration-300 transform hover:scale-105"
+                            className="px-8 py-4 text-base font-bold text-white bg-[#9501d9] hover:bg-[#a813eb] rounded-2xl shadow-[0_0_30px_rgba(149,1,217,0.6)] transition-all duration-300 transform hover:scale-105 active:scale-95 active:brightness-90 active:shadow-[0_0_20px_rgba(149,1,217,0.9)]"
                         >
                             Créer mon compte gratuitement
                         </button>
@@ -667,28 +666,38 @@ export default function LandingPage() {
                         <span className="text-xl font-extrabold text-white">Rakib</span>
                     </div>
 
-                    {/* Liens Légaux & Contact */}
                     <div className="flex flex-col items-center lg:items-start gap-2">
                         <div className="flex flex-wrap justify-center gap-6 text-xs text-gray-400">
-                            <a href="/legal#mentions" className="hover:text-white transition-colors">
+                            <a
+                                href="/legal#mentions"
+                                className="hover:text-white transition-all active:scale-95 active:text-white duration-100"
+                            >
                                 Mentions légales
                             </a>
-                            <a href="/legal#cgu" className="hover:text-white transition-colors">
+                            <a
+                                href="/legal#cgu"
+                                className="hover:text-white transition-all active:scale-95 active:text-white duration-100"
+                            >
                                 CGU
                             </a>
-                            <a href="/legal#privacy" className="hover:text-white transition-colors">
+                            <a
+                                href="/legal#privacy"
+                                className="hover:text-white transition-all active:scale-95 active:text-white duration-100"
+                            >
                                 Confidentialité
                             </a>
                         </div>
                         <div className="text-xs text-gray-500 mt-1">
                             Contact :{" "}
-                            <a href="mailto:contact.app.rakib@gmail.com" className="hover:text-white transition-colors">
+                            <a
+                                href="mailto:contact.app.rakib@gmail.com"
+                                className="hover:text-white transition-all active:scale-95 active:text-white inline-block duration-100"
+                            >
                                 contact.app.rakib@gmail.com
                             </a>
                         </div>
                     </div>
 
-                    {/* Copyright */}
                     <div className="text-xs text-gray-500 text-center lg:text-right">
                         &copy; {new Date().getFullYear()} Rakib. <br className="hidden lg:block" /> Tous droits
                         réservés.

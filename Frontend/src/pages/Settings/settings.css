@@ -548,3 +548,29 @@
     transition: opacity 0.2s ease;
     pointer-events: none;
 }
+
+.btn:active:not(:disabled) {
+    transform: scale(0.95) !important;
+    transition: transform 0.1s ease !important;
+}
+
+.legal-link-btn:active {
+    transform: scale(0.96) !important;
+    transition: transform 0.1s ease !important;
+}
+
+.toggle-password-btn:active {
+    transform: scale(0.8);
+    transition: transform 0.1s ease;
+}
+
+.avatar-label:active .avatar-wrapper {
+    transform: scale(0.92);
+    border-color: #9501d9;
+    box-shadow: 0 0 15px rgba(149, 1, 217, 0.5);
+    transition: all 0.1s ease;
+}
+
+.modal-actions .btn:active:not(:disabled) {
+    transform: scale(0.95) !important;
+}

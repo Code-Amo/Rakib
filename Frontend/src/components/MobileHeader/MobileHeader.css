@@ -58,6 +58,21 @@
         cursor: pointer;
         background: rgba(255, 255, 255, 0.05);
         border: 1px solid rgba(255, 255, 255, 0.1);
+        transition:
+            transform 0.15s cubic-bezier(0.16, 1, 0.3, 1),
+            background-color 0.2s ease,
+            border-color 0.2s ease,
+            box-shadow 0.2s ease;
+    }
+
+    .mobile-stat-badge:active {
+        transform: scale(0.9);
+        background: rgba(255, 255, 255, 0.12);
+        box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.3);
+        transition:
+            transform 0.1s cubic-bezier(0.34, 1.56, 0.64, 1),
+            background-color 0.1s ease,
+            box-shadow 0.1s ease;
     }
 
     .flame-badge {
@@ -65,14 +80,25 @@
         border-color: rgba(255, 107, 0, 0.2);
     }
 
+    .flame-badge:active {
+        background: rgba(255, 107, 0, 0.18);
+        border-color: rgba(255, 107, 0, 0.5);
+        box-shadow:
+            inset 0 2px 6px rgba(0, 0, 0, 0.3),
+            0 0 10px rgba(255, 107, 0, 0.4);
+    }
+
     .trophy-badge {
         color: #ffd700;
         border-color: rgba(255, 215, 0, 0.2);
-        transition: transform 0.2s ease;
     }
 
     .trophy-badge:active {
-        transform: scale(0.95);
+        background: rgba(255, 215, 0, 0.18);
+        border-color: rgba(255, 215, 0, 0.5);
+        box-shadow:
+            inset 0 2px 6px rgba(0, 0, 0, 0.3),
+            0 0 10px rgba(255, 215, 0, 0.4);
     }
 }
 
@@ -82,6 +108,12 @@
     align-items: center;
     justify-content: center;
     position: relative;
+    transition: transform 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.mobile-avatar-label:active {
+    transform: scale(0.88);
+    transition: transform 0.1s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .mobile-avatar {
@@ -90,11 +122,24 @@
     border-radius: 50%;
     object-fit: cover;
     border: 1px solid rgba(123, 47, 190, 0.5);
-    transition: opacity 0.2s ease;
+    transition:
+        opacity 0.2s ease,
+        border-color 0.2s ease;
 }
 
 .mobile-avatar-label:hover .mobile-avatar {
     opacity: 0.8;
+    border-color: rgba(123, 47, 190, 0.9);
+}
+
+.mobile-avatar-label:active .mobile-avatar {
+    opacity: 0.6;
+    border-color: #9f7aea;
+    box-shadow: 0 0 10px rgba(159, 122, 234, 0.5);
+    transition:
+        opacity 0.1s ease,
+        border-color 0.1s ease,
+        box-shadow 0.1s ease;
 }
 
 .mobile-avatar-loader {

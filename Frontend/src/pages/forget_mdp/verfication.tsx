@@ -47,6 +47,8 @@ export default function Verification() {
                 }
             }
             setOtp(newOtp);
+
+            // Met le focus sur la dernière case remplie
             const nextFocusIndex = Math.min(digits.length, 5);
             inputRefs.current[nextFocusIndex]?.focus();
         }
@@ -102,7 +104,7 @@ export default function Verification() {
                 if (flow === "forget") {
                     navigate("/new-mdp", { state: { email: email, reset_token: data.reset_token } });
                 } else {
-                    navigate("/home");
+                    navigate("/home", { state: { isNewUser: true } });
                 }
             } else {
                 setError("Code invalide ou expiré.");

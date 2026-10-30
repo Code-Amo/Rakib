@@ -98,6 +98,14 @@
     opacity: 1;
 }
 
+.rakib-toast.show:active {
+    transform: translateY(0) scale(0.97);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.7);
+    transition:
+        transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1),
+        box-shadow 0.15s ease;
+}
+
 .toast-icon-wrapper {
     display: flex;
     align-items: center;
@@ -109,6 +117,11 @@
     border: 1px solid rgba(255, 255, 255, 0.1);
     flex-shrink: 0;
     transition: all 0.3s ease;
+}
+
+.rakib-toast.show:active .toast-icon-wrapper {
+    transform: scale(0.88);
+    transition: transform 0.12s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .toast-content {
@@ -223,6 +236,15 @@
 .home-widgets > div:hover {
     transform: translateY(-4px);
 }
+
+.home-widgets > div:active {
+    transform: translateY(-1px) scale(0.98);
+    filter: brightness(0.92);
+    transition:
+        transform 0.1s cubic-bezier(0.34, 1.56, 0.64, 1),
+        filter 0.1s ease;
+}
+
 @media (max-width: 768px) {
     .home-page-wrapper {
         display: flex;
@@ -267,5 +289,10 @@
     .secret-garden-widget {
         margin-top: 0;
         height: auto;
+    }
+
+    .home-widgets > div:active {
+        transform: scale(0.97);
+        filter: brightness(0.92);
     }
 }
