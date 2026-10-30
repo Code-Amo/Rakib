@@ -23,22 +23,34 @@ def get_cookie_config() -> dict:
     """
     Config cookie adaptée à l'environnement.
 
-    - Prod (HTTPS) : SameSite=None + Secure=True → cookies cross-site
-    - Dev  (HTTP)  : SameSite=Lax  + Secure=False → cookies acceptés sur localhost
+    Détection auto de la prod :
+    - ENVIRONMENT=production  (si défini)
+    - RENDER=true             (Render le pose automatiquement)
+    - COOKIE_SECURE=true      (override manuel)
 
-    Note : localhost:5173 et localhost:8000 sont considérés comme le MÊME site
-    par la spec SameSite (le port n'est pas pris en compte). Donc Lax suffit
-    pour la communication front↔back en développement.
+    En prod (HTTPS cross-site) : SameSite=None + Secure=True
+    En dev  (HTTP localhost)   : SameSite=Lax  + Secure=False
     """
-    is_prod = os.getenv("ENVIRONMENT") == "production"
+    is_prod = (
+        os.getenv("ENVIRONMENT") == "production"
+        or os.getenv("RENDER") == "true"
+        or os.getenv("COOKIE_SECURE", "").lower() == "true"
+    )
+
+    if is_prod:
+        return {
+            "httponly": True,
+            "samesite": "none",
+            "secure": True,
+            "path": "/",
+        }
+
     return {
         "httponly": True,
-        "samesite": "none" if is_prod else "lax",
-        "secure": is_prod,
+        "samesite": "lax",
+        "secure": False,
         "path": "/",
     }
-
-
 def create_access_token(data: dict) -> str:
     to_encode = data.copy()
     expire = datetime.now(timezone.utc) + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)

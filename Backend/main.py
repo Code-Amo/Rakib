@@ -1,7 +1,6 @@
 import uvicorn
 import os
 from fastapi import FastAPI, Request
-from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from slowapi.errors import RateLimitExceeded
 from slowapi.middleware import SlowAPIMiddleware
@@ -9,7 +8,7 @@ from slowapi.middleware import SlowAPIMiddleware
 from core.database import engine, Base
 from core.rate_limiter import limiter, rate_limit_exceeded_handler
 
-from modules.Panel.router import router as dashboard_router 
+from modules.Panel.router import router as dashboard_router
 from modules.identity.router import router as identity_router
 from modules.Calendar.router import router as calendar_router
 from modules.Panel.router import router as panel_router
@@ -33,7 +32,7 @@ app = FastAPI(
 # --- MIDDLEWARES ---
 app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, rate_limit_exceeded_handler)
-app.add_middleware(SlowAPIMiddleware) 
+app.add_middleware(SlowAPIMiddleware)
 
 @app.middleware("http")
 async def add_security_headers(request: Request, call_next):
@@ -41,20 +40,23 @@ async def add_security_headers(request: Request, call_next):
     response.headers["X-Content-Type-Options"] = "nosniff"
     response.headers["X-Frame-Options"] = "DENY"
     response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
-    response.headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains"
+    if is_production:
+        response.headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains"
     return response
 
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        "http://localhost:5173", 
-        "http://127.0.0.1:5173",
         "https://rakib-opal.vercel.app",
+        "http://localhost:5173",
+        "http://127.0.0.1:5173",
     ],
+    allow_origin_regex=r"^http://(10|192\.168|172\.(1[6-9]|2\d|3[01]))\..*:5173$",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
 # --- ROUTERS ---
 app.include_router(identity_router, prefix="/auth", tags=["Auth"])
 app.include_router(checkins_router, prefix="/checkins", tags=["Checkins"])
@@ -70,4 +72,4 @@ def root():
     return {"status": "ok", "message": "Good"}
 
 if __name__ == "__main__":
-    uvicorn.run("main:app", host="127.0.0.1", port=8000, reload=True)
+    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
