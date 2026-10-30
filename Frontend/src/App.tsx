@@ -13,7 +13,6 @@ import Rivals from "./pages/Rivals/rivals";
 import Secret_garden from "./pages/Secret_garden/secret_garden";
 import Settings from "./pages/Settings/settings";
 import Stats from "./pages/stats/stats";
-import Success from "./pages/Success/success";
 
 import ProtectedRoute from "@/components/Protection/ProtectedRoute";
 import Layout from "./components/Layout/Layout";
@@ -41,7 +40,6 @@ export default function App() {
                         <Route path="/rivals" element={<Rivals />} />
                         <Route path="/secret_garden" element={<Secret_garden />} />
                         <Route path="/settings" element={<Settings />} />
-                        <Route path="/success" element={<Success />} />
                     </Route>
                 </Route>
             </Routes>
