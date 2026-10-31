@@ -30,7 +30,7 @@ const CATEGORIES: Record<string, { color: string; icon: any }> = {
     Créativité: { color: "#805AD5", icon: Palette },
     Career: { color: "#D69E2E", icon: Briefcase },
     Mental: { color: "#319795", icon: Wind },
-    Imane: { color: "#38A169", icon: BookOpen },
+    Foi: { color: "#38A169", icon: BookOpen },
     Relations: { color: "#ED64A6", icon: Users },
 };
 
@@ -59,8 +59,6 @@ export default function Calendar() {
     const [objectives, setObjectives] = useState<Objective[]>([]);
     const [weekDays, setWeekDays] = useState<{ name: string; date: Date; dayIndex: number }[]>([]);
     const [feedbackMessage, setFeedbackMessage] = useState<{ text: string; type: "success" | "error" } | null>(null);
-
-    // NOUVEAU STATE POUR LA VUE MOBILE
     const [mobileDayIndex, setMobileDayIndex] = useState(0);
 
     const showNotification = (text: string, type: "success" | "error") => {
@@ -333,7 +331,6 @@ export default function Calendar() {
                         </aside>
 
                         <section className="grid-section glass-card">
-                            {/* PC */}
                             <div className="calendar-grid-header desktop-only">
                                 <div style={{ width: "50px", flexShrink: 0 }}></div>
                                 <div style={{ display: "flex", flex: 1, minWidth: 0 }}>
@@ -349,7 +346,6 @@ export default function Calendar() {
                                 </div>
                             </div>
 
-                            {/*MOBILE*/}
                             <div className="mobile-day-nav">
                                 <button
                                     onClick={() => setMobileDayIndex(prev => Math.max(0, prev - 1))}
@@ -402,16 +398,26 @@ export default function Calendar() {
 
                                                     if (rawEndMin <= START_HOUR * 60) return null;
 
+                                                    const sizeClass =
+                                                        durationMin <= 20
+                                                            ? "size-xs"
+                                                            : durationMin <= 35
+                                                              ? "size-sm"
+                                                              : durationMin <= 60
+                                                                ? "size-md"
+                                                                : "size-lg";
+
                                                     return (
                                                         <div
                                                             key={`${obj.id}-${dayIndex}`}
-                                                            className="grid-objective-item-timed"
+                                                            className={`grid-objective-item-timed ${sizeClass}`}
                                                             style={{
                                                                 top: `${topPercent}%`,
                                                                 height: `${heightPercent}%`,
                                                                 background: `linear-gradient(135deg, ${baseColor}33 0%, ${baseColor}11 100%)`,
                                                                 borderColor: `${baseColor}66`,
                                                             }}
+                                                            title={`${obj.title} • ${obj.start_time} - ${obj.end_time}`}
                                                         >
                                                             <div className="grid-obj-header">
                                                                 <IconComponent
