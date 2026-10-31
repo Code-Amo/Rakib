@@ -182,6 +182,7 @@ export default function Calendar() {
             showNotification("Erreur de connexion.", "error");
         }
     };
+
     const handleDelete = async (id?: number) => {
         if (!id) return;
         try {
@@ -398,14 +399,13 @@ export default function Calendar() {
 
                                                     if (rawEndMin <= START_HOUR * 60) return null;
 
-                                                    const sizeClass =
-                                                        durationMin <= 20
-                                                            ? "size-xs"
-                                                            : durationMin <= 35
-                                                              ? "size-sm"
-                                                              : durationMin <= 60
-                                                                ? "size-md"
-                                                                : "size-lg";
+                                                    const showDuration = durationMin >= 60;
+                                                    const showIcon = durationMin >= 30;
+
+                                                    let sizeClass = "size-lg";
+                                                    if (durationMin <= 30) sizeClass = "size-xs";
+                                                    else if (durationMin <= 60) sizeClass = "size-sm";
+                                                    else if (durationMin <= 120) sizeClass = "size-md";
 
                                                     return (
                                                         <div
@@ -420,16 +420,21 @@ export default function Calendar() {
                                                             title={`${obj.title} • ${obj.start_time} - ${obj.end_time}`}
                                                         >
                                                             <div className="grid-obj-header">
-                                                                <IconComponent
-                                                                    size={13}
-                                                                    color={baseColor}
-                                                                    className="grid-obj-icon"
-                                                                />
+                                                                {showIcon && (
+                                                                    <IconComponent
+                                                                        size={13}
+                                                                        color={baseColor}
+                                                                        className="grid-obj-icon"
+                                                                    />
+                                                                )}
                                                                 <span className="grid-obj-title">{obj.title}</span>
                                                             </div>
-                                                            <span className="grid-obj-duration">
-                                                                {obj.start_time} - {obj.end_time}
-                                                            </span>
+
+                                                            {showDuration && (
+                                                                <span className="grid-obj-duration">
+                                                                    {obj.start_time} - {obj.end_time}
+                                                                </span>
+                                                            )}
                                                         </div>
                                                     );
                                                 })}

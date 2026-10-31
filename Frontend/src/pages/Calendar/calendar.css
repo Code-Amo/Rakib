@@ -371,17 +371,6 @@
     flex-shrink: 0;
 }
 
-.grid-obj-title {
-    font-size: 0.75rem;
-    line-height: 1.15;
-    font-weight: 500;
-    color: #ffffff;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    min-width: 0;
-}
-
 .calendar-wrapper {
     display: flex;
     gap: 24px;
@@ -573,17 +562,14 @@
     right: 2px;
     border-radius: 6px;
     border: 1px solid;
-    padding: 3px 5px;
+    padding: 2px 4px;
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    gap: 2px;
+    gap: 1px;
     overflow: hidden;
-    min-height: 0;
     z-index: 2;
-    container-type: size;
-    container-name: objblock;
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     transition:
@@ -613,8 +599,19 @@
     height: 13px;
 }
 
+.grid-obj-title {
+    font-size: 0.75rem;
+    line-height: 1.15;
+    font-weight: 500;
+    color: #ffffff;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 0;
+}
+
 .grid-obj-duration {
-    font-size: 0.7rem;
+    font-size: 0.65rem;
     line-height: 1.1;
     opacity: 0.8;
     color: #e2e8f0;
@@ -624,90 +621,30 @@
     flex-shrink: 0;
 }
 
+/* TAILLES DES BLOCS */
 .grid-objective-item-timed.size-xs {
-    padding: 0 4px;
-    gap: 0;
-    border-radius: 4px;
-    min-height: 13px;
-    justify-content: center;
+    padding: 0 4px !important;
 }
-
-.grid-objective-item-timed.size-xs .grid-obj-icon,
-.grid-objective-item-timed.size-xs .grid-obj-duration {
-    display: none;
-}
-
 .grid-objective-item-timed.size-xs .grid-obj-title {
-    font-size: 0.58rem;
-    line-height: 1;
+    font-size: 0.6rem !important;
+    line-height: 1.1 !important;
 }
-
-.grid-objective-item-timed.size-sm {
-    padding: 1px 4px;
-    gap: 0;
-    border-radius: 5px;
-    min-height: 15px;
-}
-
-.grid-objective-item-timed.size-sm .grid-obj-icon {
+.grid-objective-item-timed.size-xs .grid-obj-icon {
     width: 10px;
     height: 10px;
 }
 
 .grid-objective-item-timed.size-sm .grid-obj-title {
-    font-size: 0.64rem;
-    line-height: 1.05;
+    font-size: 0.68rem !important;
 }
 
-.grid-objective-item-timed.size-sm .grid-obj-duration {
-    display: none;
+.grid-objective-item-timed.size-sm .grid-obj-icon {
+    width: 11px;
+    height: 11px;
 }
 
-@container objblock (max-height: 38px) {
-    .grid-obj-duration {
-        display: none;
-    }
-    .grid-obj-title {
-        font-size: 0.66rem;
-        line-height: 1.05;
-    }
-    .grid-obj-icon {
-        width: 10px;
-        height: 10px;
-    }
-}
-
-@container objblock (max-height: 24px) {
-    .grid-obj-icon {
-        display: none;
-    }
-    .grid-obj-title {
-        font-size: 0.6rem;
-    }
-}
-
-@container objblock (max-height: 16px) {
-    .grid-objective-item-timed {
-        padding: 0 3px;
-    }
-    .grid-obj-title {
-        font-size: 0.55rem;
-        line-height: 1;
-    }
-}
-
-@container objblock (min-height: 110px) {
-    .grid-objective-item-timed {
-        padding: 8px;
-        gap: 4px;
-    }
-    .grid-obj-title {
-        font-size: 0.8rem;
-        white-space: normal;
-    }
-    .grid-obj-duration {
-        font-size: 0.72rem;
-    }
+.grid-objective-item-timed.size-md .grid-obj-title {
+    font-size: 0.72rem !important;
 }
 
 .day-cells-container {
@@ -872,24 +809,20 @@
         display: block;
     }
 
-    .grid-objective-item-timed {
-        border-radius: 6px;
-    }
-
     .grid-objective-item-timed.size-md .grid-obj-title,
     .grid-objective-item-timed.size-lg .grid-obj-title {
-        font-size: 0.85rem;
-        white-space: normal;
-        display: -webkit-box;
-        -webkit-line-clamp: 2;
-        line-clamp: 2;
-        -webkit-box-orient: vertical;
+        font-size: 0.85rem !important;
+        white-space: normal !important;
+        display: -webkit-box !important;
+        -webkit-line-clamp: 2 !important;
+        line-clamp: 2 !important;
+        -webkit-box-orient: vertical !important;
     }
 
     .grid-objective-item-timed.size-md .grid-obj-duration,
     .grid-objective-item-timed.size-lg .grid-obj-duration {
-        display: block;
-        font-size: 0.75rem;
+        display: block !important;
+        font-size: 0.75rem !important;
     }
 
     .calendar-grid-body-time::-webkit-scrollbar {
