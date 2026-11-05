@@ -49,6 +49,7 @@ export default function Legal() {
 
                 <header className="legal-header">
                     <div className="legal-brand">
+                        {/* Logo SVG conservé tel quel */}
                         <svg width="48" height="48" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
                             <path d="M32 10 L52 28 L46 34 L32 21 L18 34 L12 28 Z" fill="#9501d9" />
                             <path d="M32 25 L52 43 L46 49 L32 36 L18 49 L12 43 Z" fill="#9501d9" />
@@ -83,10 +84,10 @@ export default function Legal() {
 
                         <h3>1. Éditeur du site</h3>
                         <p>
-                            <strong>Nom / Pseudo :</strong> Le Créateur de Rakib (Éditeur non professionnel) <br />
-                            <strong>Statut :</strong> Particulier / Développeur indépendant <br />
-                            <strong>Contact :</strong> contact.rakib.app@gmail.com <br />
-                            <strong>Directeur de la publication :</strong> Le Créateur de Rakib
+                            <strong>Nom / Pseudo :</strong> Projet Open Source Rakib <br />
+                            <strong>Statut :</strong> Projet communautaire / Open Source <br />
+                            <strong>Contact :</strong> [votre-email@exemple.com] <br />
+                            <strong>Directeur de la publication :</strong> L'équipe Rakib
                         </p>
 
                         <h3>2. Hébergement</h3>
@@ -183,8 +184,8 @@ export default function Legal() {
                                 cliquant sur "Supprimer mon compte".
                             </strong>{" "}
                             Pour toute autre demande, vous pouvez contacter l'éditeur à l'adresse
-                            contact.app.rakib@gmail.com. Vous avez également le droit d'introduire une réclamation
-                            auprès de l'Autorité de protection des données belge (APD).
+                            [votre-email@exemple.com]. Vous avez également le droit d'introduire une réclamation auprès
+                            de l'Autorité de protection des données belge (APD).
                         </p>
 
                         <h3>6. Cookies</h3>
@@ -218,9 +219,10 @@ export default function Legal() {
                         <h3>3. Responsabilité</h3>
                         <p>
                             Rakib est un outil d'aide à l'organisation. L'application est fournie "en l'état".
-                            L'éditeur, en tant que particulier, s'efforce d'assurer la disponibilité et la sécurité du
-                            service, mais ne saurait être tenu responsable en cas de perte de données, d'indisponibilité
-                            temporaire (maintenance) ou de dommages indirects liés à l'utilisation du service.
+                            L'éditeur, en tant que projet open source, s'efforce d'assurer la disponibilité et la
+                            sécurité du service, mais ne saurait être tenu responsable en cas de perte de données,
+                            d'indisponibilité temporaire (maintenance) ou de dommages indirects liés à l'utilisation du
+                            service.
                         </p>
 
                         <h3>4. Suppression de compte</h3>

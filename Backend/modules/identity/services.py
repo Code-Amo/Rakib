@@ -1,13 +1,10 @@
 from sqlalchemy.orm import Session
 from datetime import datetime, timezone
-import os
 import bcrypt
-from sib_api_v3_sdk import Configuration, ApiClient, TransactionalEmailsApi, SendSmtpEmail
 
 from modules.identity import models, schemas
 from modules.identity.models import User
 from modules.Panel.models import UserStats
-
 
 def hash_password(password: str) -> str:
     pwd_bytes = password.encode('utf-8')[:72]
@@ -54,32 +51,13 @@ def authenticate_user(db: Session, email: str, password: str):
         return None
     return user
 
-# --- ENVOI D'EMAIL---
 def send_verification_email(to_email: str, code: str):
-    try:
-        configuration = Configuration()
-        configuration.api_key['api-key'] = os.getenv("BREVO_API_KEY")
-
-        api_instance = TransactionalEmailsApi(ApiClient(configuration))
-        
-        email = SendSmtpEmail(
-            to=[{"email": to_email}],
-            sender={"name": "Rakib", "email": "contact.rakib.app@gmail.com"},
-            subject="Votre code de vérification - Rakib",
-            html_content=f"""
-                <div style="font-family: sans-serif; background-color: #141414; color: #ffffff; padding: 20px; border-radius: 10px;">
-                    <h2 style="color: #9501d9;">Bienvenue sur Rakib !</h2>
-                    <p>Pour valider votre compte, voici votre code de vérification :</p>
-                    <h1 style="background-color: #262626; padding: 10px; display: inline-block; border-radius: 5px;">{code}</h1>
-                    <p style="color: #a0aec0; font-size: 12px;">Ce code expirera dans 15 minutes.</p>
-                </div>
-            """
-        )
-        
-        api_instance.send_transac_email(email)
-        print(f"Email envoyé avec succès à {to_email} via Brevo")
-    except Exception as e:
-        print(f"Erreur Brevo : {e}")
+    # TODO: Implémenter un service d'email (ex: Resend, Mailgun)
+    print(f"=========================================")
+    print(f"SIMULATION D'ENVOI D'EMAIL")
+    print(f"À: {to_email}")
+    print(f"CODE DE VÉRIFICATION: {code}")
+    print(f"=========================================")
 
 def update_user_name(db: Session, user: User, new_name: str):
     user.name = new_name

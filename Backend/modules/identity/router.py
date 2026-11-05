@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, status, Response, Request
 from sqlalchemy.orm import Session
 from . import schemas, services, models
 from core.database import get_db
-import random
+import secrets
 import os
 from datetime import datetime, timezone, timedelta
 from modules.identity.models import User
@@ -46,8 +46,8 @@ def register_user(request: Request, response: Response, user: schemas.UserCreate
             detail="Ce pseudo est déjà pris."
         )
 
-    code = str(random.randint(100000, 999999))
 
+    code = str(secrets.randbelow(900000) + 100000)
     db_user = services.create_user(db=db, user=user, code=code)
     services.send_verification_email(user.email, code)
 
@@ -64,7 +64,7 @@ def resend_verification(request: Request, response: Response, payload: schemas.F
     if user.is_verified:
         raise HTTPException(status_code=400, detail="Ce compte est déjà vérifié.")
 
-    code = str(random.randint(100000, 999999))
+    code = str(secrets.randbelow(900000) + 100000)
     user.verification_code = code
     user.verification_expire_at = datetime.now(timezone.utc).replace(tzinfo=None) + timedelta(minutes=15)
     db.commit()
@@ -178,7 +178,7 @@ def forget(request: Request, response: Response, payload: schemas.ForgotPassword
     user = db.query(models.User).filter(models.User.email == payload.email).first()
     if not user:
         raise HTTPException(status_code=404, detail="Aucun compte n'est inscris avec cet e-mail.")
-    code = str(random.randint(100000, 900000))
+    code = str(secrets.randbelow(900000) + 100000)
     user.verification_code = code
     user.verification_expire_at = datetime.now(timezone.utc).replace(tzinfo=None) + timedelta(minutes=15)
     db.commit()
