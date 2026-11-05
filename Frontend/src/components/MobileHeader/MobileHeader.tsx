@@ -1,7 +1,7 @@
 import pic from "@/assets/logo.png";
 import TrophyPage from "@/components/Trophy/TrophyPage";
 import { fetchWithAuth } from "@/function/api";
-import { Flame, Loader2, Trophy as TrophyIcon } from "lucide-react";
+import { Flame, Trophy as TrophyIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import "./MobileHeader.css";
 
@@ -14,7 +14,7 @@ interface DashboardData {
 export default function MobileHeader() {
     const [data, setData] = useState<DashboardData | null>(null);
     const [isTrophyOpen, setIsTrophyOpen] = useState(false);
-    const [isUploading, setIsUploading] = useState(false);
+    const isUploading = false; // Désactivé pour la version vitrine
 
     const fetchDashboardData = async () => {
         try {
@@ -32,17 +32,17 @@ export default function MobileHeader() {
         fetchDashboardData();
     }, []);
 
-    const handleAvatarUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
-        // Désactivé car le projet est archivé et Supabase a été retiré
+    const handleAvatarUpload = () => {
+        // Désactivé car le projet est archivé
         return;
     };
+
     if (!data) return null;
 
     return (
         <>
             <header className="mobile-header">
                 <div className="mobile-header-profile">
-                    {/* Input caché pour l'upload */}
                     <input
                         type="file"
                         id="mobile-avatar-upload"
@@ -53,13 +53,7 @@ export default function MobileHeader() {
                     />
 
                     <label htmlFor="mobile-avatar-upload" className="mobile-avatar-label">
-                        {isUploading ? (
-                            <div className="mobile-avatar-loader">
-                                <Loader2 className="spinner" size={20} color="#9f7aea" />
-                            </div>
-                        ) : (
-                            <img src={data.user.avatar_url || pic} alt="Profil" className="mobile-avatar" />
-                        )}
+                        <img src={data.user.avatar_url || pic} alt="Profil" className="mobile-avatar" />
                     </label>
                     <span className="mobile-username">{data.user.username}</span>
                 </div>

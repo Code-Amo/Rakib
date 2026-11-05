@@ -15,7 +15,7 @@ import {
     User,
     XCircle,
 } from "lucide-react";
-import React, { useEffect, useState, type SubmitEvent } from "react";
+import { useEffect, useState, type SubmitEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import "./settings.css";
 
@@ -53,7 +53,8 @@ export default function Settings() {
     const [isUpdatingProfile, setIsUpdatingProfile] = useState(false);
     const [isUpdatingPassword, setIsUpdatingPassword] = useState(false);
     const [isDeletingAccount, setIsDeletingAccount] = useState(false);
-    const [isUploadingAvatar, setIsUploadingAvatar] = useState(false);
+
+    const isUploadingAvatar = false; // Désactivé
 
     const [profileNotice, setProfileNotice] = useState<NotificationState | null>(null);
     const [passwordNotice, setPasswordNotice] = useState<NotificationState | null>(null);
@@ -106,10 +107,11 @@ export default function Settings() {
         fetchUserData();
     }, []);
 
-    const handleAvatarUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
-        // Désactivé car le projet est archivé et Supabase a été retiré
+    const handleAvatarUpload = () => {
+        // Désactivé
         return;
     };
+
     const handleProfileSubmit = async (e: SubmitEvent) => {
         e.preventDefault();
         setProfileNotice(null);
@@ -194,6 +196,7 @@ export default function Settings() {
             console.error("Erreur de déconnexion", error);
         }
     };
+
     return (
         <div className="settings-container">
             <div className="settings-wrapper">
@@ -233,9 +236,7 @@ export default function Settings() {
                                             disabled={isUploadingAvatar}
                                         />
                                         <div className="avatar-wrapper">
-                                            {isUploadingAvatar ? (
-                                                <Loader2 className="spinner" size={24} color="#9501d9" />
-                                            ) : profile.avatar_url ? (
+                                            {profile.avatar_url ? (
                                                 <img src={profile.avatar_url} alt="Avatar" className="avatar-img" />
                                             ) : (
                                                 <div className="avatar-placeholder">
@@ -421,7 +422,6 @@ export default function Settings() {
                         </div>
                     </section>
 
-                    {/* NOUVELLE SECTION : SESSION */}
                     <section className="settings-card full-width">
                         <div className="card-header">
                             <LogOut className="card-icon" />
