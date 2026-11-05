@@ -1,6 +1,5 @@
 import pic from "@/assets/logo.png";
 import { fetchWithAuth } from "@/function/api";
-import { supabase } from "@/supabaseClient";
 import { AlertCircle, Flame, Loader2, Pencil, Target, Trophy as TrophyIcon } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import TrophyPage from "../Trophy/TrophyPage";
@@ -56,7 +55,6 @@ export default function Panel() {
         setIsLoading(true);
         setError(null);
         try {
-            // Utilisation de fetchWithAuth pour gérer le rafraîchissement silencieux du token
             const response = await fetchWithAuth("/panel/dashboard", { signal });
 
             if (!response.ok) {
@@ -100,6 +98,8 @@ export default function Panel() {
             if (!file) return;
             setIsUploading(true);
 
+            // ⚠️ SECTION DÉSACTIVÉE CAR SUPABASE EST RETIRÉ DU PROJET PORTFOLIO
+            /*
             const fileExt = file.name.split(".").pop() || "jpg";
             const userId = data?.user?.id || "user";
             const fileName = `${userId}-${Date.now()}.${fileExt}`;
@@ -110,7 +110,6 @@ export default function Panel() {
             const { data: urlData } = supabase.storage.from("avatars").getPublicUrl(fileName);
             const publicUrl = urlData.publicUrl;
 
-            // Utilisation de fetchWithAuth ici aussi
             const response = await fetchWithAuth("/auth/me/avatar", {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
@@ -126,6 +125,9 @@ export default function Panel() {
                     user: { ...prevData.user, avatar_url: publicUrl },
                 };
             });
+            */
+
+            console.log("Upload d'avatar désactivé (Projet Portfolio)");
         } catch (error) {
             console.error("Erreur upload:", error);
             alert("Impossible de mettre à jour la photo de profil.");
