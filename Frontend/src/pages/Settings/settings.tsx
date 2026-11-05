@@ -1,5 +1,4 @@
 import { fetchWithAuth } from "@/function/api";
-import { supabase } from "@/supabaseClient";
 import {
     AlertTriangle,
     Camera,
@@ -108,43 +107,9 @@ export default function Settings() {
     }, []);
 
     const handleAvatarUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
-        try {
-            const file = event.target.files?.[0];
-            if (!file) return;
-
-            setIsUploadingAvatar(true);
-            setProfileNotice(null);
-
-            const fileExt = file.name.split(".").pop() || "jpg";
-            const userId = profile.id || "user";
-            const fileName = `${userId}-${Date.now()}.${fileExt}`;
-
-            const { error: uploadError } = await supabase.storage.from("avatars").upload(fileName, file);
-            if (uploadError) throw uploadError;
-
-            const { data: urlData } = supabase.storage.from("avatars").getPublicUrl(fileName);
-            const publicUrl = urlData.publicUrl;
-
-            const response = await fetchWithAuth("/auth/me/avatar", {
-                method: "PUT",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ avatar_url: publicUrl }),
-            });
-
-            if (!response.ok) throw new Error("Erreur lors de la mise à jour en base.");
-
-            setProfile(prev => ({ ...prev, avatar_url: publicUrl }));
-            setProfileNotice({ type: "success", message: "Photo de profil mise à jour avec succès." });
-
-            window.dispatchEvent(new Event("refreshPanel"));
-        } catch (error) {
-            console.error("Erreur upload:", error);
-            setProfileNotice({ type: "error", message: "Impossible de mettre à jour l'image." });
-        } finally {
-            setIsUploadingAvatar(false);
-        }
+        // Désactivé car le projet est archivé et Supabase a été retiré
+        return;
     };
-
     const handleProfileSubmit = async (e: SubmitEvent) => {
         e.preventDefault();
         setProfileNotice(null);

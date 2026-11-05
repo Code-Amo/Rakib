@@ -1,7 +1,6 @@
 import pic from "@/assets/logo.png";
 import TrophyPage from "@/components/Trophy/TrophyPage";
 import { fetchWithAuth } from "@/function/api";
-import { supabase } from "@/supabaseClient";
 import { Flame, Loader2, Trophy as TrophyIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import "./MobileHeader.css";
@@ -34,47 +33,9 @@ export default function MobileHeader() {
     }, []);
 
     const handleAvatarUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
-        try {
-            const file = event.target.files?.[0];
-            if (!file) return;
-            setIsUploading(true);
-
-            const fileExt = file.name.split(".").pop() || "jpg";
-            const userId = data?.user?.id || "user";
-            const fileName = `${userId}-${Date.now()}.${fileExt}`;
-
-            const { error: uploadError } = await supabase.storage.from("avatars").upload(fileName, file);
-            if (uploadError) throw uploadError;
-
-            const { data: urlData } = supabase.storage.from("avatars").getPublicUrl(fileName);
-            const publicUrl = urlData.publicUrl;
-
-            const response = await fetchWithAuth("/auth/me/avatar", {
-                method: "PUT",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ avatar_url: publicUrl }),
-            });
-
-            if (!response.ok) throw new Error("Erreur lors de la mise à jour de l'avatar");
-
-            setData(prev =>
-                prev
-                    ? {
-                          ...prev,
-                          user: { ...prev.user, avatar_url: publicUrl },
-                      }
-                    : null,
-            );
-
-            window.dispatchEvent(new Event("refreshPanel"));
-        } catch (error) {
-            console.error("Erreur upload:", error);
-            alert("Impossible de mettre à jour la photo de profil.");
-        } finally {
-            setIsUploading(false);
-        }
+        // Désactivé car le projet est archivé et Supabase a été retiré
+        return;
     };
-
     if (!data) return null;
 
     return (
