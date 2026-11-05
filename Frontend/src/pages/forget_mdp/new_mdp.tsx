@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import "./new_mdp.css";
 
-const API_URL = import.meta.env.VITE_API_URL || "/api";
+const API_URL = "/api";
 export default function New_pswd() {
     const navigate = useNavigate();
     const location = useLocation();

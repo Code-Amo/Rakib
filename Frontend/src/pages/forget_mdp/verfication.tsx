@@ -2,7 +2,7 @@ import { useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import "./verification.css";
 
-const API_URL = import.meta.env.VITE_API_URL || "/api";
+const API_URL = "/api";
 export default function Verification() {
     const location = useLocation();
     const navigate = useNavigate();
